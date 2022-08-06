@@ -39,3 +39,4 @@ tools/pgegen/pgegen
 *.ini
 node_modules
 randomizer/bin
+output.json
