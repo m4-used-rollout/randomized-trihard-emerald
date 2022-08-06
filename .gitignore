@@ -37,3 +37,5 @@ tools/binutils
 *.pyc
 tools/pgegen/pgegen
 *.ini
+node_modules
+randomizer/bin

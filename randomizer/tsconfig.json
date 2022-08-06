@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "outDir": "bin",
+        "rootDir": "src",
+        "module": "CommonJS",
+        "target": "ES2019"
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/lib/**/*.ts"
+    ]
+}
