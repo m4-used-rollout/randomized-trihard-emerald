@@ -101,12 +101,12 @@ function forRepos(data, obj, def = 0) {
 async function dumpBaseStats(data, config) {
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	if (data._type == 'the')
-		out.write("// Maximum value for a female Pokemon is 254 (MON_FEMALE) which is 100% female.\n");
-	out.write(/* c */`// 255 (MON_GENDERLESS) is reserved for genderless Pokemon.
+		out.write("// Maximum value for a female Pok�mon is 254 (MON_FEMALE) which is 100% female.\n");
+	out.write(/* c */`// 255 (MON_GENDERLESS) is reserved for genderless Pok�mon.
 #define PERCENT_FEMALE(percent) min(254, ((percent * 255) / 100))
 `);
 
-	if (data._type == 'the')
+	if (data._includeOldUnownData)
 		out.write(/* c */`
 #define OLD_UNOWN_BASE_STATS                \\
     {                                       \\
@@ -145,13 +145,15 @@ async function dumpBaseStats(data, config) {
 	out.write(/* c */`
 const struct BaseStats gBaseStats[] =
 {
-	[SPECIES_NONE] = {0},
+    [SPECIES_NONE] = {0},
 
 `);
 	for (let [name, pkmn] of Object.entries(data.pokemon)) {
+		const lastSpecies = Object.entries(data.pokemon).pop()[0] == name;
 		const lines = [];
 		if (pkmn._ref) pkmn = data.pokemon[pkmn._ref];
 		for (let [key, val] of Object.entries(pkmn.baseStats)) {
+			let pad = '';
 			if (VALUE_TRANSFORM[key]) {
 				val = VALUE_TRANSFORM[key](val);
 			}
@@ -162,10 +164,25 @@ const struct BaseStats gBaseStats[] =
 				val = val.map(VALUE_TRANSFORM['ability']);
 				val = `{${val.join(', ')}}`;
 			}
-			lines.push(`\t\t.${key} = ${val},\n`);
+			if (key.endsWith('SpDefense'))
+				pad = '';
+			else if (key.endsWith('SpAttack'))
+				pad = ' ';
+			else if (key.endsWith('Speed'))
+				pad = '    ';
+			else if (key.endsWith('Defense'))
+				pad = '  ';
+			else if (key.endsWith('Attack'))
+				pad = '   ';
+			else if (key.endsWith('HP'))
+				pad = '       ';
+			lines.push(`        .${key}${pad} = ${val},\n`);
 		}
 
-		out.write(`\t[SPECIES_${name.toUpperCase()}] =\n\t{\n${lines.join('')}\t},\n\n`);
+		if (data._includeOldUnownData && name.toLowerCase().startsWith("old_unown"))
+			out.write(`    [SPECIES_${name.toUpperCase()}] = OLD_UNOWN_BASE_STATS,\n\n`);
+		else
+			out.write(`    [SPECIES_${name.toUpperCase()}] =\n    {\n${lines.join('')}    }${lastSpecies ? '' : ',\n'}\n`);
 	}
 	out.write(`};\n`);
 	out.close();
@@ -188,9 +205,9 @@ const u16 gEggMoves[] = {
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.eggMoves) continue;
 		const moves = pkmn.eggMoves.map(x => `MOVE_${x.toUpperCase()}`);
-		out.write(`\tegg_moves(${name.toUpperCase()},\n\t\t${moves.join(',\n\t\t')}),\n\n`);
+		out.write(`    egg_moves(${name.toUpperCase()},\n              ${moves.join(',\n              ')}),\n\n`);
 	}
-	out.write(`\tEGG_MOVES_TERMINATOR\n};\n`);
+	out.write(`    EGG_MOVES_TERMINATOR\n};\n`);
 	out.close();
 	console.log(`File written to ${config.path}.`);
 }
@@ -209,7 +226,7 @@ async function dumpEvolutions(data, config) {
 		const evos = pkmn.evolutions.map(x => {
 			return `{EVO_${x.type.toUpperCase()}, ${(x.req).toString().padStart(x.type == "LEVEL" ? 2 : 1, ' ')}, SPECIES_${x.species.toUpperCase()}}`;
 		});
-		out.write(`\t${`[SPECIES_${name.toUpperCase()}]`.padEnd(20, ' ')} = {${evos.join(',\n                            ')}},\n`);
+		out.write(`    ${`[SPECIES_${name.toUpperCase()}]`.padEnd(20, ' ')} = {${evos.join(',\n                            ')}},\n`);
 	}
 	out.write(`};\n`);
 	out.close();
@@ -233,8 +250,8 @@ async function dumpLevelUpLearnset(data, config) {
 	let TABLES = new Map(), PTRS = new Map();
 	if (data.lvlTables) {
 		for (let [name, table] of Object.entries(data.lvlTables)) {
-			let lines = table.map(x => `\tLEVEL_UP_MOVE(${x.level.toString().padStart(2, ' ')}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
-			lines.push(`\tLEVEL_UP_END\n`);
+			let lines = table.map(x => `    LEVEL_UP_MOVE(${x.level.toString().padStart(2, ' ')}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
+			lines.push(`    LEVEL_UP_END\n`);
 			name = _expand(name);
 			TABLES.set(name, `\nstatic const ${data._lvlTableType} ${name}[] = {\n${lines.join('')}};\n`);
 		}
@@ -245,8 +262,8 @@ async function dumpLevelUpLearnset(data, config) {
 		for (const [name, pkmn] of Object.entries(data.pokemon)) {
 			let id = `s${name.charAt(0).toUpperCase()}${name.slice(1)}LevelUpLearnset`.replace('Nidoranf', 'NidoranF').replace('Nidoranm', 'NidoranM').replace('Hooh', 'HoOh');
 			for (let table of Object.entries(pkmn.lvlLearnset)) {
-				let lines = table.map(x => `\tLEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
-				lines.push(`\tLEVEL_UP_END\n`);
+				let lines = table.map(x => `    LEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
+				lines.push(`    LEVEL_UP_END\n`);
 				TABLES.set(id, `static const ${data._lvlTableType} ${name}[] = {\n${lines.join('')}};\n`);
 			}
 			PTRS.set(name, id);
@@ -264,7 +281,7 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
 	[SPECIES_NONE] = ${first},
 `);
 		for (const [name, ptr] of PTRS) {
-			out.write(`\t[SPECIES_${name.toUpperCase()}] = ${ptr},\n`);
+			out.write(`    [SPECIES_${name.toUpperCase()}] = ${ptr},\n`);
 		}
 		out.write(`};\n`);
 	}
@@ -315,7 +332,7 @@ const u32 gTMHMLearnsets[][2] =
 			return `TMHM(${o})`;
 		});
 		if (tms.length === 0) tms.push('0');
-		out.write(`\t[SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tms.join(' | ')}),\n`);
+		out.write(`    [SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tms.join(' | ')}),\n`);
 	}
 	out.write(`};\n`);
 	out.close();
@@ -330,7 +347,7 @@ async function dumpTutorLearnset(data, config) {
 	const TUTOR_LIST = new Set();
 	const PREFIX = forRepos(data, { base: '' }, 'TUTOR_LEARNSET');
 	const MON_LIST = [
-		`\t[SPECIES_NONE] = ${PREFIX}(0)`
+		`    [SPECIES_NONE] = ${PREFIX}(0)`
 	];
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.tutor) continue;
@@ -338,7 +355,7 @@ async function dumpTutorLearnset(data, config) {
 		for (const m of tutor) TUTOR_LIST.add(m);
 		tutor = tutor.map(x => `TUTOR(${x})`);
 		if (tutor.length === 0) tutor.push('0');
-		MON_LIST.push(`\t[SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tutor.join(' | ')})`);
+		MON_LIST.push(`    [SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tutor.join(' | ')})`);
 	}
 
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
@@ -353,7 +370,7 @@ async function dumpTutorLearnset(data, config) {
 const u16 gTutorMoves[] =
 {
 `);
-	out.write(Array.from(TUTOR_LIST).map(move => `\t[TUTOR_${move}] = ${move}`).join(',\n'));
+	out.write(Array.from(TUTOR_LIST).map(move => `    [TUTOR_${move}] = ${move}`).join(',\n'));
 	out.write(/* c */`
 };
 
@@ -399,7 +416,7 @@ async function dumpWildPokemon(data, config) {
 	const wilds = data.wilds;
 	wilds.forEach(w => {
 		out.write(`const struct WildPokemon ${w.setLabel}[] =\n{\n`);
-		w.set.forEach(s => out.write(`\t{${s.levelMin}, ${s.levelMax}, SPECIES_${s.species.toUpperCase()}},\n`));
+		w.set.forEach(s => out.write(`    {${s.levelMin}, ${s.levelMax}, SPECIES_${s.species.toUpperCase()}},\n`));
 		out.write('};\n\n');
 		if (w.rate == 180)
 			out.write('// 180 = 100% encounter rate\n');
