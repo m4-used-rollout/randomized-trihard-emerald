@@ -55,9 +55,6 @@ const FILES = [
 
 //-----------------------------------------------------------------------------
 
-const SHARED_HEADER =
-	`// This file has been auto-generated
-`;
 
 /** @type {Record<string, (v:string)=>string >} */
 const VALUE_TRANSFORM = {
@@ -78,6 +75,7 @@ const VALUE_TRANSFORM = {
 	'bodyColor': (v) => { if (!v.startsWith('BODY_COLOR_')) return `BODY_COLOR_${v.toUpperCase()}`; return v; },
 	'genderRatio': (v) => {
 		if (v === null) return `MON_GENDERLESS`;
+		if (!parseFloat(v)) return v;
 		return `PERCENT_FEMALE(${v})`;
 	},
 	'noFlip': (v) => { return `${v}`.toUpperCase(); }
@@ -102,11 +100,49 @@ function forRepos(data, obj, def = 0) {
  */
 async function dumpBaseStats(data, config) {
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
-	out.write(SHARED_HEADER);
-	out.write(/* c */`
-// 255 (MON_GENDERLESS) is reserved for genderless Pokemon.
+	if (data._type == 'the')
+		out.write("// Maximum value for a female Pokemon is 254 (MON_FEMALE) which is 100% female.\n");
+	out.write(/* c */`// 255 (MON_GENDERLESS) is reserved for genderless Pokemon.
 #define PERCENT_FEMALE(percent) min(254, ((percent * 255) / 100))
+`);
 
+	if (data._type == 'the')
+		out.write(/* c */`
+#define OLD_UNOWN_BASE_STATS                \\
+    {                                       \\
+        .baseHP = 50,                       \\
+        .baseAttack = 150,                  \\
+        .baseDefense = 50,                  \\
+        .baseSpAttack = 150,                \\
+        .baseSpDefense = 50,                \\
+        .baseSpeed = 150,                   \\
+        .type1 = TYPE_NORMAL,               \\
+        .type2 = TYPE_NORMAL,               \\
+        .catchRate = 3,                     \\
+        .expYield = 1,                      \\
+        .evYield_HP = 2,                    \\
+        .evYield_Attack = 2,                \\
+        .evYield_Defense = 2,               \\
+        .evYield_Speed = 2,                 \\
+        .evYield_SpAttack = 2,              \\
+        .evYield_SpDefense = 2,             \\
+        .item1 = ITEM_NONE,                 \\
+        .item2 = ITEM_NONE,                 \\
+        .genderRatio = MON_GENDERLESS,      \\
+        .eggCycles = 120,                   \\
+        .friendship = 0,                    \\
+        .growthRate = GROWTH_MEDIUM_FAST,   \\
+        .eggGroup1 = EGG_GROUP_UNDISCOVERED,\\
+        .eggGroup2 = EGG_GROUP_UNDISCOVERED,\\
+        .ability1 = ABILITY_NONE,           \\
+        .ability2 = ABILITY_NONE,           \\
+        .safariZoneFleeRate = 0,            \\
+        .bodyColor = BODY_COLOR_BLACK,      \\
+        .noFlip = FALSE,                    \\
+    }
+`);
+
+	out.write(/* c */`
 const struct BaseStats gBaseStats[] =
 {
 	[SPECIES_NONE] = {0},
@@ -129,7 +165,7 @@ const struct BaseStats gBaseStats[] =
 			lines.push(`\t\t.${key} = ${val},\n`);
 		}
 
-		out.write(`\t[SPECIES_${name.toUpperCase()}] = {\n${lines.join('')}\t},\n\n`);
+		out.write(`\t[SPECIES_${name.toUpperCase()}] =\n\t{\n${lines.join('')}\t},\n\n`);
 	}
 	out.write(`};\n`);
 	out.close();
@@ -143,9 +179,7 @@ const struct BaseStats gBaseStats[] =
  */
 async function dumpEggMoves(data, config) {
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
-	out.write(SHARED_HEADER);
-	out.write(/* c */`
-#define EGG_MOVES_SPECIES_OFFSET 20000
+	out.write(/* c */`#define EGG_MOVES_SPECIES_OFFSET 20000
 #define EGG_MOVES_TERMINATOR 0xFFFF
 #define egg_moves(species, moves...) (SPECIES_##species + EGG_MOVES_SPECIES_OFFSET), moves
 
@@ -167,17 +201,15 @@ const u16 gEggMoves[] = {
  */
 async function dumpEvolutions(data, config) {
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
-	out.write(SHARED_HEADER);
-	out.write(/* c */`
-const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON] =
+	out.write(/* c */`const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON] =
 {
 `);
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.evolutions) continue;
 		const evos = pkmn.evolutions.map(x => {
-			return `{EVO_${x.type.toUpperCase()}, ${x.req}, SPECIES_${x.species.toUpperCase()}}`;
+			return `{EVO_${x.type.toUpperCase()}, ${(x.req).toString().padStart(x.type == "LEVEL" ? 2 : 1, ' ')}, SPECIES_${x.species.toUpperCase()}}`;
 		});
-		out.write(`\t[SPECIES_${name.toUpperCase()}] = {${evos.join(',')}},\n`);
+		out.write(`\t${`[SPECIES_${name.toUpperCase()}]`.padEnd(20, ' ')} = {${evos.join(',\n                            ')}},\n`);
 	}
 	out.write(`};\n`);
 	out.close();
@@ -190,24 +222,21 @@ const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON] =
  */
 async function dumpLevelUpLearnset(data, config) {
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
-	out.write(SHARED_HEADER);
 	if (data._type == "the")
-		out.write(/* c */`
-#define LEVEL_UP_MOVE(lvl, move) ((lvl << 9) | move)
+		out.write(/* c */`#define LEVEL_UP_MOVE(lvl, move) ((lvl << 9) | move)
 #define LEVEL_UP_END 0xffff
 `);
 	else
 		out.write(/* c */`
 #define LEVEL_UP_MOVE(lvl, moveLearned) {.move = moveLearned, .level = lvl}
-
 `);
 	let TABLES = new Map(), PTRS = new Map();
 	if (data.lvlTables) {
 		for (let [name, table] of Object.entries(data.lvlTables)) {
-			let lines = table.map(x => `\tLEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
+			let lines = table.map(x => `\tLEVEL_UP_MOVE(${x.level.toString().padStart(2, ' ')}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
 			lines.push(`\tLEVEL_UP_END\n`);
 			name = _expand(name);
-			TABLES.set(name, `static const ${data._lvlTableType} ${name}[] = {\n${lines.join('')}};\n`);
+			TABLES.set(name, `\nstatic const ${data._lvlTableType} ${name}[] = {\n${lines.join('')}};\n`);
 		}
 		for (const [name, pkmn] of Object.entries(data.pokemon)) {
 			PTRS.set(name, _expand(pkmn.lvlLearnset));
@@ -258,13 +287,14 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
  */
 async function dumpTMLearnset(data, config) {
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
-	out.write(SHARED_HEADER);
-	out.write(/* c */`
-#define TMHM_LEARNSET(moves) {(u32)(moves), ((u64)(moves) >> 32)}`)
+	out.write(/* c */`#define TMHM_LEARNSET(moves) {(u32)(moves), ((u64)(moves) >> 32)}`)
 	if (data._type == "the")
 		out.write(/* c */`
 #define TMHM(tmhm) ((u64)1 << (ITEM_##tmhm - ITEM_TM01_FOCUS_PUNCH))
-`);
+
+// This table determines which TMs and HMs a species is capable of learning.
+// Each entry is a 64-bit bit array spread across two 32-bit values, with
+// each bit corresponding to a .`);
 	else
 		out.write(/* c */`
 #define TMHM(tmhm) ((u64)1 << (ITEM_##tmhm - ITEM_TM01_FOCUS_PUNCH - ((ITEM_##tmhm > ITEM_TM100) ? 50 : 0)))
@@ -300,7 +330,7 @@ async function dumpTutorLearnset(data, config) {
 	const TUTOR_LIST = new Set();
 	const PREFIX = forRepos(data, { base: '' }, 'TUTOR_LEARNSET');
 	const MON_LIST = [
-		`\t[SPECIES_NONE] = ${PREFIX}(0),\n`
+		`\t[SPECIES_NONE] = ${PREFIX}(0)`
 	];
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.tutor) continue;
@@ -308,11 +338,10 @@ async function dumpTutorLearnset(data, config) {
 		for (const m of tutor) TUTOR_LIST.add(m);
 		tutor = tutor.map(x => `TUTOR(${x})`);
 		if (tutor.length === 0) tutor.push('0');
-		MON_LIST.push(`\t[SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tutor.join(' | ')}),\n`);
+		MON_LIST.push(`\t[SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tutor.join(' | ')})`);
 	}
 
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
-	out.write(SHARED_HEADER);
 	if (data._type === 'the') {
 		// write out defines
 		let i = 0;
@@ -324,9 +353,7 @@ async function dumpTutorLearnset(data, config) {
 const u16 gTutorMoves[] =
 {
 `);
-	for (const move of TUTOR_LIST) {
-		out.write(`\t[TUTOR_${move}] = ${move},\n`);
-	}
+	out.write(Array.from(TUTOR_LIST).map(move => `\t[TUTOR_${move}] = ${move}`).join(',\n'));
 	out.write(/* c */`
 };
 
@@ -336,8 +363,8 @@ const u16 gTutorMoves[] =
 static const u32 sTutorLearnsets[] =
 {
 `);
-	out.write(MON_LIST.join(''));
-	out.write(`};\n`);
+	out.write(MON_LIST.join(',\n'));
+	out.write(`\n};\n`);
 	out.close();
 	console.log(`File written to ${config.path}.`);
 }

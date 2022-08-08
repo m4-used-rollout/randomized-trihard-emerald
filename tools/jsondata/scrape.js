@@ -649,7 +649,7 @@ async function scrapeTutorLearnset(config) {
 			const d = await genFn.next();
 			if (d.done) throw new TypeError('Unexpected EOF');
 			let macro = await gather('(');
-			// console.log(macro);
+			//console.log(macro);
 			if (macro.trim() !== MARKER) throw new TypeError('Error parsing learnsets, unexpected macro!');
 			return await _inner();
 		}
