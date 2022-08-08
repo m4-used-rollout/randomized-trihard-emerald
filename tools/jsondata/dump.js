@@ -390,7 +390,24 @@ async function dumpFormChanges(data, config) {
  * @param {typeof FILES} config 
  */
 async function dumpWildPokemon(data, config) {
-
+	const original = (FS.existsSync(config.path) ? FS.readFileSync(config.path, { encoding: 'utf8' }) : "").split('\n');
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
+	let lineNo = 0;
+	while (lineNo < config.startLine - 1) {
+		out.write(original[lineNo++] + '\n');
+	}
+	const wilds = data.wilds;
+	wilds.forEach(w => {
+		out.write(`const struct WildPokemon ${w.setLabel}[] =\n{\n`);
+		w.set.forEach(s => out.write(`\t{${s.levelMin}, ${s.levelMax}, SPECIES_${s.species.toUpperCase()}},\n`));
+		out.write('};\n\n');
+		if (w.rate == 180)
+			out.write('// 180 = 100% encounter rate\n');
+		out.write(`const struct WildPokemonInfo ${w.infoLabel} = {${w.rate}, ${w.setLabel}};\n\n`)
+	});
+	for (let line = config.endLine + 1; line < original.length - 1; out.write(original[line++] + "\n"));
+	out.close();
+	console.log(`File written to ${config.path}.`);
 }
 
 new Promise(async (res, rej) => res(require(INPUT_FILE)))
