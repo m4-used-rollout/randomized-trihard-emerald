@@ -21,28 +21,32 @@ const FILES = [
 	{
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'base_stats.h'),
 		fn: dumpBaseStats,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'egg_moves.h'),
 		fn: dumpEggMoves,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'evolution.h'),
 		fn: dumpEvolutions,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'level_up_learnsets.h'),
 		fn: dumpLevelUpLearnset,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'tmhm_learnsets.h'),
 		fn: dumpTMLearnset,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'tutor_learnsets.h'),
 		fn: dumpTutorLearnset,
-	},{
-		// TODO: Pokedex entires?
-	},{
+	}, {
+		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'wild_encounters.h'),
+		fn: dumpWildPokemon,
+		startLine: 14, // forRepos({ 'the': 14 }),
+		endLine: 3260, //forRepos({ 'the': 3260 }),
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'form_species_tables.h'),
 		fn: dumpFormSpecies,
 		forRepoTypes: ['exp'],
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'form_change_tables.h'),
 		fn: dumpFormChanges,
 		forRepoTypes: ['exp'],
@@ -52,31 +56,31 @@ const FILES = [
 //-----------------------------------------------------------------------------
 
 const SHARED_HEADER =
-`// This file has been auto-generated
+	`// This file has been auto-generated
 `;
 
 /** @type {Record<string, (v:string)=>string >} */
 const VALUE_TRANSFORM = {
-	'type': (v)=>{ if (!v.startsWith('TYPE_')) return `TYPE_${v.toUpperCase()}`; return v; },
-	'move': (v)=>{ if (!v.startsWith('MOVE_')) return `MOVE_${v.toUpperCase()}`; return v; },
-	'growthRate': (v)=>{ if (!v.startsWith('GROWTH_')) return `GROWTH_${v.toUpperCase()}`; return v; },
-	'eggGroup': (v)=>{ if (!v.startsWith('EGG_GROUP_')) return `EGG_GROUP_${v.toUpperCase()}`; return v; },
-	'item': (v)=>{
+	'type': (v) => { if (!v.startsWith('TYPE_')) return `TYPE_${v.toUpperCase()}`; return v; },
+	'move': (v) => { if (!v.startsWith('MOVE_')) return `MOVE_${v.toUpperCase()}`; return v; },
+	'growthRate': (v) => { if (!v.startsWith('GROWTH_')) return `GROWTH_${v.toUpperCase()}`; return v; },
+	'eggGroup': (v) => { if (!v.startsWith('EGG_GROUP_')) return `EGG_GROUP_${v.toUpperCase()}`; return v; },
+	'item': (v) => {
 		if (v === null) return `ITEM_NONE`;
 		if (!v.startsWith('ITEM_')) return `ITEM_${v.toUpperCase()}`;
 		return v;
 	},
-	'ability': (v)=>{
+	'ability': (v) => {
 		if (v === null) return `ABILITY_NONE`;
-		if (!v.startsWith('ABILITY_')) return `ABILITY_${v.toUpperCase()}`; 
-		return v; 
+		if (!v.startsWith('ABILITY_')) return `ABILITY_${v.toUpperCase()}`;
+		return v;
 	},
-	'bodyColor': (v)=>{ if (!v.startsWith('BODY_COLOR_')) return `BODY_COLOR_${v.toUpperCase()}`; return v; },
-	'genderRatio': (v)=>{ 
+	'bodyColor': (v) => { if (!v.startsWith('BODY_COLOR_')) return `BODY_COLOR_${v.toUpperCase()}`; return v; },
+	'genderRatio': (v) => {
 		if (v === null) return `MON_GENDERLESS`;
 		return `PERCENT_FEMALE(${v})`;
 	},
-	'noFlip': (v)=>{ return `${v}`.toUpperCase(); }
+	'noFlip': (v) => { return `${v}`.toUpperCase(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -85,7 +89,7 @@ const VALUE_TRANSFORM = {
  * @param {PokemonJson} data 
  * @param {Record<RepoType, any>} obj 
  */
- function forRepos(data, obj, def=0) {
+function forRepos(data, obj, def = 0) {
 	if (obj[data._type]) return obj[data._type];
 	return def;
 }
@@ -97,7 +101,7 @@ const VALUE_TRANSFORM = {
  * @param {typeof FILES} config 
  */
 async function dumpBaseStats(data, config) {
-	const out = FS.createWriteStream(config.path, { encoding:'utf8' });
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	out.write(SHARED_HEADER);
 	out.write(/* c */`
 // 255 (MON_GENDERLESS) is reserved for genderless Pokemon.
@@ -124,7 +128,7 @@ const struct BaseStats gBaseStats[] =
 			}
 			lines.push(`\t\t.${key} = ${val},\n`);
 		}
-		
+
 		out.write(`\t[SPECIES_${name.toUpperCase()}] = {\n${lines.join('')}\t},\n\n`);
 	}
 	out.write(`};\n`);
@@ -138,7 +142,7 @@ const struct BaseStats gBaseStats[] =
  * @param {typeof FILES} config 
  */
 async function dumpEggMoves(data, config) {
-	const out = FS.createWriteStream(config.path, { encoding:'utf8' });
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	out.write(SHARED_HEADER);
 	out.write(/* c */`
 #define EGG_MOVES_SPECIES_OFFSET 20000
@@ -149,7 +153,7 @@ const u16 gEggMoves[] = {
 `);
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.eggMoves) continue;
-		const moves = pkmn.eggMoves.map(x=>`MOVE_${x.toUpperCase()}`);
+		const moves = pkmn.eggMoves.map(x => `MOVE_${x.toUpperCase()}`);
 		out.write(`\tegg_moves(${name.toUpperCase()},\n\t\t${moves.join(',\n\t\t')}),\n\n`);
 	}
 	out.write(`\tEGG_MOVES_TERMINATOR\n};\n`);
@@ -162,7 +166,7 @@ const u16 gEggMoves[] = {
  * @param {typeof FILES} config 
  */
 async function dumpEvolutions(data, config) {
-	const out = FS.createWriteStream(config.path, { encoding:'utf8' });
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	out.write(SHARED_HEADER);
 	out.write(/* c */`
 const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON] =
@@ -170,7 +174,7 @@ const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON] =
 `);
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.evolutions) continue;
-		const evos = pkmn.evolutions.map(x=>{
+		const evos = pkmn.evolutions.map(x => {
 			return `{EVO_${x.type.toUpperCase()}, ${x.req}, SPECIES_${x.species.toUpperCase()}}`;
 		});
 		out.write(`\t[SPECIES_${name.toUpperCase()}] = {${evos.join(',')}},\n`);
@@ -185,16 +189,22 @@ const struct Evolution gEvolutionTable[NUM_SPECIES][EVOS_PER_MON] =
  * @param {typeof FILES} config 
  */
 async function dumpLevelUpLearnset(data, config) {
-	const out = FS.createWriteStream(config.path, { encoding:'utf8' });
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	out.write(SHARED_HEADER);
-	out.write(/* c */`
+	if (data._type == "the")
+		out.write(/* c */`
+#define LEVEL_UP_MOVE(lvl, move) ((lvl << 9) | move)
+#define LEVEL_UP_END 0xffff
+`);
+	else
+		out.write(/* c */`
 #define LEVEL_UP_MOVE(lvl, moveLearned) {.move = moveLearned, .level = lvl}
 
 `);
 	let TABLES = new Map(), PTRS = new Map();
 	if (data.lvlTables) {
 		for (let [name, table] of Object.entries(data.lvlTables)) {
-			let lines = table.map(x=>`\tLEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
+			let lines = table.map(x => `\tLEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
 			lines.push(`\tLEVEL_UP_END\n`);
 			name = _expand(name);
 			TABLES.set(name, `static const ${data._lvlTableType} ${name}[] = {\n${lines.join('')}};\n`);
@@ -204,9 +214,9 @@ async function dumpLevelUpLearnset(data, config) {
 		}
 	} else {
 		for (const [name, pkmn] of Object.entries(data.pokemon)) {
-			let id = `s${name.charAt(0).toUpperCase()}${name.slice(1)}LevelUpLearnset`;
+			let id = `s${name.charAt(0).toUpperCase()}${name.slice(1)}LevelUpLearnset`.replace('Nidoranf', 'NidoranF').replace('Nidoranm', 'NidoranM').replace('Hooh', 'HoOh');
 			for (let table of Object.entries(pkmn.lvlLearnset)) {
-				let lines = table.map(x=>`\tLEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
+				let lines = table.map(x => `\tLEVEL_UP_MOVE(${x.level}, ${VALUE_TRANSFORM['move'](x.move)}),\n`);
 				lines.push(`\tLEVEL_UP_END\n`);
 				TABLES.set(id, `static const ${data._lvlTableType} ${name}[] = {\n${lines.join('')}};\n`);
 			}
@@ -218,15 +228,17 @@ async function dumpLevelUpLearnset(data, config) {
 		out.write(data);
 		if (!first) first = id;
 	}
-	out.write(`
+	if (data._type != "the") {
+		out.write(`
 const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
 {
 	[SPECIES_NONE] = ${first},
 `);
-	for (const [name, ptr] of PTRS) {
-		out.write(`\t[SPECIES_${name.toUpperCase()}] = ${ptr},\n`);
+		for (const [name, ptr] of PTRS) {
+			out.write(`\t[SPECIES_${name.toUpperCase()}] = ${ptr},\n`);
+		}
+		out.write(`};\n`);
 	}
-	out.write(`};\n`);
 	out.close();
 	console.log(`File written to ${config.path}.`);
 	return;
@@ -234,7 +246,7 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
 		if (name.startsWith('sLvLS_')) {
 			let n = name.slice('sLvLS_'.length);
 			n = n.charAt(0).toUpperCase() + n.slice(1);
-			return `s${n}LevelUpLearnset`;
+			return `s${n}LevelUpLearnset`.replace('Nidoranf', 'NidoranF').replace('Nidoranm', 'NidoranM').replace('Hooh', 'HoOh');;
 		}
 		return name;
 	}
@@ -245,12 +257,19 @@ const struct LevelUpMove *const gLevelUpLearnsets[NUM_SPECIES] =
  * @param {typeof FILES} config 
  */
 async function dumpTMLearnset(data, config) {
-	const out = FS.createWriteStream(config.path, { encoding:'utf8' });
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	out.write(SHARED_HEADER);
 	out.write(/* c */`
-#define TMHM_LEARNSET(moves) {(u32)(moves), ((u64)(moves) >> 32)}
+#define TMHM_LEARNSET(moves) {(u32)(moves), ((u64)(moves) >> 32)}`)
+	if (data._type == "the")
+		out.write(/* c */`
+#define TMHM(tmhm) ((u64)1 << (ITEM_##tmhm - ITEM_TM01_FOCUS_PUNCH))
+`);
+	else
+		out.write(/* c */`
 #define TMHM(tmhm) ((u64)1 << (ITEM_##tmhm - ITEM_TM01_FOCUS_PUNCH - ((ITEM_##tmhm > ITEM_TM100) ? 50 : 0)))
-
+`);
+	out.write(/* c */`
 const u32 gTMHMLearnsets[][2] =
 {
 	[SPECIES_NONE] = TMHM_LEARNSET(0),
@@ -259,10 +278,10 @@ const u32 gTMHMLearnsets[][2] =
 	const PREFIX = 'TMHM_LEARNSET';
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.tms) continue;
-		const tms = pkmn.tms.map(x=>{
+		const tms = pkmn.tms.map(x => {
 			let o = x;
 			if (typeof x === 'number') o = TM_LIST[x];
-			if (o === undefined) o = `TM${('00'+x).slice(-2)}`;
+			if (o === undefined) o = `TM${('00' + x).slice(-2)}`;
 			return `TMHM(${o})`;
 		});
 		if (tms.length === 0) tms.push('0');
@@ -279,7 +298,7 @@ const u32 gTMHMLearnsets[][2] =
  */
 async function dumpTutorLearnset(data, config) {
 	const TUTOR_LIST = new Set();
-	const PREFIX = forRepos(data, { base:'' }, 'TUTOR_LEARNSET');
+	const PREFIX = forRepos(data, { base: '' }, 'TUTOR_LEARNSET');
 	const MON_LIST = [
 		`\t[SPECIES_NONE] = ${PREFIX}(0),\n`
 	];
@@ -287,12 +306,12 @@ async function dumpTutorLearnset(data, config) {
 		if (!pkmn.tutor) continue;
 		let tutor = pkmn.tutor.map(VALUE_TRANSFORM['move']);
 		for (const m of tutor) TUTOR_LIST.add(m);
-		tutor = tutor.map(x=>`TUTOR(${x})`);
+		tutor = tutor.map(x => `TUTOR(${x})`);
 		if (tutor.length === 0) tutor.push('0');
 		MON_LIST.push(`\t[SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tutor.join(' | ')}),\n`);
 	}
-	
-	const out = FS.createWriteStream(config.path, { encoding:'utf8' });
+
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	out.write(SHARED_HEADER);
 	if (data._type === 'the') {
 		// write out defines
@@ -328,7 +347,7 @@ static const u32 sTutorLearnsets[] =
  * @param {typeof FILES} config 
  */
 async function dumpFormSpecies(data, config) {
-	
+
 }
 
 /**
@@ -336,24 +355,32 @@ async function dumpFormSpecies(data, config) {
  * @param {typeof FILES} config 
  */
 async function dumpFormChanges(data, config) {
-	
+
 }
 
-new Promise(async (res, rej)=>res(require(INPUT_FILE)))
+/**
+ * @param {PokemonJson} data 
+ * @param {typeof FILES} config 
+ */
+async function dumpWildPokemon(data, config) {
 
-.then(/** @param {PokemonJson} data */ (data)=>{
-	delete data.pokemon['none']; // remove sentinal
-	const REPO_TYPE = data._type;
-	if (!REPO_TYPE) throw new ReferenceError('No repo type present on input data, unable to proceed.');
-	
-	FS.mkdirSync(PATH.join(__dirname, BASE_OUTPUT_PATH), { recursive:true });
-	
-	const fns = FILES.map(x=>{
-		if (typeof x.fn !== 'function') return Promise.resolve(); //skip
-		if (x.forRepoTypes) {
-			const set = new Set(x.forRepoTypes);
-			if (!set.has(REPO_TYPE)) return Promise.resolve(); //skip
-		}
-		return x.fn(data, x);
+}
+
+new Promise(async (res, rej) => res(require(INPUT_FILE)))
+
+	.then(/** @param {PokemonJson} data */(data) => {
+		delete data.pokemon['none']; // remove sentinal
+		const REPO_TYPE = data._type;
+		if (!REPO_TYPE) throw new ReferenceError('No repo type present on input data, unable to proceed.');
+
+		FS.mkdirSync(PATH.join(__dirname, BASE_OUTPUT_PATH), { recursive: true });
+
+		const fns = FILES.map(x => {
+			if (typeof x.fn !== 'function') return Promise.resolve(); //skip
+			if (x.forRepoTypes) {
+				const set = new Set(x.forRepoTypes);
+				if (!set.has(REPO_TYPE)) return Promise.resolve(); //skip
+			}
+			return x.fn(data, x);
+		});
 	});
-});

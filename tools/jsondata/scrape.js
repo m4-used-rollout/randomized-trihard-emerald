@@ -37,44 +37,48 @@ const FILES = [
 	{
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'base_stats.h'),
 		fn: scrapeBaseStats,
-		startLine: forRepos({ base:39, exp:6, the:39 }), // skip macro definition at top of file, present in some repos
+		startLine: forRepos({ base: 39, exp: 6, the: 39 }), // skip macro definition at top of file, present in some repos
 		endLine: Infinity,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'egg_moves.h'),
 		fn: scrapeEggMoves,
 		startLine: 6,
 		endLine: Infinity,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'evolution.h'),
 		fn: scrapeEvolutions,
 		startLine: 2,
 		endLine: Infinity,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'level_up_learnset_pointers.h'),
 		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'level_up_learnsets.h'),
 		fn: scrapeLevelUpLearnset,
 		startLine: 2,
 		endLine: Infinity,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'tmhm_learnsets.h'),
 		fn: scrapeTMLearnset,
 		startLine: 8,
 		endLine: Infinity,
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'tutor_learnsets.h'),
 		fn: scrapeTutorLearnset,
-		startLine: forRepos({ base:38, exp:39, the:70 }), // skipping defines and tutor move array
+		startLine: forRepos({ base: 38, exp: 39, the: 70 }), // skipping defines and tutor move array
 		endLine: Infinity,
-	},{
-		// TODO: Pokedex entires?
-	},{
+	}, {
+		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'wild_encounters.h'),
+		fn: scrapeWildPokemon,
+		startLine: forRepos({ the: 14 }),
+		endLine: forRepos({ the: 3260 }),
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_table_pointers.h'),
 		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_tables.h'),
 		fn: scrapeFormSpecies,
 		startLine: 0,
 		endLine: Infinity,
 		forRepoTypes: ['exp'],
-	},{
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_change_table_pointers.h'),
 		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_change_tables.h'),
 		fn: scrapeFormChanges,
@@ -88,7 +92,7 @@ const MAX_TMS = forRepos({}, 50); //expansion maybe has 100?
 /**
  * @param {Record<RepoType, any>} obj 
  */
-function forRepos(obj, def=0) {
+function forRepos(obj, def = 0) {
 	if (obj[REPO_TYPE]) return obj[REPO_TYPE];
 	return def;
 }
@@ -100,25 +104,25 @@ async function scrapeBaseStats(config) {
 	let extra = {};
 	/** @type {Map<string, object>} */
 	const out = new Map();
-	
-	const stream = FS.createReadStream(config.path, { encoding:'utf8' });
-	const readin = RL.createInterface({ input:stream, crlfDelay:Infinity });
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
 	for await (let line of readin) {
 		lineNo++;
 		if (lineNo < config.startLine) continue;
 		if (lineNo > config.endLine) break;
-		
+
 		let res;
 		if (state === null && (res = /\[SPECIES_(\w+)\] =(.*)/i.exec(line))) {
 			state = res[1].toLowerCase();
 			data = {};
 			if (/\{0\}/i.test(res[2])) { // empty config
-				out.set(state, { baseStats:{} });
+				out.set(state, { baseStats: {} });
 				state = null;
 			}
 			else if (state.startsWith("old_unown")) {
 				extra['_includeOldUnownData'] = true;
-				out.set(state, { _ref:'unown', baseStats:{} });
+				out.set(state, { _ref: 'unown', baseStats: {} });
 				state = null; // skip the unown forms
 			}
 			continue;
@@ -163,12 +167,12 @@ async function scrapeBaseStats(config) {
 			data[key] = val;
 		}
 		if (state && /^\},$/i.exec(line.trim())) {
-			out.set(state, { baseStats:data });
+			out.set(state, { baseStats: data });
 			state = null;
 		}
 	}
 	if (state) {
-		out.set(state, { baseStats:data });
+		out.set(state, { baseStats: data });
 		state = null;
 	}
 	return Object.assign({ out }, extra);
@@ -179,14 +183,14 @@ async function scrapeEggMoves(config) {
 	let state = null, data;
 	/** @type {Map<string, object>} */
 	const out = new Map();
-	
-	const stream = FS.createReadStream(config.path, { encoding:'utf8' });
-	const readin = RL.createInterface({ input:stream, crlfDelay:Infinity });
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
 	for await (let line of readin) {
 		lineNo++;
 		if (lineNo < config.startLine) continue;
 		if (lineNo > config.endLine) break;
-		
+
 		let res;
 		if (state === null && (res = /egg_moves\((\w+),/i.exec(line))) {
 			state = res[1].toLowerCase();
@@ -195,7 +199,7 @@ async function scrapeEggMoves(config) {
 		if (state && (res = /MOVE_(\w+)(\)?),/i.exec(line))) {
 			data.push(minimize(`MOVE_${res[1]}`));
 			if (res[2] === ')') {
-				out.set(state, { eggMoves:data });
+				out.set(state, { eggMoves: data });
 				state = null;
 			}
 		}
@@ -210,7 +214,7 @@ async function scrapeEvolutions(config) {
 	/** @type {Map<string, object>} */
 	const out = new Map();
 	const genFn = readFileCharByChar(config);
-	
+
 	// Skip until line 
 	while (lineNo < config.startLine) {
 		let d = await genFn.next();
@@ -221,18 +225,18 @@ async function scrapeEvolutions(config) {
 		let species = await gather(']');
 		await skip('=');
 		let evos = await getArray();
-		
+
 		species = species.replace('SPECIES_', '').toLowerCase();
-		evos = evos.map(x=>({
-			type: (MINIMIZE_VALUES)? x[0].slice('EVO_'.length) : x[0],
+		evos = evos.map(x => ({
+			type: (MINIMIZE_VALUES) ? x[0].slice('EVO_'.length) : x[0],
 			req: (isNumeric(x[1])) ? Number.parseInt(x[1]) : x[1],
 			species: x[2].slice('SPECIES_'.length).toLowerCase(),
 		}));
 		// console.log(species, evos);
-		out.set(species, { evolutions:evos });
+		out.set(species, { evolutions: evos });
 	}
 	return out;
-	
+
 	/**
 	 * Skips characters until it hits the character given
 	 * @param {string} char 
@@ -244,7 +248,7 @@ async function scrapeEvolutions(config) {
 			if (d.value === char) return true;
 		}
 	}
-	
+
 	/**
 	 * Skips characters until it hits the character given
 	 * @param {Generator<string, void>} genFn 
@@ -257,7 +261,7 @@ async function scrapeEvolutions(config) {
 			if (d.value === char) return;
 		}
 	}
-	
+
 	/**
 	 * Gathers characters into a string until it hits the character given
 	 * @param {string} char 
@@ -271,7 +275,7 @@ async function scrapeEvolutions(config) {
 			str += d.value;
 		}
 	}
-	
+
 	/**
 	 * Recursively gets arrays from "{string,string,...}" formatted data
 	 */
@@ -292,7 +296,7 @@ async function scrapeEvolutions(config) {
 				const d = await genFn.next();
 				if (d.done) throw new TypeError('Unexpected EOF');
 				switch (d.value) {
-					case '}': 
+					case '}':
 						currStr = currStr.trim();
 						if (currStr) {
 							items.push(currStr);
@@ -318,9 +322,9 @@ async function scrapeEvolutions(config) {
 			}
 		}
 	}
-	
+
 	async function* readFileCharByChar(config) {
-		const stream = FS.createReadStream(config.path, { encoding:'utf8' });
+		const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
 		for await (const chunk of stream) {
 			for (const char of chunk) {
 				if (char === '\n') {
@@ -329,7 +333,7 @@ async function scrapeEvolutions(config) {
 					continue;
 				}
 				if (char === '\r') continue;
-				
+
 				yield char;
 			}
 		}
@@ -346,8 +350,8 @@ async function scrapeLevelUpLearnset(config) {
 	let metaData = {};
 	// First, load the lists
 	{
-		const stream = FS.createReadStream(config.lists, { encoding:'utf8' });
-		const readin = RL.createInterface({ input:stream, crlfDelay:Infinity });
+		const stream = FS.createReadStream(config.lists, { encoding: 'utf8' });
+		const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
 		let state = null, data;
 		for await (let line of readin) {
 			line = line.trim();
@@ -367,7 +371,7 @@ async function scrapeLevelUpLearnset(config) {
 			else {
 				let res;
 				if (res = /^LEVEL_UP_MOVE\(\s*(\d+),\s*MOVE_(\w+)\),$/i.exec(line)) {
-					data.push({ move:minimize(`MOVE_${res[2]}`), level:Number.parseInt(res[1]) });
+					data.push({ move: minimize(`MOVE_${res[2]}`), level: Number.parseInt(res[1]) });
 					continue;
 				}
 				else if (res = /^LEVEL_UP_END/i.exec(line)) {
@@ -380,22 +384,22 @@ async function scrapeLevelUpLearnset(config) {
 	}
 	// Then, load the pointers
 	{
-		const stream = FS.createReadStream(config.path, { encoding:'utf8' });
-		const readin = RL.createInterface({ input:stream, crlfDelay:Infinity });
+		const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+		const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
 		for await (let line of readin) {
 			lineNo++;
 			if (lineNo < config.startLine) continue;
 			if (lineNo > config.endLine) break;
-			
+
 			let res;
 			if (res = /\[SPECIES_(\w+)\] = (\w+),$/i.exec(line)) {
 				let key = res[1].toLowerCase();
 				let val = _shorten(res[2]);
-				
+
 				if (KEEP_LEARNSET_POINTERS) {
-					out.set(key, { lvlLearnset:val });
+					out.set(key, { lvlLearnset: val });
 				} else {
-					out.set(key, { lvlLearnset:lists.get(val) });
+					out.set(key, { lvlLearnset: lists.get(val) });
 				}
 			}
 		}
@@ -422,7 +426,7 @@ async function scrapeTMLearnset(config) {
 	/** @type {Map<string, object>} */
 	const out = new Map();
 	const genFn = readFileCharByChar(config);
-	
+
 	// Skip until line 
 	while (lineNo < config.startLine) {
 		let d = await genFn.next();
@@ -433,13 +437,13 @@ async function scrapeTMLearnset(config) {
 		let species = await gather(']');
 		await skip('=');
 		let set = await getLearnset();
-		
+
 		// Some pokemon don't learn anything, and so have TMHM_LEARNSET(0)
 		if (set.length == 1 && set[0] === '0') set = [];
-		
+
 		species = species.replace('SPECIES_', '').toLowerCase();
 		set = set.flat();
-		if (CONVERT_TMS_TO_NUMS) set = set.map(tm=>{
+		if (CONVERT_TMS_TO_NUMS) set = set.map(tm => {
 			let res;
 			if (res = /^[TH]M(\d{2})_[\w_]+$/i.exec(tm)) {
 				let num = Number.parseInt(res[1], 10);
@@ -448,28 +452,28 @@ async function scrapeTMLearnset(config) {
 				return num;
 			}
 			return tm;
-		}).sort((a,b)=>a-b);
-		
+		}).sort((a, b) => a - b);
+
 		// console.log(species, set);
-		out.set(species, { tms:set });
+		out.set(species, { tms: set });
 	}
 	if (CONVERT_TMS_TO_NUMS) {
 		return { out, tmlist };
 	}
 	return out;
-	
+
 	/**
 	 * Skips characters until it hits the character given
 	 * @param {string} char 
 	 */
-	 async function skipOrEOF(char) {
+	async function skipOrEOF(char) {
 		while (true) {
 			const d = await genFn.next();
 			if (d.done) return false;
 			if (d.value === char) return true;
 		}
 	}
-	
+
 	/**
 	 * Skips characters until it hits the character given
 	 * @param {Generator<string, void>} genFn 
@@ -482,7 +486,7 @@ async function scrapeTMLearnset(config) {
 			if (d.value === char) return;
 		}
 	}
-	
+
 	/**
 	 * Gathers characters into a string until it hits the character given
 	 * @param {string} char 
@@ -496,11 +500,11 @@ async function scrapeTMLearnset(config) {
 			str += d.value;
 		}
 	}
-	
+
 	/**
 	 * Recursively gets learnsets from "TMHM_LEARNSET( TMHM(string) | ... )" formatted data
 	 */
-	 async function getLearnset() {
+	async function getLearnset() {
 		while (true) {
 			const d = await genFn.next();
 			if (d.done) throw new TypeError('Unexpected EOF');
@@ -516,7 +520,7 @@ async function scrapeTMLearnset(config) {
 				const d = await genFn.next();
 				if (d.done) throw new TypeError('Unexpected EOF');
 				switch (d.value) {
-					case ')': 
+					case ')':
 						currStr = currStr.trim();
 						if (currStr) {
 							items.push(currStr);
@@ -543,9 +547,9 @@ async function scrapeTMLearnset(config) {
 			}
 		}
 	}
-	
+
 	async function* readFileCharByChar(config) {
-		const stream = FS.createReadStream(config.path, { encoding:'utf8' });
+		const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
 		for await (const chunk of stream) {
 			for (const char of chunk) {
 				if (char === '\n') {
@@ -554,7 +558,7 @@ async function scrapeTMLearnset(config) {
 					continue;
 				}
 				if (char === '\r') continue;
-				
+
 				yield char;
 			}
 		}
@@ -563,13 +567,13 @@ async function scrapeTMLearnset(config) {
 
 async function scrapeTutorLearnset(config) {
 	// I hate that I'm literally copy-pasting-tweaking this code from TMs for Tutors
-	const MARKER = forRepos({ base:'' }, 'TUTOR_LEARNSET'); // Some don't have a macro for tutor learnsets
-	
+	const MARKER = forRepos({ base: '' }, 'TUTOR_LEARNSET'); // Some don't have a macro for tutor learnsets
+
 	let lineNo = 1;
 	/** @type {Map<string, object>} */
 	const out = new Map();
 	const genFn = readFileCharByChar(config);
-	
+
 	// Skip until line 
 	while (lineNo < config.startLine) {
 		let d = await genFn.next();
@@ -580,36 +584,36 @@ async function scrapeTutorLearnset(config) {
 		let species = await gather(']');
 		await skip('=');
 		let set = await getLearnset();
-		
+
 		// Some pokemon don't learn anything, and so have TUTOR_LEARNSET(0)
 		if (set.length == 1 && set[0] === '0') set = [];
-		
+
 		species = species.replace('SPECIES_', '').toLowerCase();
-		set = set.flat().map(move=>{
+		set = set.flat().map(move => {
 			let res;
 			if (res = /^MOVE_([\w_]+)$/i.exec(move)) {
 				return minimize(`MOVE_${res[1]}`);
 			}
 			return move;
 		});
-		
+
 		// console.log(species, set);
-		out.set(species, { tutor:set });
+		out.set(species, { tutor: set });
 	}
 	return out;
-	
+
 	/**
 	 * Skips characters until it hits the character given
 	 * @param {string} char 
 	 */
-	 async function skipOrEOF(char) {
+	async function skipOrEOF(char) {
 		while (true) {
 			const d = await genFn.next();
 			if (d.done) return false;
 			if (d.value === char) return true;
 		}
 	}
-	
+
 	/**
 	 * Skips characters until it hits the character given
 	 * @param {Generator<string, void>} genFn 
@@ -622,7 +626,7 @@ async function scrapeTutorLearnset(config) {
 			if (d.value === char) return;
 		}
 	}
-	
+
 	/**
 	 * Gathers characters into a string until it hits the character given
 	 * @param {string} char 
@@ -636,11 +640,11 @@ async function scrapeTutorLearnset(config) {
 			str += d.value;
 		}
 	}
-	
+
 	/**
 	 * Recursively gets learnsets from "TUTOR_LEARNSET( TUTOR(string) | ... )" formatted data
 	 */
-	 async function getLearnset() {
+	async function getLearnset() {
 		while (true) {
 			const d = await genFn.next();
 			if (d.done) throw new TypeError('Unexpected EOF');
@@ -657,7 +661,7 @@ async function scrapeTutorLearnset(config) {
 				const d = await genFn.next();
 				if (d.done) throw new TypeError('Unexpected EOF');
 				switch (d.value) {
-					case ')': 
+					case ')':
 						currStr = currStr.trim();
 						if (currStr) {
 							items.push(currStr);
@@ -684,9 +688,9 @@ async function scrapeTutorLearnset(config) {
 			}
 		}
 	}
-	
+
 	async function* readFileCharByChar(config) {
-		const stream = FS.createReadStream(config.path, { encoding:'utf8' });
+		const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
 		for await (const chunk of stream) {
 			for (const char of chunk) {
 				if (char === '\n') {
@@ -695,15 +699,53 @@ async function scrapeTutorLearnset(config) {
 					continue;
 				}
 				if (char === '\r') continue;
-				
+
 				yield char;
 			}
 		}
 	}
 }
 
-async function scrapeFormSpecies() {} //TODO
-async function scrapeFormChanges() {} //TODO
+async function scrapeFormSpecies() { } //TODO
+async function scrapeFormChanges() { } //TODO
+
+async function scrapeWildPokemon(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<WildPokemonInfo>} */
+	const wilds = new Array();
+	/** @type {WildPokemonInfo} */
+	let currWild;
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo > config.endLine) break;
+
+		let res;
+		if (res = /^const struct WildPokemon (.+?)\[\]/.exec(line)) {
+			currWild = { setLabel: res[1], set: [] };
+			wilds.push(currWild);
+		}
+		// {3, 3, SPECIES_ZIGZAGOON},
+		if (res = /\{(\d+),\s*(\d+),\s*(.+?)\s*\}/i.exec(line))
+			currWild.set.push({ levelMin: parseInt(res[1]), levelMax: parseInt(res[2]), species: minimize(res[3]) });
+		if (res = /^const struct WildPokemonInfo (.+?) = \{(\d+),\s*(.+?)\}/.exec(line)) {
+			let wild = wilds.find(w => w.setLabel == res[3]);
+			if (!wild) {
+				console.error(`Couldn't find set ${res[3]}, falling back on current wild set ${currWild.setLabel}`);
+				wild = currWild;
+			}
+			wild.infoLabel = res[1];
+			wild.rate = parseInt(res[2]);
+			//console.log(wild.infoLabel)
+		}
+	}
+	return { out, wilds };
+}
 
 function minimize(val) {
 	if (!MINIMIZE_VALUES) return val;
@@ -721,14 +763,14 @@ function isNumeric(x) {
 }
 
 // Runs all functions defined in FILES array and returns them all to the then()
-Promise.all(FILES.map(x=>{
+Promise.all(FILES.map(x => {
 	if (typeof x.fn !== 'function') return Promise.resolve(); //skip
 	if (x.forRepoTypes) {
 		const set = new Set(x.forRepoTypes);
 		if (!set.has(REPO_TYPE)) return Promise.resolve(); //skip
 	}
 	return x.fn(x);
-})).then(data=>{
+})).then(data => {
 	/** @type {Map<string, object>} */
 	const out = new Map();
 	const other = {};
@@ -749,15 +791,15 @@ Promise.all(FILES.map(x=>{
 			}
 		}
 	}
-	
+
 	// Don't put out any info about the "none" pokemon.
 	out.delete('none');
-	
-	const outStream = FS.createWriteStream(OUTPUT_FILE, { encoding:'utf8' });
+
+	const outStream = FS.createWriteStream(OUTPUT_FILE, { encoding: 'utf8' });
 	outStream.write(`{\n"_type":"${REPO_TYPE}",\n"pokemon":{\n`);
 	for (const [id, dat] of out) {
 		outStream.write(`\t"${id}": ${JSON.stringify(dat)},\n`);
-		
+
 	}
 	outStream.write(`\t"none": {}\n}`);
 	for (let [key, val] of Object.entries(other)) {
