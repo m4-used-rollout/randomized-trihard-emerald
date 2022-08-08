@@ -319,7 +319,8 @@ async function dumpTMLearnset(data, config) {
 	out.write(/* c */`
 const u32 gTMHMLearnsets[][2] =
 {
-	[SPECIES_NONE] = TMHM_LEARNSET(0),
+    [SPECIES_NONE]        = TMHM_LEARNSET(0),
+
 `);
 	const TM_LIST = data.tmlist || [];
 	const PREFIX = 'TMHM_LEARNSET';
@@ -332,7 +333,7 @@ const u32 gTMHMLearnsets[][2] =
 			return `TMHM(${o})`;
 		});
 		if (tms.length === 0) tms.push('0');
-		out.write(`    [SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tms.join(' | ')}),\n`);
+		out.write(`    ${`[SPECIES_${name.toUpperCase()}]`.padEnd(21,' ')} = ${PREFIX}(${tms.join('\n                                        | ')}),\n\n`);
 	}
 	out.write(`};\n`);
 	out.close();
