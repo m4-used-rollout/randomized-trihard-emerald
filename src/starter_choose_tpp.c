@@ -435,7 +435,4 @@ static void Task_StarterChoose2(u8 taskId)
 	}
 }
 
-
-
-
 #endif
