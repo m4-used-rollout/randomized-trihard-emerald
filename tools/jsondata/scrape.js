@@ -570,9 +570,19 @@ async function scrapeTutorLearnset(config) {
 	const MARKER = forRepos({ base: '' }, 'TUTOR_LEARNSET'); // Some don't have a macro for tutor learnsets
 
 	let lineNo = 1;
+	const tutorList = [];
 	/** @type {Map<string, object>} */
 	const out = new Map();
 	const genFn = readFileCharByChar(config);
+
+	if (REPO_TYPE == "the") {
+		/** @type {string} */
+		let defines = await gather('c'); // read all #defines until the c in "const u16 gTutorMoves[] ="
+		defines.split('#define')
+			.map(def => /([^\s]+)\s+(\d+)/.exec(def))
+			.filter(match => !!match)
+			.forEach(match => tutorList[parseInt(match[2])] = match[1].replace('TUTOR_', ''));
+	}
 
 	// Skip until line 
 	while (lineNo < config.startLine) {
@@ -600,7 +610,7 @@ async function scrapeTutorLearnset(config) {
 		// console.log(species, set);
 		out.set(species, { tutor: set });
 	}
-	return out;
+	return { out, tutorList };
 
 	/**
 	 * Skips characters until it hits the character given

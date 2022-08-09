@@ -333,7 +333,7 @@ const u32 gTMHMLearnsets[][2] =
 			return `TMHM(${o})`;
 		});
 		if (tms.length === 0) tms.push('0');
-		out.write(`    ${`[SPECIES_${name.toUpperCase()}]`.padEnd(21,' ')} = ${PREFIX}(${tms.join('\n                                        | ')}),\n\n`);
+		out.write(`    ${`[SPECIES_${name.toUpperCase()}]`.padEnd(21, ' ')} = ${PREFIX}(${tms.join('\n                                        | ')}),\n\n`);
 	}
 	out.write(`};\n`);
 	out.close();
@@ -348,7 +348,7 @@ async function dumpTutorLearnset(data, config) {
 	const TUTOR_LIST = new Set();
 	const PREFIX = forRepos(data, { base: '' }, 'TUTOR_LEARNSET');
 	const MON_LIST = [
-		`    [SPECIES_NONE] = ${PREFIX}(0)`
+		`    [SPECIES_NONE]             = ${PREFIX}(0)`
 	];
 	for (const [name, pkmn] of Object.entries(data.pokemon)) {
 		if (!pkmn.tutor) continue;
@@ -356,14 +356,16 @@ async function dumpTutorLearnset(data, config) {
 		for (const m of tutor) TUTOR_LIST.add(m);
 		tutor = tutor.map(x => `TUTOR(${x})`);
 		if (tutor.length === 0) tutor.push('0');
-		MON_LIST.push(`    [SPECIES_${name.toUpperCase()}] = ${PREFIX}(${tutor.join(' | ')})`);
+		MON_LIST.push(`    ${`[SPECIES_${name.toUpperCase()}]`.padEnd(26, ' ')} = ${PREFIX}(${tutor.join('\n                                              | ')})`);
 	}
+
+	const tutorList = data.tutorList?.length > 0 ? data.tutorList : Array.from(TUTOR_LIST);
 
 	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
 	if (data._type === 'the') {
 		// write out defines
 		let i = 0;
-		for (const move of TUTOR_LIST) {
+		for (const move of tutorList) {
 			out.write(`#define TUTOR_${move} ${i++}\n`);
 		}
 	}
@@ -371,8 +373,8 @@ async function dumpTutorLearnset(data, config) {
 const u16 gTutorMoves[] =
 {
 `);
-	out.write(Array.from(TUTOR_LIST).map(move => `    [TUTOR_${move}] = ${move}`).join(',\n'));
-	out.write(/* c */`
+	out.write(tutorList.map(move => `    [TUTOR_${move}] = ${move}`).join(',\n'));
+	out.write(/* c */`,
 };
 
 #define TUTOR_LEARNSET(moves) ((u32)(moves))
@@ -381,8 +383,8 @@ const u16 gTutorMoves[] =
 static const u32 sTutorLearnsets[] =
 {
 `);
-	out.write(MON_LIST.join(',\n'));
-	out.write(`\n};\n`);
+	out.write(MON_LIST.join(',\n\n'));
+	out.write(`,\n\n};\n\n`);
 	out.close();
 	console.log(`File written to ${config.path}.`);
 }

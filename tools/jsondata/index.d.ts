@@ -21,6 +21,7 @@ declare interface PokemonJson {
 	}>;
 	lvlTables?: Record<string, LvlLearnset>;
 	tmlist?: string[];
+	tutorList?: string[];
 	wilds: WildPokemonInfo[];
 	
 	_type: RepoType;
