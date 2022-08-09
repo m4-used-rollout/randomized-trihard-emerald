@@ -72,6 +72,12 @@ const FILES = [
 		endLine: forRepos({ the: 3260 }),
 		forRepoTypes: ['the'],
 	}, {
+		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'trainer_parties.h'),
+		fn: scrapeTrainerParties,
+		startLine: 0,
+		endLine: Infinity,
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_table_pointers.h'),
 		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_tables.h'),
 		fn: scrapeFormSpecies,
@@ -740,7 +746,6 @@ async function scrapeWildPokemon(config) {
 			currWild = { setLabel: res[1], set: [] };
 			wilds.push(currWild);
 		}
-		// {3, 3, SPECIES_ZIGZAGOON},
 		if (res = /\{(\d+),\s*(\d+),\s*(.+?)\s*\}/i.exec(line))
 			currWild.set.push({ levelMin: parseInt(res[1]), levelMax: parseInt(res[2]), species: minimize(res[3]) });
 		if (res = /^const struct WildPokemonInfo (.+?) = \{(\d+),\s*(.+?)\}/.exec(line)) {
@@ -755,6 +760,55 @@ async function scrapeWildPokemon(config) {
 		}
 	}
 	return { out, wilds };
+}
+
+async function scrapeTrainerParties(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<TrainerInfo>} */
+	const trainerParties = new Array();
+	/** @type {TrainerInfo} */
+	let currTrainer;
+	/** @type {TrainerPartyMember} */
+	let currPoke;
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo > config.endLine) break;
+
+		let res;
+		if (res = /^static const struct (.+?) sParty_(.+?)\[\] = \{/.exec(line)) {
+			currTrainer = { type: res[1], id: res[2], party: [] };
+			trainerParties.push(currTrainer);
+		}
+		else if (/\{/.test(line)) {
+			currPoke = {};
+			currTrainer.party.push(currPoke);
+		}
+		else if (res = /\.(.+?) = (.+)/.exec(line)) {
+			switch (res[1]) {
+				case 'iv':
+				case 'lvl':
+					currPoke[res[1]] = parseInt(res[2]);
+					break;
+				case 'species':
+				case 'heldItem':
+					currPoke[res[1]] = minimize(res[2].replace(',', ''));
+					break;
+				case 'moves':
+					currPoke.moves = res[2].split(',').map(m => minimize(m.trim()));
+					break;
+			}
+		}
+		else if (/\};/.test(line)) {
+			console.log(currTrainer.id)
+		}
+	}
+	return { out, trainerParties };
 }
 
 function minimize(val) {
