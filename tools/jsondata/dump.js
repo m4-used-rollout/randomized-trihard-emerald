@@ -31,6 +31,12 @@ const FILES = [
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'level_up_learnsets.h'),
 		fn: dumpLevelUpLearnset,
 	}, {
+		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '../..', 'party_menu.c'),
+		fn: dumpTMMoves,
+		startLine: 1533,// forRepos({ the: 1533 }),
+		endLine: 1591,//forRepos({ the: 1591 }),
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'tmhm_learnsets.h'),
 		fn: dumpTMLearnset,
 	}, {
@@ -472,6 +478,25 @@ async function dumpTrainerParties(data, config) {
 	out.close();
 	console.log(`File written to ${config.path}.`);
 }
+
+/**
+ * @param {PokemonJson} data 
+ * @param {typeof FILES} config 
+ */
+async function dumpTMMoves(data, config) {
+	const original = (FS.existsSync(config.path) ? FS.readFileSync(config.path, { encoding: 'utf8' }) : "").split('\n');
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
+	let lineNo = 0;
+	while (lineNo < config.startLine - 1) {
+		out.write(original[lineNo++] + '\n');
+	}
+	const tmMoves = data.tmMoves;
+	tmMoves.filter(m => !!m).forEach(m => out.write(`    MOVE_${m.toUpperCase()},\n`));
+	for (let line = config.endLine - 1; line < original.length - 1; out.write(original[line++] + "\n"));
+	out.close();
+	console.log(`File written to ${config.path}.`);
+}
+
 
 new Promise(async (res, rej) => res(require(INPUT_FILE)))
 

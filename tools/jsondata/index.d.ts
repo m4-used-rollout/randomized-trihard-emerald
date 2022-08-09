@@ -20,6 +20,7 @@ declare interface PokemonJson {
 	moves: Move[];
 	items: Item[];
 	tmlist?: string[];
+	tmMoves: string[];
 	tutorList?: string[];
 	wilds: WildPokemonInfo[];
 	trainerParties: TrainerInfo[];

@@ -56,6 +56,12 @@ const FILES = [
 		startLine: 2,
 		endLine: Infinity,
 	}, {
+		path: PATH.join(__dirname, BASE_INPUT_PATH, '../..', 'party_menu.c'),
+		fn: scrapeTMMoves,
+		startLine: forRepos({ the: 1533 }),
+		endLine: forRepos({ the: 1591 }),
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'tmhm_learnsets.h'),
 		fn: scrapeTMLearnset,
 		startLine: 8,
@@ -909,6 +915,7 @@ async function scrapeItems(config) {
 				case 'itemId':
 				case 'pocket':
 				case 'battleUseFunc':
+				case 'fieldUseFunc':
 					currItem[res[1]] = minimize(res[2].replace(',', ''));
 					break;
 				case 'name':
@@ -918,6 +925,24 @@ async function scrapeItems(config) {
 		}
 	}
 	return { out, items };
+}
+
+async function scrapeTMMoves(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<string>} */
+	const tmMoves = [null];
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo >= config.endLine) break;
+		tmMoves.push(minimize(line.trim().replace(',', '')));
+	}
+	return { out, tmMoves };
 }
 
 function minimize(val) {
