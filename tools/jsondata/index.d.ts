@@ -9,8 +9,9 @@ type TrainerInfo = {
 	party: TrainerPartyMember[];
 }
 type TrainerPartyMember = {
+	compiler?: string;
 	iv: number;
-	lvl: number;
+	lvl: string;
 	species: string;
 	heldItem?: string;
 	moves?: string[];

@@ -773,6 +773,8 @@ async function scrapeTrainerParties(config) {
 	/** @type {TrainerPartyMember} */
 	let currPoke;
 
+	let currCompiler;
+
 	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
 	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
 	for await (let line of readin) {
@@ -785,16 +787,20 @@ async function scrapeTrainerParties(config) {
 			currTrainer = { type: res[1], id: res[2], party: [] };
 			trainerParties.push(currTrainer);
 		}
+		else if (res = /^\s+\#.*$/.exec(line)) {
+			currCompiler = res[0];
+		}
 		else if (/\{/.test(line)) {
-			currPoke = {};
+			currPoke = { compiler: currCompiler };
+			currCompiler = undefined;
 			currTrainer.party.push(currPoke);
 		}
 		else if (res = /\.(.+?) = (.+)/.exec(line)) {
 			switch (res[1]) {
 				case 'iv':
-				case 'lvl':
 					currPoke[res[1]] = parseInt(res[2]);
 					break;
+				case 'lvl':
 				case 'species':
 				case 'heldItem':
 					currPoke[res[1]] = minimize(res[2].replace(',', ''));
@@ -804,9 +810,9 @@ async function scrapeTrainerParties(config) {
 					break;
 			}
 		}
-		else if (/\};/.test(line)) {
-			console.log(currTrainer.id)
-		}
+		// else if (/\};/.test(line)) {
+		// 	console.log(currTrainer.id)
+		// }
 	}
 	return { out, trainerParties };
 }

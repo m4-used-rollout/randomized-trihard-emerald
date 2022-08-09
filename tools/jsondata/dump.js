@@ -43,6 +43,10 @@ const FILES = [
 		endLine: 3260, //forRepos({ 'the': 3260 }),
 		forRepoTypes: ['the'],
 	}, {
+		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'trainer_parties.h'),
+		fn: dumpTrainerParties,
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'form_species_tables.h'),
 		fn: dumpFormSpecies,
 		forRepoTypes: ['exp'],
@@ -424,6 +428,45 @@ async function dumpWildPokemon(data, config) {
 		if (w.rate == 180)
 			out.write('// 180 = 100% encounter rate\n');
 		out.write(`const struct WildPokemonInfo ${w.infoLabel} = {${w.rate}, ${w.setLabel}};\n\n`)
+	});
+	for (let line = config.endLine + 1; line < original.length - 1; out.write(original[line++] + "\n"));
+	out.close();
+	console.log(`File written to ${config.path}.`);
+}
+
+/**
+ * @param {PokemonJson} data 
+ * @param {typeof FILES} config 
+ */
+async function dumpTrainerParties(data, config) {
+	const original = (FS.existsSync(config.path) ? FS.readFileSync(config.path, { encoding: 'utf8' }) : "").split('\n');
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
+
+	const trainers = data.trainerParties;
+	trainers.forEach(t => {
+		if (data._type == "the" && t.id == "Logan1")
+			out.write(`#if TPP_MODE
+#define LOGAN_PARTY 2
+#define LOGAN_BASE_LEVEL 47
+#else
+#define LOGAN_PARTY 1
+#define LOGAN_BASE_LEVEL 42
+#endif
+\n`);
+		out.write(`static const struct ${t.type} sParty_${t.id}[] = {\n`);
+		out.write(t.party.map(p => (p.compiler ? p.compiler + '\n' : '') +
+			'    {\n' +
+			`    .iv = ${p.iv},\n` +
+			`    .lvl = ${p.lvl},\n` +
+			`    .species = SPECIES_${p.species.toUpperCase()},\n` +
+			(t.type == 'TrainerMonItemCustomMoves' || t.type == 'TrainerMonItemDefaultMoves' ? `    .heldItem = ITEM_${(p.heldItem || "none").toUpperCase()}${t.type == 'TrainerMonItemCustomMoves' ? ',' : ''}\n` : '') +
+			(t.type == 'TrainerMonItemCustomMoves' || t.type == 'TrainerMonNoItemCustomMoves' ? `    .moves = ${p.moves.map(m => `MOVE_${(m || "none").toUpperCase()}`).join(', ')}\n` : '') +
+			`    }`).join(',\n'));
+		out.write('\n};\n\n');
+		if (data._type == "the" && t.id == "Logan1")
+			out.write(`#undef LOGAN_PARTY
+#undef LOGAN_BASE_LEVEL
+\n`);
 	});
 	for (let line = config.endLine + 1; line < original.length - 1; out.write(original[line++] + "\n"));
 	out.close();
