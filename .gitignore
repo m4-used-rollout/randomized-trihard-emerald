@@ -37,6 +37,7 @@ tools/binutils
 *.pyc
 tools/pgegen/pgegen
 *.ini
+gccdump.*
 node_modules
 randomizer/bin
 output.json
