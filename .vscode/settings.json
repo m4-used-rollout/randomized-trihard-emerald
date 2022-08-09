@@ -13,5 +13,18 @@
 	},
 	"[arm]": {
 		"editor.rulers": [12, 55]
-	}
+	},
+	"cSpell.words": [
+		"Alola",
+		"dex",
+		"Guzma",
+		"Guzma's",
+		"Lusamine",
+		"Malasada",
+		"Pok",
+		"Pokédex"
+	],
+	"cSpell.enableFiletypes": [
+		"arm"
+	]
 }

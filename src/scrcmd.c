@@ -34,8 +34,9 @@
 #include "party_menu.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
-#include "overworld.h"
+#include "remembered_dreams.h"
 #include "rtc.h"
+#include "overworld.h"
 #include "script.h"
 #include "script_menu.h"
 #include "script_movement.h"
@@ -2337,15 +2338,17 @@ bool8 ScrCmd_domourning(struct ScriptContext *ctx)
 
 bool8 ScrCmd_dodreams(struct ScriptContext *ctx)
 {
-    if (DoDreamCutscenes())
-    {
-        ScriptContext1_Stop();
-        return TRUE;
-    }
-    else
-    {
-        return FALSE;
-    }
+    // This function will check if a dream needs to happen and do a ScriptCall
+    // if it deems it appropriate.
+    DoDreamCutscenes(ctx);
+    return FALSE;
+    
+    // if (DoDreamCutscenes(ctx)) {
+    //     ScriptContext1_Stop();
+    //     return TRUE;
+    // } else {
+    //     return FALSE;
+    // }
 }
 
 bool8 ScrCmd_checkcoins(struct ScriptContext *ctx)
