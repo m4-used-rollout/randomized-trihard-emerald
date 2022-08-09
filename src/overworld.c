@@ -6,6 +6,7 @@
 #include "bg.h"
 #include "cable_club.h"
 #include "clock.h"
+#include "credits.h"
 #include "day_night.h"
 #include "event_data.h"
 #include "field_camera.h"
@@ -1051,7 +1052,7 @@ u8 sub_808554C(void)
     return sUnknown_020322D8;
 }
 
-static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
+bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
 {
     if (!FlagGet(FLAG_SYS_WEATHER_CTRL))
         return FALSE;
@@ -1832,6 +1833,11 @@ void CB2_ContinueSavedGame(void)
     ScriptContext2_Disable();
     InitMatchCallCounters();
     DebugResetInterrupts();
+#if TPP_MODE
+    if (FlagGet(FLAG_SYS_GAME_CLEAR)) {
+        SetMainCallback2(CB2_StartCreditsSequence);
+    } else
+#endif
     if (UseContinueGameWarp() == TRUE)
     {
         ClearContinueGameWarpStatus();

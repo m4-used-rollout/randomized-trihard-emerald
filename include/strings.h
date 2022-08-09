@@ -907,7 +907,7 @@ extern const u8 gText_Roy[];
 extern const u8 gText_Gabby[];
 extern const u8 gText_Anna[];
 
-extern const u8 *const gText_DadsAdviceTable[11];
+extern const u8 *const gText_DadsAdviceTable[15];
 extern const u8 gText_ChallengeAmuletUseDescription[];
 extern const u8 gText_TeamSkullUseDescription[];
 extern const u8 gText_TeamSkullNoToss[];
@@ -2753,6 +2753,7 @@ extern const u8 gText_Whiteout_BadTrainer[];
 extern const u8 gText_Whiteout_AquaTrainer[];
 extern const u8 gText_Whiteout_AquaAdmin[];
 extern const u8 gText_Whiteout_RivalHero[];
+extern const u8 gText_Whiteout_RivalHero2[];
 extern const u8 gText_Whiteout_RivalBirch[];
 
 extern const u8 gText_Sunday[];

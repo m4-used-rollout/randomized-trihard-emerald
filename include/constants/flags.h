@@ -139,7 +139,7 @@
 #define FLAG_DEFEATED_RIVAL_ROUTE_104                         0x7D
 #define FLAG_DEFEATED_WALLY_VICTORY_ROAD                      0x7E
 #define FLAG_MET_PRETTY_PETAL_SHOP_OWNER                      0x7F
-#define FLAG_ENABLE_ROXANNE_FIRST_CALL                        0x80 // Set after defeating Brawly. This will activate a call with Roxanne in order to register her.
+#define FLAG_ENABLE_ALEX_FIRST_CALL                           0x80 // Co-Opted for TriHard Emerald
 #define FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN                   0x81
 #define FLAG_DEFEATED_RIVAL_ROUTE103                          0x82
 #define FLAG_RECEIVED_DOLL_LANETTE                            0x83
@@ -1126,14 +1126,14 @@
 #define FLAG_ITEM_STOLEN_FULL_RESTORES                              0x496 // Trihard
 #define FLAG_ITEM_STOLEN_SNORLAX_DOLL                               0x497 // Trihard
 #define FLAG_ITEM_STOLEN_OCCUPIED_CUSHION                           0x498 // Trihard
-#define FLAG_MET_E4_JOEY                                            0x499 // Unused Flag
-#define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
-#define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
-#define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
-#define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag
-#define FLAG_UNUSED_0x49E                                           0x49E // Unused Flag
-#define FLAG_UNUSED_0x49F                                           0x49F // Unused Flag
-#define FLAG_UNUSED_0x4A0                                           0x4A0 // Unused Flag
+#define FLAG_MET_E4_JOEY                                            0x499 // Trihard
+#define FLAG_AQUA_FETCH_QUEST_COMPLETED                             0x49A // Trihard
+#define FLAG_DEFEATED_RIVAL_R110                                    0x49B // Trihard
+#define FLAG_PLAYER_HAS_SURFED                                      0x49C // Trihard
+#define FLAG_LEGENDARIES_CLEARED                                    0x49D // Trihard
+#define FLAG_ENABLE_ALEX_LEAGUE_CALL                                0x49E // Trihard
+#define FLAG_ENABLE_ALEX_MATCH_CALL                                 0x49F // Trihard
+#define FLAG_VISITED_ROUTE120                                       0x4A0 // Unused Flag
 #define FLAG_UNUSED_0x4A1                                           0x4A1 // Unused Flag
 #define FLAG_UNUSED_0x4A2                                           0x4A2 // Unused Flag
 #define FLAG_UNUSED_0x4A3                                           0x4A3 // Unused Flag
@@ -1460,7 +1460,7 @@
 #define FLAG_DAILY_E4_JOEY_BATTLE                   (SYSTEM_FLAGS + 0xD3)
 #define FLAG_DAILY_APPRENTICE_LEAVES                (SYSTEM_FLAGS + 0xD4)
 #define FLAG_DAILY_DAD_CALL                         (SYSTEM_FLAGS + 0xD5)
-#define FLAG_DAILY_0x936                            (SYSTEM_FLAGS + 0xD6)
+#define FLAG_DAILY_ALEX_CALL                        (SYSTEM_FLAGS + 0xD6)
 #define FLAG_DAILY_0x937                            (SYSTEM_FLAGS + 0xD7)
 #define FLAG_DAILY_0x938                            (SYSTEM_FLAGS + 0xD8)
 #define FLAG_DAILY_0x939                            (SYSTEM_FLAGS + 0xD9)
@@ -1517,7 +1517,75 @@
 #define FLAG_SHOULD_DO_DREAM_CUTSCENE                              0x4009 // TriHard
 #define FLAG_ERROR_READING_DREAMS                                  0x400A // TriHard
 #define FLAG_ERROR_WRITING_DREAMS                                  0x400B // TriHard
+#define FLAG_LOADING_AFTER_LEGENDARY_DEATH                         0x400C // TriHard
 
 #define NUM_SPECIAL_FLAGS                                          16*8
+
+// Remembered flags
+#define REMEMBERED_FLAGS_START                                     0x6000
+#define FLAG_SAW_DREAM_0100                                        0x6000
+#define FLAG_SAW_DREAM_0150                                        0x6001
+#define FLAG_SAW_DREAM_0200                                        0x6002
+#define FLAG_SAW_DREAM_0300                                        0x6003
+#define FLAG_SAW_DREAM_0400                                        0x6004
+#define FLAG_SAW_DREAM_0900                                        0x6005
+#define FLAG_SAW_DREAM_1000                                        0x6006
+#define FLAG_SAW_DREAM_0800                                        0x6007
+#define FLAG_SKIPPED_NIGHT_0801                                    0x6008
+#define FLAG_SAW_DREAM_0802                                        0x6009
+#define FLAG_SAW_DREAM_0500                                        0x600A
+#define FLAG_SAW_DREAM_0600                                        0x600B
+#define FLAG_SAW_DREAM_0700                                        0x600C
+#define FLAG_REMEMBERED_0x0D                                       0x600D
+#define FLAG_REMEMBERED_0x0E                                       0x600E
+#define FLAG_REMEMBERED_0x0F                                       0x600F
+#define FLAG_REMEMBERED_0x10                                       0x6010
+#define FLAG_REMEMBERED_0x11                                       0x6011
+#define FLAG_REMEMBERED_0x12                                       0x6012
+#define FLAG_REMEMBERED_0x13                                       0x6013
+#define FLAG_REMEMBERED_0x14                                       0x6014
+#define FLAG_REMEMBERED_0x15                                       0x6015
+#define FLAG_REMEMBERED_0x16                                       0x6016
+#define FLAG_REMEMBERED_0x17                                       0x6017
+#define FLAG_REMEMBERED_0x18                                       0x6018
+#define FLAG_REMEMBERED_0x19                                       0x6019
+#define FLAG_REMEMBERED_0x1A                                       0x601A
+#define FLAG_REMEMBERED_0x1B                                       0x601B
+#define FLAG_REMEMBERED_0x1C                                       0x601C
+#define FLAG_REMEMBERED_0x1D                                       0x601D
+#define FLAG_REMEMBERED_0x1E                                       0x601E
+#define FLAG_REMEMBERED_0x1F                                       0x601F
+#define FLAG_REMEMBERED_0x20                                       0x6020
+#define FLAG_REMEMBERED_0x21                                       0x6021
+#define FLAG_REMEMBERED_0x22                                       0x6022
+#define FLAG_REMEMBERED_0x23                                       0x6023
+#define FLAG_REMEMBERED_0x24                                       0x6024
+#define FLAG_REMEMBERED_0x25                                       0x6025
+#define FLAG_REMEMBERED_0x26                                       0x6026
+#define FLAG_REMEMBERED_0x27                                       0x6027
+#define FLAG_REMEMBERED_0x28                                       0x6028
+#define FLAG_REMEMBERED_0x29                                       0x6029
+#define FLAG_REMEMBERED_0x2A                                       0x602A
+#define FLAG_REMEMBERED_0x2B                                       0x602B
+#define FLAG_REMEMBERED_0x2C                                       0x602C
+#define FLAG_REMEMBERED_0x2D                                       0x602D
+#define FLAG_REMEMBERED_0x2E                                       0x602E
+#define FLAG_REMEMBERED_0x2F                                       0x602F
+#define FLAG_REMEMBERED_0x30                                       0x6030
+#define FLAG_REMEMBERED_0x31                                       0x6031
+#define FLAG_REMEMBERED_0x32                                       0x6032
+#define FLAG_REMEMBERED_0x33                                       0x6033
+#define FLAG_REMEMBERED_0x34                                       0x6034
+#define FLAG_REMEMBERED_0x35                                       0x6035
+#define FLAG_REMEMBERED_0x36                                       0x6036
+#define FLAG_REMEMBERED_0x37                                       0x6037
+#define FLAG_REMEMBERED_0x38                                       0x6038
+#define FLAG_REMEMBERED_0x39                                       0x6039
+#define FLAG_REMEMBERED_0x3A                                       0x603A
+#define FLAG_REMEMBERED_0x3B                                       0x603B
+#define FLAG_REMEMBERED_0x3C                                       0x603C
+#define FLAG_REMEMBERED_0x3D                                       0x603D
+#define FLAG_REMEMBERED_0x3E                                       0x603E
+#define FLAG_REMEMBERED_0x3F                                       0x603F
 
 #endif // GUARD_CONSTANTS_FLAGS_H
