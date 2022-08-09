@@ -1,21 +1,5 @@
 
 declare type RepoType = 'base' | 'the' | 'exp';
-type LvlLearnset = Array<{ move: string, level: number }>;
-type WildPokemon = Array<{ levelMin: number, levelMax: number, species: string }>;
-type WildPokemonInfo = { rate: number, infoLabel: string, setLabel: string, set: WildPokemon };
-type TrainerInfo = {
-	id: string;
-	type: "TrainerMonNoItemDefaultMoves" | "TrainerMonItemDefaultMoves" | "TrainerMonNoItemCustomMoves" | "TrainerMonItemCustomMoves";
-	party: TrainerPartyMember[];
-}
-type TrainerPartyMember = {
-	compiler?: string;
-	iv: number;
-	lvl: string;
-	species: string;
-	heldItem?: string;
-	moves?: string[];
-};
 
 declare interface PokemonJson {
 	pokemon: Record<string, {
@@ -33,6 +17,8 @@ declare interface PokemonJson {
 		_ref?: string;
 	}>;
 	lvlTables?: Record<string, LvlLearnset>;
+	moves: Move[];
+	items: Item[];
 	tmlist?: string[];
 	tutorList?: string[];
 	wilds: WildPokemonInfo[];
@@ -41,4 +27,44 @@ declare interface PokemonJson {
 	_type: RepoType;
 	_lvlTableType?: string;
 	_includeOldUnownData?: boolean;
+}
+
+type LvlLearnset = Array<{ move: string, level: number }>;
+type WildPokemon = Array<{ levelMin: number, levelMax: number, species: string }>;
+type WildPokemonInfo = { rate: number, infoLabel: string, setLabel: string, set: WildPokemon };
+type TrainerInfo = {
+	id: string;
+	type: "TrainerMonNoItemDefaultMoves" | "TrainerMonItemDefaultMoves" | "TrainerMonNoItemCustomMoves" | "TrainerMonItemCustomMoves";
+	party: TrainerPartyMember[];
+}
+type TrainerPartyMember = {
+	compiler?: string;
+	iv: number;
+	lvl: string;
+	species: string;
+	heldItem?: string;
+	moves?: string[];
+};
+type Move = {
+	id: string;
+	effect: string;
+	power: number;
+	type: string;
+	accuracy: number;
+	pp: number;
+	secondaryEffectChance: number;
+	target: string;
+	priority: number;
+	flags: string[];
+};
+type Item = {
+	name: string;
+	itemId: string;
+	price: number;
+	pocket: string;
+	type: number;
+	battleUsage?: number;
+	battleUseFunc?: string;
+	fieldUseFunc?: string;
+	secondaryId: number;
 }

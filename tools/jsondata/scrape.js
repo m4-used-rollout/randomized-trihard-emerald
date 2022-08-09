@@ -78,6 +78,18 @@ const FILES = [
 		endLine: Infinity,
 		forRepoTypes: ['the'],
 	}, {
+		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'battle_moves.h'),
+		fn: scrapeMoves,
+		startLine: 0,
+		endLine: Infinity,
+		forRepoTypes: ['the'],
+	}, {
+		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'items.h'),
+		fn: scrapeItems,
+		startLine: 0,
+		endLine: Infinity,
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_table_pointers.h'),
 		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_tables.h'),
 		fn: scrapeFormSpecies,
@@ -815,6 +827,97 @@ async function scrapeTrainerParties(config) {
 		// }
 	}
 	return { out, trainerParties };
+}
+
+async function scrapeMoves(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<Move>} */
+	const moves = new Array();
+	/** @type {Move} */
+	let currMove;
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo > config.endLine) break;
+
+		let res;
+		if (res = /^\s+\[(.+?)\] =/.exec(line)) {
+			currMove = { id: minimize(res[1]) };
+			moves.push(currMove);
+		}
+		else if (res = /\.(.+?) = (.+)/.exec(line)) {
+			switch (res[1]) {
+				case 'power':
+				case 'accuracy':
+				case 'pp':
+				case 'secondaryEffectChance':
+				case 'priority':
+					currMove[res[1]] = parseInt(res[2]);
+					break;
+				case 'effect':
+				case 'type':
+				case 'target':
+					currMove[res[1]] = minimize(res[2].replace(',', ''));
+					break;
+				case 'flags':
+					if (res[2].trim() == '0,')
+						currMove.flags = [];
+					else
+						currMove.flags = res[2].split('|').map(m => minimize(m.trim()));
+					break;
+			}
+		}
+	}
+	return { out, moves };
+}
+
+async function scrapeItems(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<Item>} */
+	const items = new Array();
+	/** @type {Item} */
+	let currItem;
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo > config.endLine) break;
+
+		let res;
+		if (res = /^\s+\[(.+?)\] =/.exec(line)) {
+			currItem = { itemId: minimize(res[1]) };
+			items.push(currItem);
+		}
+		else if (res = /\.(.+?) = (.+)/.exec(line)) {
+			switch (res[1]) {
+				case 'price':
+				case 'type':
+				case 'battleUsage':
+				case 'fieldUsage':
+				case 'secondaryId':
+					currItem[res[1]] = parseInt(res[2]);
+					break;
+				case 'itemId':
+				case 'pocket':
+				case 'battleUseFunc':
+					currItem[res[1]] = minimize(res[2].replace(',', ''));
+					break;
+				case 'name':
+					currItem.name = /_\("(.+?)"\)/.exec(res[2])[1];
+					break;
+			}
+		}
+	}
+	return { out, items };
 }
 
 function minimize(val) {
