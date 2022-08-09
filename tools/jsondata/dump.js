@@ -53,6 +53,18 @@ const FILES = [
 		fn: dumpTrainerParties,
 		forRepoTypes: ['the'],
 	}, {
+		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '../..', 'starter_choose.c'),
+		fn: dumpStarters,
+		startLine: 131,
+		endLine: 133,
+		forRepoTypes: ['the'],
+	}, {
+		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '../..', 'starter_choose_tpp.c'),
+		fn: dumpStarters,
+		startLine: 38,
+		endLine: 40,
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'form_species_tables.h'),
 		fn: dumpFormSpecies,
 		forRepoTypes: ['exp'],
@@ -497,6 +509,23 @@ async function dumpTMMoves(data, config) {
 	console.log(`File written to ${config.path}.`);
 }
 
+/**
+ * @param {PokemonJson} data 
+ * @param {typeof FILES} config 
+ */
+async function dumpStarters(data, config) {
+	const original = (FS.existsSync(config.path) ? FS.readFileSync(config.path, { encoding: 'utf8' }) : "").split('\n');
+	const out = FS.createWriteStream(config.path, { encoding: 'utf8' });
+	let lineNo = 0;
+	while (lineNo < config.startLine - 1) {
+		out.write(original[lineNo++] + '\n');
+	}
+	const starters = data.starters;
+	starters.filter(m => !!m).forEach(m => out.write(`    SPECIES_${m.toUpperCase()},\n`));
+	for (let line = config.endLine; line < original.length - 1; out.write(original[line++] + "\n"));
+	out.close();
+	console.log(`File written to ${config.path}.`);
+}
 
 new Promise(async (res, rej) => res(require(INPUT_FILE)))
 

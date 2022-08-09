@@ -96,6 +96,12 @@ const FILES = [
 		endLine: Infinity,
 		forRepoTypes: ['the'],
 	}, {
+		path: PATH.join(__dirname, BASE_INPUT_PATH, '../..', 'starter_choose.c'),
+		fn: scrapeStarters,
+		startLine: 131,
+		endLine: 133,
+		forRepoTypes: ['the'],
+	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_table_pointers.h'),
 		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_tables.h'),
 		fn: scrapeFormSpecies,
@@ -943,6 +949,24 @@ async function scrapeTMMoves(config) {
 		tmMoves.push(minimize(line.trim().replace(',', '')));
 	}
 	return { out, tmMoves };
+}
+
+async function scrapeStarters(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<string>} */
+	const starters = [];
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo > config.endLine) break;
+		starters.push(minimize(line.trim().replace(',', '')));
+	}
+	return { out, starters };
 }
 
 function minimize(val) {

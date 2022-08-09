@@ -19,6 +19,7 @@ declare interface PokemonJson {
 	lvlTables?: Record<string, LvlLearnset>;
 	moves: Move[];
 	items: Item[];
+	starters: string[];
 	tmlist?: string[];
 	tmMoves: string[];
 	tutorList?: string[];
