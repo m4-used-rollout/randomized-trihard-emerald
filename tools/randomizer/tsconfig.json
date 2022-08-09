@@ -7,6 +7,7 @@
     },
     "include": [
         "src/**/*.ts",
-        "src/lib/**/*.ts"
+        "src/lib/**/*.ts",
+        "../jsondata/index.d.ts"
     ]
 }
