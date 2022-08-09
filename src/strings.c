@@ -28,6 +28,8 @@ const u8 gExpandedPlaceholder_Son[] = _("son");
 const u8 gExpandedPlaceholder_Daughter[] = _("daughter");
 const u8 gExpandedPlaceholder_Buddy[] = _("buddy");
 const u8 gExpandedPlaceholder_Honey[] = _("honey");
+const u8 gExpandedPlaceholder_Bro[] = _("bro");
+const u8 gExpandedPlaceholder_Sis[] = _("sis");
 
 const u8 gExpandedPlaceholder_Brendan[] = _("Brendan");
 const u8 gExpandedPlaceholder_May[] = _("May");
@@ -48,6 +50,8 @@ const u8 gYN_Yes[] =            _("Yes");
 const u8 gYN_YesCaps[] =        _("YES!");
 const u8 gYN_YesSir[] =         _("Yes Sir!");
 const u8 gYN_No[] =             _("No");
+const u8 gYN_No_[] =            _("No…");
+const u8 gYN_NoBang[] =         _("No!");
 const u8 gYN_NoQuestion[] =     _("No?");
 const u8 gYN_Later[] =          _("Later");
 const u8 gYN_Yeah[] =           _("Yeah");
@@ -58,11 +62,16 @@ const u8 gYN_Yep_[] =           _("Yep…");
 const u8 gYN_Nah[] =            _("Nah");
 const u8 gYN_Hm[] =             _("Hm…");
 const u8 gYN_Um[] =             _("Um…");
+const u8 gYN_UhOk[] =           _("Uh… Ok");
 const u8 gYN_UgNo[] =           _("Ug… No");
+const u8 gYN_Ugh[] =            _("Ugh…");
 const u8 gYN_Uhhh[] =           _("Uhhh…");
 const u8 gYN_OfCourse[] =       _("'Course");
 const u8 gYN_PftNo[] =          _("Pft… No");
+const u8 gYN_FOff[] =           _("Screw You!");
 const u8 gYN_Duh[] =            _("Duh");
+const u8 gYN_Wait[] =           _("Wait…");
+const u8 gYN_Maybe[] =          _("Maybe…");
 const u8 gYN_Sure[] =           _("Sure");
 const u8 gYN_Fine1[] =          _("Fine…");
 const u8 gYN_Fine2[] =          _("Fine!");
@@ -323,17 +332,27 @@ const u8 gText_DontBeAThief[] =_("Guzma's advice…\nAre ya stupid? The trainer'
           //   {PLAYER}, there's a time and place for\l
           //   everything!{PAUSE_UNTIL_PRESS}");
 //			 -------------------------------------------
-const u8 gText_Advice01[] = _("Dad's advice…\n{PLAYER}, there's a time and place for\leverything. And that place is not the\lfloor of your room. Clean it up, now.{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice01[] = _("Dad's advice…\n{PLAYER}, there's a time and place for\leverything. Now clean your room!{PAUSE_UNTIL_PRESS}");
 const u8 gText_Advice02[] = _("Mom's advice…\nThrow away junk you don't need.\lLike I did with your father.{PAUSE_UNTIL_PRESS}");
 const u8 gText_Advice03[] = _("Dad's advice…\nDon't get married. Ever.\lIt's not worth the pain.{PAUSE_UNTIL_PRESS}");
 const u8 gText_Advice04[] = _("Mom's advice…\nYou can never invest too much into\la good lawyer.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Advice05[] = _("Dad's advice…\n{PLAYER}, never get involved in a\lland war in Asia.{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice05[] = _("Dad's advice…\nNot now, {PLAYER_buddy}, daddy's got to\lget to work for a meeting.{PAUSE_UNTIL_PRESS}");
 const u8 gText_Advice06[] = _("Mom's advice…\nDon't listen to your father for advice,\lhe doesn't know what he's talking about.{PAUSE_UNTIL_PRESS}");
 const u8 gText_Advice07[] = _("Dad's advice…\nIf at first you don't succeed, sue them.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Advice08[] = _("Mom's advice…\nViolence is never the answer.\lUnless it's a Pokémon battle.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Advice09[] = _("Dad's advice…\n{PLAYER}, go ask your mother.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Advice10[] = _("Mom's advice…\n{PLAYER}, go ask your father.{PAUSE_UNTIL_PRESS}");
-const u8 gText_Advice11[] = _("Dad's advice…\nIf at first you don't succeed, sue them.{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice08[] = _("Mom's advice…\nRemember, blood is thicker than water,\lbut blood doesn't quench thirst!\lWhat do we think, ladies? Martinis?{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice09[] = _("Dad's advice…\nYou already failed at {POKEMON},\ldon't you fail at math too! Homework!{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice10[] = _("Mom's advice…\nI don't like you hanging out with those\lhoodlums, {PLAYER}.\pWhat have they ever done for you\nbesides get you in trouble?{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice11[] = _("{RIVAL_ALOLA}'s advice…\nYou gotta hide them in your clothes,\llike this. And don't act suspicious.{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice12[] = _("{RIVAL_ALOLA}'s advice…\nSometimes you just gotta talk it out.\lTalk to me, {PLAYER}, what's wrong?{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice13[] = _("{RIVAL_ALOLA}'s advice…\nSomeone could get hurt, {PLAYER}!\lWe don't want to hurt nobody!{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice14[] = _("{RIVAL_ALOLA}'s advice…\nGrip with your toes. Feel the waves\lunder the board. You feel them?{PAUSE_UNTIL_PRESS}");
+const u8 gText_Advice15[] = _("{RIVAL_ALOLA}'s advice…\nWe got plenty of beds in Po Town.\pNothing says you have to sleep near\nyour crazy mom and dad all the time.{PAUSE_UNTIL_PRESS}");
+    const u8 gText_Advice16[] = _("Guzma's advice…\n {PAUSE_UNTIL_PRESS}");
+    const u8 gText_Advice17[] = _("Plumeria's advice…\n {PAUSE_UNTIL_PRESS}");
+    const u8 gText_Advice18[] = _("Guzma's advice…\n {PAUSE_UNTIL_PRESS}");
+    const u8 gText_Advice19[] = _("Plumeria's advice…\n {PAUSE_UNTIL_PRESS}");
+
+
 
 const u8 *const gText_DadsAdviceTable[] =
 {
@@ -348,6 +367,10 @@ const u8 *const gText_DadsAdviceTable[] =
     gText_Advice09,
     gText_Advice10,
     gText_Advice11,
+    gText_Advice12,
+    gText_Advice13,
+    gText_Advice14,
+    gText_Advice15,
 };
 
 const u8 *const gReturnToXStringsTable[] =
@@ -1079,7 +1102,7 @@ const u8 gUnknown_085EBFDC[] = _("RIBBONS");
 const u8 gUnknown_085EBFE4[] = _("{SPECIAL_F7 0x00}{COLOR_HIGHLIGHT_SHADOW LIGHT_RED WHITE GREEN}♂{COLOR_HIGHLIGHT_SHADOW DARK_GREY WHITE LIGHT_GREY}/{LV}{SPECIAL_F7 0x01}");
 const u8 gUnknown_085EBFF6[] = _("{SPECIAL_F7 0x00}{COLOR_HIGHLIGHT_SHADOW LIGHT_GREEN WHITE BLUE}♀{COLOR_HIGHLIGHT_SHADOW DARK_GREY WHITE LIGHT_GREY}/{LV}{SPECIAL_F7 0x01}");
 const u8 gUnknown_085EC008[] = _("{SPECIAL_F7 0x00}/{LV}{SPECIAL_F7 0x01}");
-const u8 gText_Unknown[] = _("UNKNOWN");
+const u8 gText_Unknown[] = _("Location Unknown");
 const u8 gUnknown_085EC017[] = _("Call");
 const u8 gUnknown_085EC01C[] = _("Check");
 const u8 gUnknown_085EC022[] = _("Cancel");
@@ -1868,10 +1891,12 @@ const u8 gText_Cancel4[] = _("CANCEL");
 
 const u8 gMatchCallDesc_MrStone[] = _("Devon Pres");
 const u8 gMatchCallName_MrStone[] = _("Mr. Stone");
+const u8 gMatchCallDesc_Alex[] = _("Alolan Friend");
+const u8 gMatchCallName_Alex[] = _("Alex {EMOJI_HEART}");
 const u8 gMatchCallDesc_Steven[] = _("HARD AS ROCK");
 const u8 gMatchCallName_Steven[] = _("Steven");
 const u8 gMatchCallDesc_Rival[] = _("Nosey Neighbor");
-const u8 gMatchCallDesc_Dad[] = _("Always at Work");
+const u8 gMatchCallDesc_Dad[] = _("Workaholic");
 const u8 gMatchCallName_Dad[] = _("Dad");
 const u8 gMatchCallDesc_Wally[] = _("{PKMN} Lover");
 const u8 gMatchCallDesc_Scott[] = _("Fecking Creep");
@@ -1916,8 +1941,31 @@ const u8 gText_PokeBalls[] = _("POKé BALLS");
 const u8 gText_Berry[] = _("BERRY");
 const u8 gText_Berries[] = _("BERRIES");
 
+const u8 gText_Whiteout_WildMon[] = _("The wild Pokémon lunged for {PLAYER}!");
+const u8 gText_Whiteout_RagingLegendary[] = _("Groudon and Kyogre clash again\nover {PLAYER}'s head!\p{PLAYER} sinks beneath the waves…");
+const u8 gText_Whiteout_Rayquaza[] = _("Rayquaza bellows angrily at the sky\nbefore lunging at {PLAYER}!");
+const u8 gText_Whiteout_GoodTrainer[] = _("Good battle!\pHey, are you alright?");
+const u8 gText_Whiteout_YoungTrainer[] = _("Yay I won! You lost! Ha ha!\p{PLAYER} curled up into a ball in\nembarrassment.");
+const u8 gText_Whiteout_NinjaTrainer[] = _("You fell to the ninja! Whacha!");
+const u8 gText_Whiteout_Interview[] = _("Gabby: Do you have any final words\nbefore this goes to air to millions?\p{PLAYER} curled up into a ball in\nembarrassment.");
+const u8 gText_Whiteout_Embarrasment[] = _("The crowds go wild.\p{PLAYER} curled up into a ball in\nembarrassment.");
+const u8 gText_Whiteout_BadTrainer[] = _("Now, finish {PLAYER_them} off!\pThe foe Pokémon lunged for {PLAYER}!");
+const u8 gText_Whiteout_AquaTrainer[] = _("I guess I won this scrap!\pYou alright? You don't look so good.");
+const u8 gText_Whiteout_AquaAdmin[] = _("As usual for one of our grunts…");
+const u8 gText_Whiteout_RivalHero[] = _("{RIVAL_HERO}: Serves you right…");
+const u8 gText_Whiteout_RivalHero2[] = _("{RIVAL_HERO}: About time that I surpassed you…");
+const u8 gText_Whiteout_RivalBirch[] = _("{RIVAL_BIRCH}: Ah, good…\nSee how it feels for once?");
+
 const u8 gText_Num1[] = _("one");
 const u8 gText_Num2[] = _("two");
 const u8 gText_Num3[] = _("three");
 const u8 gText_Num4[] = _("four");
 const u8 gText_Num5[] = _("five");
+
+const u8 gText_Sunday[] = _("SUNDAY");
+const u8 gText_Monday[] = _("MONDAY");
+const u8 gText_Tuesday[] = _("TUESDAY");
+const u8 gText_Wednesday[] = _("WEDNESDAY");
+const u8 gText_Thursday[] = _("THURSDAY");
+const u8 gText_Friday[] = _("FRIDAY");
+const u8 gText_Saturday[] = _("SATURDAY");

@@ -108,8 +108,8 @@
 #define VAR_UNUSED_0x405B                    0x405B // Unused Var
 #define VAR_UNUSED_0x405C                    0x405C // Unused Var
 #define VAR_MOSSDEEP_STATE                   0x405D
-#define VAR_RAYQUAZA_STATE                   0x405E
-#define VAR_UNUSED_0x405F                    0x405F // Unused Var
+#define VAR_RAYQUAZA_STATE                   0x405E // Actually "VAR_SOOTOPOLIS_STATE"
+#define VAR_EVERGRANDE_STATE                 0x405F // TriHard Emerald
 #define VAR_ROUTE101_STATE                   0x4060
 #define VAR_UNUSED_0x4061                    0x4061 // Unused Var
 #define VAR_UNUSED_0x4062                    0x4062 // Unused Var
@@ -142,7 +142,7 @@
 #define VAR_UNUSED_0x407D                    0x407D // Unused Var
 #define VAR_UNUSED_0x407E                    0x407E // Unused Var
 #define VAR_UNUSED_0x407F                    0x407F // Unused Var
-#define VAR_UNUSED_0x4080                    0x4080 // Unused Var
+#define VAR_SLEPT_DURING_WI_HEIST            0x4080 // TriHard
 #define VAR_AQUA_HIDEOUT_STATE               0x4081 // TriHard Emerald
 #define VAR_LITTLEROOT_HOUSES_STATE          0x4082
 #define VAR_UNUSED_0x4083                    0x4083 // Unused Var
@@ -157,7 +157,7 @@
 #define VAR_LITTLEROOT_HOUSES_STATE_2        0x408C
 #define VAR_LITTLEROOT_RIVAL_STATE           0x408D
 #define VAR_BOARD_BRINEY_BOAT_ROUTE104_STATE 0x408E
-#define VAR_DEVON_CORP_3F_STATE              0x408F
+#define VAR_LETTER_INTERNETMUSIC_LOVERS      0x408F // TriHard Emerald
 #define VAR_BRINEY_HOUSE_STATE               0x4090
 #define VAR_UNUSED_0x4091                    0x4091 // Unused Var
 #define VAR_LITTLEROOT_INTRO_STATE           0x4092
@@ -233,7 +233,7 @@
 #define VAR_SOOTOPOLIS_STATE                 0x40D8
 #define VAR_HAS_TALKED_TO_SEAFLOOR_CAVERN_ENTRANCE_GRUNT 0x40D9
 #define VAR_0x40DA                           0x40DA
-#define VAR_UNUSED_0x40DB                    0x40DB // Unused Var
+#define VAR_BANNED_SLATEPORT_MART            0x40DB // Trihard
 #define VAR_UNUSED_0x40DC                    0x40DC // Unused Var
 #define VAR_EVENT_PICHU_SLOT                 0x40DD
 #define VAR_NEVER_READ_0x40DE                0x40DE // Var is written to, but never read
@@ -258,10 +258,10 @@
 #define VAR_DAILY_BP                         0x40F1
 #define VAR_WALLY_CALL_STEP_COUNTER          0x40F2
 #define VAR_WINONA_CALL_STEP_COUNTER         0x40F3
-#define VAR_ROXANNE_CALL_STEP_COUNTER        0x40F4
+#define VAR_ALEX_CALL_STEP_COUNTER           0x40F4 // Co-opted for Trihard
 #define VAR_SCOTT_CALL_STEP_COUNTER          0x40F5
 #define VAR_RIVAL_RAYQUAZA_CALL_STEP_COUNTER 0x40F6
-#define VAR_UNUSED_0x40F7                    0x40F7 // Unused Var
+#define VAR_DAILY_TRAINERTRIO                0x40F7 // Trihard Emerald
 #define VAR_UNUSED_0x40F8                    0x40F8 // Unused Var
 #define VAR_UNUSED_0x40F9                    0x40F9 // Unused Var
 #define VAR_UNUSED_0x40FA                    0x40FA // Unused Var
@@ -269,7 +269,7 @@
 #define VAR_UNUSED_0x40FC                    0x40FC // Unused Var
 #define VAR_UNUSED_0x40FD                    0x40FD // Unused Var
 #define VAR_UNUSED_0x40FE                    0x40FE // Unused Var
-#define VAR_UNUSED_0x40FF                    0x40FF // Unused Var
+#define VAR_CROSS_MAP_TRIGGER                0x40FF // Trihard
 
 #define SPECIAL_VARS_START 0x8000
 // special vars

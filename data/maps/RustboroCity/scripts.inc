@@ -63,7 +63,7 @@ RustboroCity_EventScript_1E08E3:: @ 81E08E3
 	message RustboroCity_Text_1E20A6, MSGTYPE_SIGN
 	waitmessage
 	waitbuttonpress
-	message RustboroCity_Text_1E20A7, MSGBOX_DESCRIBE
+	message RustboroCity_Text_1E20A7, MSGTYPE_DESCRIBE
 	waitmessage
 	waitbuttonpress
 	release
@@ -348,10 +348,10 @@ RustboroCity_Text_AquaGirl_Boy:
 	.string "Do it again, and I deck ya one.$"
 RustboroCity_Text_AquaGirl_Girl:
 	.string "Gotta say, girl. I was ready to turn\n"
-	.string "around a deck a guy wanting to get\l"
+	.string "around and deck a guy wanting to get\l"
 	.string "handsey with me.\p"
 	.string "Yeah, you know what I mean. That\n"
-	.string "face your making is mood.$"
+	.string "face you're making is mood.$"
 RustboroCity_EventScript_AquaGirlB:
 	msgbox RustboroCity_Text_AquaGirlB, MSGBOX_NPC
 	end
@@ -390,10 +390,10 @@ RustboroCity_TriggerScript_HeistCutscene1::
 	addobject LID_AQUA_3
 	@ Yelling ensues
 	markasdialog -26
-	msgbox RustboroCity_Text_Heist1, MSGBOX_DIALOG
+	msgbox RustboroCity_Text_Heist1, MSGBOX_CDIALOG
 	playbgm MUS_MGM0, 0
 	markasdialog -26
-	msgbox RustboroCity_Text_Heist2, MSGBOX_DIALOG
+	msgbox RustboroCity_Text_Heist2, MSGBOX_CDIALOG
 	closemessage
 	@ They rush past
 	applymovement LID_MAGMA, RustboroCity_Movement_Heist3_Magma
@@ -543,11 +543,12 @@ RustboroCity_TriggerScript_AquasTask1::
 	selectpointer RustboroCity_MovementTable_AquasTask1_CamMovement1, VAR_TEMP_F
 	applymovement EVENT_OBJ_ID_CAMERA, 0
 	applymovement LID_AQUA_3, RustboroCity_Movement_AquasTask1_AquaGuy
-	waitmovement 0
+	waitmovement LID_AQUA_3
 	delay 2
 	applymovement LID_AQUA_BOY, Common_Movement_WalkInPlaceUp
 	applymovement LID_AQUA_3, Common_Movement_WalkInPlaceDown
 	waitmovement 0
+	waitmovement EVENT_OBJ_ID_CAMERA
 	@ "He went into the tunnel."
 	markasdialog -6
 	msgbox RustboroCity_Text_AquasTask2
@@ -572,6 +573,7 @@ RustboroCity_TriggerScript_AquasTask1::
 	msgbox RustboroCity_Text_AquasTask5
 	playse SE_SELECT
 	waitmovement 0
+	waitmovement EVENT_OBJ_ID_PLAYER
 	@ "Any suggestions"
 	selectpointer RustboroCity_MovementTable_AquasTask4_PlayerCreep2, VAR_TEMP_F
 	applymovement EVENT_OBJ_ID_PLAYER, 0
@@ -582,10 +584,11 @@ RustboroCity_TriggerScript_AquasTask1::
 	waitmovement 0
 	closemessage
 	@ Player sneaks up
+	waitmovement EVENT_OBJ_ID_PLAYER
 	applymovement EVENT_OBJ_ID_PLAYER, RustboroCity_Movement_AquasTask_PlayerCreepForward
 	waitmovement 0
 	delay 40
-	@ 
+	@
 	applymovement LID_AQUA_GIRL, Common_Movement_FacePlayer
 	waitmovement 0
 	playse SE_PIN
@@ -599,9 +602,10 @@ RustboroCity_TriggerScript_AquasTask1::
 	applymovement EVENT_OBJ_ID_CAMERA, RustboroCity_Movement_AquasTask7_Camera
 	msgbox RustboroCity_Text_AquasTask7
 	playse SE_SELECT
-	waitmovement 0
+	waitmovement LID_AQUA_BOY
 	closemessage
-	@ 
+	waitmovement EVENT_OBJ_ID_CAMERA
+	@
 	special RemoveCameraObject
 	applymovement EVENT_OBJ_ID_PLAYER, RustboroCity_Movement_AquasTask8_PlayerTalk
 	waitmovement 0
@@ -974,14 +978,14 @@ RustboroCity_TriggerScript_AquaTaskReturn::
 	msgbox RustboroCity_Text_AquaTaskReturn3
 	playse SE_SELECT
 	@
-	msgbox RustboroCity_Text_AquaTaskReturn4, MSGBOX_DESCRIBE
+	msgbox RustboroCity_Text_AquaTaskReturn4, MSGBOX_CDESCRIBE
 	playse SE_SELECT
 	takeitem ITEM_DEVON_GOODS, 1
 	@
 	applymovement LID_AQUA_3, RustboroCity_Movement_AquaTaskReturn5_AquaThree
 	msgbox RustboroCity_Text_AquaTaskReturn5
 	closemessage
-	@ 
+	@
 	special SpawnCameraObject
 	playse SE_PIN
 	applymovement EVENT_OBJ_ID_PLAYER, RustboroCity_Movement_AquaTaskReturn6_Player
@@ -1073,7 +1077,7 @@ RustboroCity_TriggerScript_AquaTaskReturn_FriendNone:
 	@
 	goto RustboroCity_TriggerScript_AquaTaskReturn_Finish
 	end
-	
+
 RustboroCity_TriggerScript_AquaTaskReturn_Finish:
 	msgbox RustboroCity_Text_AquaTaskReturn9
 	closemessage
@@ -1089,6 +1093,7 @@ RustboroCity_TriggerScript_AquaTaskReturn_Finish:
 	removeobject LID_AQUA_3
 	setvar VAR_RUSTBORO_STATE, 7
 	setvar VAR_LOGAN_STATE, 2
+	setflag FLAG_AQUA_FETCH_QUEST_COMPLETED
 	setflag FLAG_HIDE_ROUTE_116_TUNNELER
 	clearflag FLAG_HIDE_RUSTURF_TUNNEL_LOVER_MAN
 	clearflag FLAG_HIDE_RUSTURF_TUNNEL_LOVER_WOMAN
@@ -1105,7 +1110,7 @@ RustboroCity_Text_AquaTaskReturn3:
 	.string "So, did you get it?$"
 RustboroCity_Text_AquaTaskReturn4:
 	.string "{PLAYER} handed over the\n"
-	.string "{ITEM}Devon Goods{END}$"
+	.string "{ITEM}Devon Goods{END}.$"
 RustboroCity_Text_AquaTaskReturn5:
 	.string "Oh, wow, {PLAYER_they} actually got it!\n"
 	.string "The boss'll be so pleased!\p"
@@ -2121,27 +2126,3 @@ RustboroCity_Text_1E2002: @ 81E2002
 	.string "I bet you didn't know this, since you\n"
 	.string "just moved here, {PLAYER}, but\l"
 	.string "MR. BRINEY was once a great sailor.$"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

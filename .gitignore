@@ -3,6 +3,7 @@
 *.i
 *.elf
 *.gba
+*.bsp
 *.sgm
 *.sa1
 *.sg1
@@ -33,3 +34,10 @@ porymap.*
 porymap.project.cfg
 .vscode/
 tools/binutils
+*.pyc
+tools/pgegen/pgegen
+*.ini
+gccdump.*
+node_modules
+randomizer/bin
+output.json

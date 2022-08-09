@@ -27,12 +27,12 @@ LittlerootTown_PlayersHouse_1F_Text_1F7A1C: @ 81F7A1C
 	.string "Isn't it nice in here?$"
 LittlerootTown_PlayersHouse_1F_Text_1F7A46: @ 81F7A46
 	.string "Why are you still wearing that ridi--?\n"
-	.string "Nevermind...\p"
+	.string "Nevermind…\p"
 	.string "The mover's Pokémon are doing the work\n"
 	.string "for us, so you don't have to help.\p"
 	.string "They put your stuff upstairs already,\n"
 	.string "so why don't you head upstairs and\l"
-	.string "unpack, relax, maybe change...\p"
+	.string "unpack, relax, maybe change…\p"
 	.string "Your clock will need setting. We've\n"
 	.string "crossed nearly a dozen timezones.\p"
 	.string "Go do that. Please.$"
@@ -397,7 +397,7 @@ LittlerootTown_PlayerHouse_1F_EventScript_Letter_DoStarter:
 	message LittlerootTown_PlayerHouse_1F_Text_LetterStarter1, MSGTYPE_SIGN
 	waitmessage
 	removeobject THIS_EVENT
-	msgbox LittlerootTown_PlayerHouse_1F_Text_LetterStarter2, MSGBOX_DESCRIBE
+	msgbox LittlerootTown_PlayerHouse_1F_Text_LetterStarter2, MSGBOX_CDESCRIBE
 	giveitem_std ITEM_FOCUS_BAND, 1
 	setflag FLAG_DAILY_DADS_LETTER_REMOVED
 	setflag FLAG_DAD_LETTER_STARTER_ITEM
@@ -489,6 +489,11 @@ LittlerootTown_PlayersHouse_2F_TriggerScript_SleepInBed::
 	@ TODO: Walk player out of bed?
 	applymovement EVENT_OBJ_ID_PLAYER, Common_Movement_FaceLeft
 	waitmovement 0
+	@ Do the mourning cutscene, if needed
+	domourning
+	call Common_EventScript_PartyHealSave_Save
+	@ Check for dream cutscenes
+	dodreams
 	call Common_EventScript_PartyHealSave_Complete
 	release
 	end
@@ -656,7 +661,7 @@ LittlerootTown_BrendansHouse_1F_EventScript_292A94:: @ 8292A94
 LittlerootTown_BrendansHouse_1F_EventScript_292A9E:: @ 8292A9E
 	closemessage
 	call Common_EventScript_OutOfCenterPartyHeal
-	incrementgamestat 16
+	incrementgamestat GAME_STAT_RESTED_AT_HOME
 	msgbox LittlerootTown_PlayersHouse_1F_Text_1F7D5C, MSGBOX_DEFAULT
 	release
 	end

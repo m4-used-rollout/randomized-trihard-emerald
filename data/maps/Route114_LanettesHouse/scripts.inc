@@ -6,6 +6,8 @@ Route114_LanettesHouse_OnTransition: @ 822B2CE
 	setflag FLAG_LANDMARK_LANETTES_HOUSE
 	end
 
+@ -----------------------------------------------------
+
 Route114_LanettesHouse_EventScript_22B2D2:: @ 822B2D2
 	lock
 	faceplayer
@@ -45,7 +47,8 @@ Route114_LanettesHouse_EventScript_22B33C:: @ 822B33C
 	return
 
 Route114_LanettesHouse_EventScript_22B345:: @ 822B345
-	msgbox Route114_LanettesHouse_Text_22B6FC, MSGBOX_SIGN
+	msgbox Route114_LanettesHouse_Text_22B6FC, MSGBOX_DEFAULT
+	msgbox Route114_LanettesHouse_Text_PCPart2, MSGBOX_SIGN
 	end
 
 Route114_LanettesHouse_Text_22B34E: @ 822B34E
@@ -63,11 +66,12 @@ Route114_LanettesHouse_Text_22B407: @ 822B407
 	.string "can tell which Pokémon are in them.$"
 
 Route114_LanettesHouse_Text_22B485: @ 822B485
-	.string "It's LANETTE's research notes.\n"
+	.string "It's someone's research notes.\n"
 	.string "There's information about BOXES.\p"
 	.string "Design BOXES to hold 30 Pokémon each.\p"
 	.string "Each TRAINER should be able to store\n"
 	.string "420 Pokémon on the PC system.\p"
+	.string "What on earth are they talking about…?\n"
 	.string "Keep reading?$"
 
 Route114_LanettesHouse_Text_22B53C: @ 822B53C
@@ -76,9 +80,16 @@ Route114_LanettesHouse_Text_22B53C: @ 822B53C
 	.string "The name and wallpaper design of each\n"
 	.string "BOX will be made changeable to please\l"
 	.string "the stored Pokémon.\p"
+	.string "No idea what this is about…\n"
 	.string "Keep reading?$"
 
 Route114_LanettesHouse_Text_22B5EF: @ 822B5EF
+	.string "When storing a Pokémon…\n"
+	.string "Wait, you can store Pokémon?!\l"
+	.string "Sound fake.\p"
+	.string "Clearly this is someone's fan fiction\n"
+	.string "or dream, and not real. Pfft.$"
+	
 	.string "When storing a Pokémon, it should be\n"
 	.string "sent to the BOX inspected last.\p"
 	.string "If that BOX is full, the received\n"
@@ -92,8 +103,9 @@ Route114_LanettesHouse_Text_22B6E4: @ 822B6E4
 
 Route114_LanettesHouse_Text_22B6FC: @ 822B6FC
 	.string "There's an e-mail from someone on\n"
-	.string "the PC.\p"
-	.string "“… … … … … … …\p"
+	.string "the PC.$"
+	
+Route114_LanettesHouse_Text_PCPart2:
 	.string "“Your Storage System offers more\n"
 	.string "convenience than mine.\p"
 	.string "“It has a lot of user-friendly features\n"
@@ -102,6 +114,4 @@ Route114_LanettesHouse_Text_22B6FC: @ 822B6FC
 	.string "a part in its development.\p"
 	.string "“Here's hoping that you'll continue\n"
 	.string "research in Storage Systems.\p"
-	.string "“From BILL\n"
-	.string "… … … … … … … …”$"
-
+	.string "“From BILL$"

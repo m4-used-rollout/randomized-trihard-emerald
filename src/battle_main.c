@@ -155,7 +155,7 @@ EWRAM_DATA u16 gBattle_WIN0H = 0;
 EWRAM_DATA u16 gBattle_WIN0V = 0;
 EWRAM_DATA u16 gBattle_WIN1H = 0;
 EWRAM_DATA u16 gBattle_WIN1V = 0;
-EWRAM_DATA u8 gDisplayedStringBattle[300] = {0};
+EWRAM_DATA u8 gDisplayedStringBattle[400] = {0};
 EWRAM_DATA u8 gBattleTextBuff1[TEXT_BUFF_ARRAY_COUNT] = {0};
 EWRAM_DATA u8 gBattleTextBuff2[TEXT_BUFF_ARRAY_COUNT] = {0};
 EWRAM_DATA u8 gBattleTextBuff3[TEXT_BUFF_ARRAY_COUNT] = {0};
@@ -519,6 +519,7 @@ const struct TrainerMoney gTrainerMoneyTable[] =
     {TRAINER_CLASS_PICNICKER, 4},
     {TRAINER_CLASS_TWINS, 3},
     {TRAINER_CLASS_SAILOR, 8},
+    {TRAINER_CLASS_SCIENTIST, 10},
     {TRAINER_CLASS_COLLECTOR, 15},
     {TRAINER_CLASS_PKMN_TRAINER_3, 15},
     {TRAINER_CLASS_PKMN_BREEDER, 10},
@@ -5191,7 +5192,10 @@ static void HandleEndTurn_FinishBattle(void)
         sub_8186444();
         Restore1HPDeathPreventedMons();
         RemoveDeadMonFromParty(TRUE);
-        BeginFastPaletteFade(3);
+        if (gBattleOutcome == B_OUTCOME_LOST || gBattleOutcome == B_OUTCOME_DREW)
+            BeginFastPaletteFade(1);
+        else
+            BeginFastPaletteFade(3);
         FadeOutMapMusic(5);
         gBattleMainFunc = FreeResetData_ReturnToOvOrDoEvolutions;
         gCB2_AfterEvolution = BattleMainCB2;
@@ -5711,7 +5715,7 @@ static void HandleAction_Run(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
 
-    if (gBattleTypeFlags & BATTLE_TYPE_RAGING_LEGENDARY)
+    if (gBattleTypeFlags & BATTLE_TYPE_WEATHER_TRIO) //BATTLE_TYPE_RAGING_LEGENDARY)
     {
         ClearFuryCutterDestinyBondGrudge(gBattlerAttacker);
         gBattleCommunication[MULTISTRING_CHOOSER] = 3;

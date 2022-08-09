@@ -14,14 +14,16 @@ PetalburgCity_Gym_EventScript_OpenGym::
 	clearflag FLAG_HIDE_PETALBURG_GYM_GREETER
 	setvar VAR_PETALBURG_STATE, 10
 	setflag FLAG_PETALBURG_MART_EXPANDED_ITEMS
+	setflag FLAG_HIDE_PETALBURG_CITY_GYM_LOCK
+	setflag FLAG_HIDE_PETALBURG_GYM_OLD_LEADER
 	return
 
 @ -----------------------------------------------------
 
 PetalburgCity_Gym_OnLoad: @ 820489E
-	compare VAR_NUM_BADGES, 6
+	compare VAR_NUM_BADGES, 4
 	goto_if_eq PetalburgCity_Gym_EventScript_2048B5
-	compare VAR_NUM_BADGES, 7
+	compare VAR_NUM_BADGES, 5
 	call_if_ge PetalburgCity_Gym_RunAllGymSpecials
 	end
 
@@ -148,7 +150,7 @@ PetalburgCity_Gym_Text_LoganScene4:
 	.string "If you're here to challenge me,\n"
 	.string "bug off. I don't accept challenges\l"
 	.string "from anyone under four badges.$"
-	
+
 
 @ -----------------------------------------------------
 
@@ -164,20 +166,55 @@ PetalburgCity_Gym_EventScript_204995:: @ 8204995
 @ -----------------------------------------------------
 @ Gym Entrance
 
+PetalburgCity_Gym_EventScript_GymGreeter:: @ 820574F
+	lock
+	faceplayer
+	markasdialog
+	goto_if_set FLAG_DEFEATED_PETALBURG_GYM, PetalburgCity_Gym_EventScript_205764
+	msgbox PetalburgCity_Gym_Text_206542, MSGBOX_DEFAULT
+	release
+	end
+PetalburgCity_Gym_Text_206542: @ 8206542
+	.string "Ah, hello, {PLAYER_sir}.\n"
+	.string "Here to challenge the Gym Leader?\p"
+	.string "The doors in this gym open when you\n"
+	.string "beat the awaiting trainers.\p"
+	.string "Whoops! The doors in this room are\n"
+	.string "already open, so don't attack me!\p"
+	.string "The trainers of Petalburg Gym\n"
+	.string "use all kinds of items.\p"
+	.string "The door at the left leads to\n"
+	.string "the Speed Room.\p"
+	.string "The door at the right leads to\n"
+	.string "the Accuracy Room.\p"
+	.string "The room's name will be on\n"
+	.string "the door, so choose carefully.\p"
+	.string "Once you've chosen the door…\n"
+	.string "Well, hey, go for it!$"
+PetalburgCity_Gym_EventScript_205764:: @ 8205764
+	msgbox PetalburgCity_Gym_Text_2066F3, MSGBOX_DEFAULT
+	release
+	end
+PetalburgCity_Gym_Text_2066F3: @ 82066F3
+	.string "Congratulations on your victory!\n"
+	.string "What a stunning battle!$"
+
+
+
 PetalburgCity_Gym_GymSignage::
 	lockall
 	goto_if_unset FLAG_BADGE01_GET, PetalburgCity_Gym_GymSignage_OldLeader
 	msgbox PetalburgCity_Gym_Text_GymSignageTitle, MSGBOX_SIGN
 	goto_if_set FLAG_BADGE05_GET, PetalburgCity_Gym_GymSignage_AfterBadge5
 	goto_if_set FLAG_BADGE06_GET, PetalburgCity_Gym_GymSignage_AfterBadge6
-	msgbox PetalburgCity_Gym_Text_GymSignageNameList1, MSGBOX_DESCRIBE
+	msgbox PetalburgCity_Gym_Text_GymSignageNameList1, MSGBOX_CDESCRIBE
 	releaseall
 	end
 PetalburgCity_Gym_Text_GymSignageTitle: @ 820744C
 	.string "{GYM}Petalburg City Pokémon Gym{END}\n"
 	.string "Norman's Certified Trainers:$"
 PetalburgCity_Gym_Text_GymSignageNameList1:
-	.string "(There are no names under that.)$"
+	.string "There are no names under that.$"
 PetalburgCity_Gym_GymSignage_AfterBadge5:
 	msgbox PetalburgCity_Gym_Text_GymSignageNameList2, MSGBOX_SIGN
 	releaseall
@@ -208,40 +245,6 @@ PetalburgCity_Gym_Text_GymSignageNameList_Old:
 	.string "Connor, Holly, Alexis, Flannery,\n"
 	.string "Ethan, {RIVAL_BIRCH}$"
 
-
-
-PetalburgCity_Gym_EventScript_GymGreeter:: @ 820574F
-	lock
-	faceplayer
-	goto_if_set FLAG_DEFEATED_PETALBURG_GYM, PetalburgCity_Gym_EventScript_205764
-	msgbox PetalburgCity_Gym_Text_206542, MSGBOX_DEFAULT
-	release
-	end
-PetalburgCity_Gym_Text_206542: @ 8206542
-	.string "Ah, hello, {PLAYER_sir}.\n"
-	.string "Here to challenge the Gym Leader?\p"
-	.string "The doors in this gym open when you\n"
-	.string "beat the awaiting trainers.\p"
-	.string "Whoops! The doors in this room are\n"
-	.string "already open, so don't attack me!\p"
-	.string "The trainers of Petalburg Gym\n"
-	.string "use all kinds of items.\p"
-	.string "The door at the left leads to\n"
-	.string "the Speed Room.\p"
-	.string "The door at the right leads to\n"
-	.string "the Accuracy Room.\p"
-	.string "The room's name will be on\n"
-	.string "the door, so choose carefully.\p"
-	.string "Once you've chosen the door…\n"
-	.string "Well, hey, go for it!$"
-
-PetalburgCity_Gym_EventScript_205764:: @ 8205764
-	msgbox PetalburgCity_Gym_Text_2066F3, MSGBOX_DEFAULT
-	release
-	end
-PetalburgCity_Gym_Text_2066F3: @ 82066F3
-	.string "Congratulations on your victory!\n"
-	.string "What a stunning battle!$"
 
 
 PetalburgCity_Gym_EventScript_OldLeader::
@@ -275,7 +278,7 @@ PetalburgCity_Gym_EventScript_EnterDoor:: @ 820516C
 
 PetalburgCity_Gym_EventScript_205187:: @ 8205187
 	lockall
-	compare VAR_NUM_BADGES, 6
+	compare VAR_NUM_BADGES, 4
 	goto_if_lt PetalburgCity_Gym_EventScript_LockedDoor
 	setvar VAR_0x8008, 1
 	setvar VAR_0x8009, 98
@@ -286,13 +289,13 @@ PetalburgCity_Gym_EventScript_205187:: @ 8205187
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_207280: @ 8207280
-	.string "“{PLACE}Accuracy Room{END},” the sign says.\p"
+	.string "“{PLACE}Accuracy Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
 PetalburgCity_Gym_EventScript_205137:: @ 8205137
 	lockall
-	compare VAR_NUM_BADGES, 6
+	compare VAR_NUM_BADGES, 4
 	goto_if_lt PetalburgCity_Gym_EventScript_LockedDoor
 	setvar VAR_0x8008, 7
 	setvar VAR_0x8009, 85
@@ -303,7 +306,7 @@ PetalburgCity_Gym_EventScript_205137:: @ 8205137
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_20721E: @ 820721E
-	.string "“{PLACE}Speed Room{END},” the sign says.\p"
+	.string "“{PLACE}Speed Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
@@ -320,7 +323,7 @@ PetalburgCity_Gym_EventScript_2051BC:: @ 82051BC
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_2072BB: @ 82072BB
-	.string "“{PLACE}Confusion Room{END},” the sign says.\p"
+	.string "“{PLACE}Confusion Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
@@ -349,7 +352,7 @@ PetalburgCity_Gym_EventScript_205222:: @ 8205222
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_2072F7: @ 82072F7
-	.string "“{PLACE}Defense Room{END},” the sign says.\p"
+	.string "“{PLACE}Defense Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
@@ -366,7 +369,7 @@ PetalburgCity_Gym_EventScript_205255:: @ 8205255
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_207331: @ 8207331
-	.string "“{PLACE}Recovery Room{END},” the sign says.\p"
+	.string "“{PLACE}Recovery Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
@@ -395,7 +398,7 @@ PetalburgCity_Gym_EventScript_2052BB:: @ 82052BB
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_20736C: @ 820736C
-	.string "“{PLACE}Strength Room{END},” the sign says.\p"
+	.string "“{PLACE}Strength Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
@@ -424,7 +427,7 @@ PetalburgCity_Gym_EventScript_205321:: @ 8205321
 	goto_if_eq Common_EventScript_ReleaseAllEnd
 	end
 PetalburgCity_Gym_Text_2073A7: @ 82073A7
-	.string "“{PLACE}One-Hit KO Room{END},” the sign says.\p"
+	.string "“{PLACE}One-Hit KO Room{END}”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 
@@ -455,7 +458,7 @@ PetalburgCity_Gym_EventScript_205387:: @ 8205387
 PetalburgCity_Gym_Text_2073E4: @ 82073E4
 	.string "“{PLACE}Gym Leader's Room{END}\p"
 	.string "“See for yourself what Pokémon await\n"
-	.string "you!” the sign says.\p"
+	.string "you!”, the sign says.\p"
 	.string "Do you want to go through?$"
 
 @ -----------------------------------------------------
@@ -837,57 +840,12 @@ PetalburgCity_Gym_EventScript_205733:: @ 8205733
 @ -----------------------------------------------------
 @ Norman:
 
-.align 2
-PetalburgCity_Gym_PointerTable_Norman:
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied @ 0
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied @ 4
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied
-	.4byte PetalburgCity_Gym_EventScript_NormanFight
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied
-	.4byte PetalburgCity_Gym_EventScript_NormanDummied @ 8
-	.4byte 0
-
-PetalburgCity_Gym_EventScript_Norman:: @ 82049F1
-	lock
-	markasdialog
-	faceplayer
-	selectpointer_clamp PetalburgCity_Gym_PointerTable_Norman, VAR_NUM_BADGES
-	goto 0 @ Goto the select script
-	end
-
-PetalburgCity_Gym_EventScript_NormanDummied:
-	msgbox PetalburgCity_Gym_Text_205DB4, MSGBOX_DEFAULT
-	release
-	end
-PetalburgCity_Gym_Text_205DB4:
-	.string "This dialog has been removed.$"
-
-
-PetalburgCity_Gym_EventScript_NormanFight:: @ 8204E3B
-	msgbox PetalburgCity_Gym_Text_205FE5, MSGBOX_DEFAULT
-	trainerbattle_no_intro TRAINER_NORMAN_1, PetalburgCity_Gym_Text_206107
-	message PetalburgCity_Gym_Text_206162
-	waitmessage
-	call Common_EventScript_PlayGymBadgeFanfare
-	msgbox PetalburgCity_Gym_Text_20618A, MSGBOX_DEFAULT
-	setflag FLAG_DEFEATED_PETALBURG_GYM
-	setvar VAR_NUM_BADGES, 7
-	setflag FLAG_BADGE05_GET
-	special PreventDewfordHealSoftlock
-	call PetalburgCity_Gym_DisableMrBriney
-	setflag FLAG_HIDE_MAUVILLE_GYM_WATTSON
-	clearflag FLAG_HIDE_MAUVILLE_CITY_WATTSON
-	@ setvar VAR_0x8008, 5
-	@ call PetalburgCity_Gym_EventScript_271F43 @PetalburgCity_Gym_ClearGymTrainers
-	call PetalburgCity_Gym_ClearGymTrainers
-	clearflag FLAG_HIDE_DEWFORD_HALL_SLUDGE_BOMB_MAN
-	call PetalburgCity_Gym_RunAllGymSpecials
-	special DrawWholeMapView
-	call PetalburgCity_Gym_EventScript_GiveTM
-	delay 30
+PetalburgCity_Gym_EventScript_Norman::
+	trainerbattle_single TRAINER_NORMAN_1, PetalburgCity_Gym_Text_205FE5, PetalburgCity_Gym_Text_206107, PetalburgCity_Gym_EventScript_1FE7C1, NO_MUSIC
+	@ specialvar VAR_RESULT, ShouldTryRematchBattle
+	@ compare VAR_RESULT, 1
+	@ goto_if_eq LavaridgeTown_Gym_1F_EventScript_1FE864
+	goto_if_unset FLAG_RECEIVED_TM42, PetalburgCity_Gym_EventScript_GiveTM
 	msgbox PetalburgCity_Gym_Text_2062FB, MSGBOX_DEFAULT
 	release
 	end
@@ -912,9 +870,37 @@ PetalburgCity_Gym_Text_206107: @ 8206107
 	.string "My very first challenger?\p"
 	.string "But, rules are rules!\n"
 	.string "Here, take this.$"
+PetalburgCity_Gym_Text_2062FB: @ 82062FB
+	.string "Norman: My wife and my {PLAYER_son} will be\n"
+	.string "moving here in a month or two.\p"
+	.string "Clearly, I will need to train harder\n"
+	.string "if I want to face them with dignity.$"
+PetalburgCity_Gym_EventScript_1FE7C1:
+	message PetalburgCity_Gym_Text_206162, MSGTYPE_DESCRIBE
+	waitmessage
+	call Common_EventScript_PlayGymBadgeFanfare
+	msgbox PetalburgCity_Gym_Text_20618A, MSGBOX_DEFAULT
+	setflag FLAG_DEFEATED_PETALBURG_GYM
+	setflag FLAG_BADGE05_GET
+	special PreventDewfordHealSoftlock
+	@ call PetalburgCity_Gym_DisableMrBriney
+	setflag FLAG_HIDE_MAUVILLE_GYM_WATTSON
+	clearflag FLAG_HIDE_MAUVILLE_CITY_WATTSON
+	@ setvar VAR_0x8008, 5
+	@ call PetalburgCity_Gym_EventScript_271F43 @PetalburgCity_Gym_ClearGymTrainers
+	call PetalburgCity_Gym_ClearGymTrainers
+	clearflag FLAG_HIDE_DEWFORD_HALL_SLUDGE_BOMB_MAN
+	call PetalburgCity_Gym_RunAllGymSpecials
+	special DrawWholeMapView
+	call PetalburgCity_Gym_EventScript_GiveTM
+	closemessage
+	delay 30
+	msgbox PetalburgCity_Gym_Text_1FF517
+	release
+	end
 PetalburgCity_Gym_Text_206162: @ 8206162
-	.string "{PLAYER} received the\n"
-	.string "{ITEM}Balance Badge{END}!$"
+	.string "{PLAYER} received the {ITEM}Balance Badge{END}\n"
+	.string "from Norman.$"
 PetalburgCity_Gym_Text_20618A: @ 820618A
 	.string "Norman: With that badge, the defense\n"
 	.string "of all your Pokémon will increase.\p"
@@ -922,12 +908,9 @@ PetalburgCity_Gym_Text_20618A: @ 820618A
 	.string "water will do so at your command.\p"
 	.string "This is my gift to you. {PLAYER}, I'm\n"
 	.string "sure you can use it correctly.$"
-PetalburgCity_Gym_Text_2062FB: @ 82062FB
-	.string "Norman: My wife and my {PLAYER_son} will be\n"
-	.string "moving here in a month or two.\p"
-	.string "Clearly, I will need to train harder\n"
-	.string "if I want to face them with dignity.$"
-
+PetalburgCity_Gym_Text_1FF517: @ 81FF517
+	.string "Oh, um, I don't have a phone number yet,\n"
+	.string "sorry.$"
 
 PetalburgCity_Gym_EventScript_GiveTM:: @ 8204ED2
 	giveitem_std ITEM_TM42
@@ -939,7 +922,7 @@ PetalburgCity_Gym_EventScript_GiveTM:: @ 8204ED2
 PetalburgCity_Gym_Text_206254: @ 8206254
 	.string "Norman: TM42 contains Facade.\p"
 	.string "It doubles the power of moves if\n"
-	.string "the Pokémon is poisoned, paralyzed,\l"
+	.string "the Pokémon is poisoned, paralyzed\l"
 	.string "or burned.\p"
 	.string "It might be able to turn a bad\n"
 	.string "situation into an advantage.$"

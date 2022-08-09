@@ -100,6 +100,8 @@
 #define MAP_FALLARBOR_TOWN_POKEMON_CENTER_2F       (5 | (5 << 8))
 #define MAP_FALLARBOR_TOWN_HOUSE1                  (6 | (5 << 8))
 #define MAP_FALLARBOR_TOWN_HOUSE2                  (7 | (5 << 8))
+#define MAP_FALLARBOR_TOWN_CONTEST_LOBBY           (8 | (5 << 8))
+#define MAP_FALLARBOR_TOWN_CONTEST_HALL            (9 | (5 << 8))
 
 // Map Group 6
 #define MAP_VERDANTURF_TOWN_BATTLE_TENT_LOBBY       (0 | (6 << 8))
@@ -111,6 +113,8 @@
 #define MAP_VERDANTURF_TOWN_WANDAS_HOUSE            (6 | (6 << 8))
 #define MAP_VERDANTURF_TOWN_FRIENDSHIP_RATERS_HOUSE (7 | (6 << 8))
 #define MAP_VERDANTURF_TOWN_HOUSE                   (8 | (6 << 8))
+#define MAP_VERDANTURF_TOWN_CONTEST_LOBBY           (9 | (6 << 8))
+#define MAP_VERDANTURF_TOWN_CONTEST_HALL            (10 | (6 << 8))
 
 // Map Group 7
 #define MAP_PACIFIDLOG_TOWN_POKEMON_CENTER_1F (0 | (7 << 8))
@@ -145,6 +149,8 @@
 #define MAP_SLATEPORT_CITY_POKEMON_CENTER_1F       (11 | (9 << 8))
 #define MAP_SLATEPORT_CITY_POKEMON_CENTER_2F       (12 | (9 << 8))
 #define MAP_SLATEPORT_CITY_MART                    (13 | (9 << 8))
+#define MAP_SLATEPORT_CITY_CONTEST_LOBBY           (14 | (9 << 8))
+#define MAP_SLATEPORT_CITY_CONTEST_HALL            (15 | (9 << 8))
 
 // Map Group 10
 #define MAP_MAUVILLE_CITY_GYM               (0 | (10 << 8))
@@ -186,6 +192,9 @@
 #define MAP_FORTREE_CITY_HOUSE4            (7 | (12 << 8))
 #define MAP_FORTREE_CITY_HOUSE5            (8 | (12 << 8))
 #define MAP_FORTREE_CITY_DECORATION_SHOP   (9 | (12 << 8))
+#define MAP_FORTREE_CITY_HOUSE6            (10 | (12 << 8))
+#define MAP_FORTREE_CITY_HOUSE7            (11 | (12 << 8))
+#define MAP_FORTREE_CITY_HOUSE8            (12 | (12 << 8))
 
 // Map Group 13
 #define MAP_LILYCOVE_CITY_COVE_LILY_MOTEL_1F        (0 | (13 << 8))
@@ -592,6 +601,7 @@
 #define MAP_ROUTE124_DIVING_TREASURE_HUNTERS_HOUSE (0 | (33 << 8))
 #define MAP_SOOTOPOLIS_LEGENDS_EDIT                (1 | (33 << 8))
 #define MAP_SCRIPT_TEST_MAP                        (2 | (33 << 8))
+#define MAP_MIRAGE_TOWER_LAYOUT                    (3 | (33 << 8))
 
 #define MAP_GROUPS_COUNT 34
 

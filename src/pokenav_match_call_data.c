@@ -6,6 +6,7 @@
 #include "battle.h"
 #include "gym_leader_rematch.h"
 #include "match_call.h"
+#include "constants/region_map_sections.h"
 
 // Static type declarations
 
@@ -165,12 +166,20 @@ extern const u8 gText_MrStone_Pokenav_2B67ED[];
 extern const u8 gMatchCallDesc_MrStone[];
 extern const u8 gMatchCallName_MrStone[];
 
+extern const u8 gMatchCallDesc_Alex[];
+extern const u8 gMatchCallName_Alex[];
+extern const u8 gText_Alex_Pokenav_Unavailable[];
+
 extern const u8 gMatchCallDesc_ProfBirch[];
 extern const u8 gMatchCallName_ProfBirch[];
 
 extern const u8 gText_Dad_Pokenav_NoAnswer[];
 extern const u8 gText_Dad_Pokenav_AreYouHurt[];
 extern const u8 gText_Dad_Pokenav_TeamWarn[];
+extern const u8 gText_Dad_Pokenav_LegendaryWarn[];
+extern const u8 gText_Dad_Pokenav_CallYouBack[];
+extern const u8 gText_Dad_Pokenav_Singlehanded[];
+extern const u8 gText_Dad_Pokenav_EverGrande[];
 extern const u8 gMatchCallDesc_Dad[];
 extern const u8 gMatchCallName_Dad[];
 
@@ -298,17 +307,17 @@ extern const u8 gMatchCall_MaySelfIntroductionText_Line2[];
 // .rodata
 
 static const match_call_text_data_t sMrStoneTextScripts[] = {
-    { gText_MrStone_Pokenav_2B60C0, 0xFFFF,              FLAG_ENABLE_MR_STONE_POKENAV },
-    { gText_MrStone_Pokenav_2B61E6, FLAG_ENABLE_MR_STONE_POKENAV,          0xFFFF },
-    { gText_MrStone_Pokenav_2B6302, FLAG_DELIVERED_STEVEN_LETTER,          0xFFFF },
-    { gText_MrStone_Pokenav_2B63A0, FLAG_RECEIVED_EXP_SHARE,          0xFFFF },
-    { gText_MrStone_Pokenav_2B64A2, FLAG_RECEIVED_TM54,          0xFFFF },
-    { gText_MrStone_Pokenav_2B6526, FLAG_DEFEATED_PETALBURG_GYM,          0xFFFF },
-    { gText_MrStone_Pokenav_2B65BB, FLAG_RECEIVED_CASTFORM,          0xFFFF },
-    { gText_MrStone_Pokenav_2B6664, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT,          0xFFFF },
-    { gText_MrStone_Pokenav_2B66B1, FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE,          0xFFFF },
-    { gText_MrStone_Pokenav_2B6703, FLAG_DEFEATED_SOOTOPOLIS_GYM,          0xFFFF },
-    { gText_MrStone_Pokenav_2B67ED, FLAG_SYS_GAME_CLEAR, 0xFFFF },
+    // { gText_MrStone_Pokenav_2B60C0, 0xFFFF,              FLAG_ENABLE_MR_STONE_POKENAV },
+    // { gText_MrStone_Pokenav_2B61E6, FLAG_ENABLE_MR_STONE_POKENAV,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B6302, FLAG_UNUSED_0x0BD,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B63A0, FLAG_RECEIVED_EXP_SHARE,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B64A2, FLAG_RECEIVED_TM54,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B6526, FLAG_DEFEATED_PETALBURG_GYM,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B65BB, FLAG_RECEIVED_CASTFORM,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B6664, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B66B1, FLAG_TEAM_AQUA_ESCAPED_IN_SUBMARINE,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B6703, FLAG_DEFEATED_SOOTOPOLIS_GYM,          0xFFFF },
+    // { gText_MrStone_Pokenav_2B67ED, FLAG_SYS_GAME_CLEAR, 0xFFFF },
     { NULL,                         0xFFFF,              0xFFFF }
 };
 
@@ -322,22 +331,40 @@ static const struct MatchCallStruct0 sMrStoneMatchCallHeader =
     .textData = sMrStoneTextScripts
 };
 
+static const match_call_text_data_t sAlexTextScripts[] = {
+    { gText_Alex_Pokenav_Unavailable, 0xFFFF,               FLAG_DAILY_ALEX_CALL },
+    { gText_Alex_Pokenav_Unavailable, FLAG_DAILY_ALEX_CALL, 0xFFFF },
+    { NULL,                           0xFFFF,               0xFFFF }
+};
 
+static const struct MatchCallStruct0 sAlexMatchCallHeader =
+{
+    .type = 0,
+    .v1 = MAPSEC_ALOLA,
+    .flag = FLAG_ENABLE_ALEX_MATCH_CALL,
+    .desc = gMatchCallDesc_Alex,
+    .name = gMatchCallName_Alex,
+    .textData = sAlexTextScripts
+};
 
 static const struct MatchCallStruct3 sProfBirchMatchCallHeader =
 {
     .type = 3,
-    .v1 = 0,
+    .v1 = MAPSEC_LITTLEROOT_TOWN,
     .flag = FLAG_ENABLE_PROF_BIRCH_MATCH_CALL,
     .desc = gMatchCallDesc_ProfBirch,
     .name = gMatchCallName_ProfBirch
 };
 
 static const match_call_text_data_t sDadTextScripts[] = {
-    { gText_Dad_Pokenav_AreYouHurt, 0xffff, FLAG_DAILY_DAD_CALL },
-    { gText_Dad_Pokenav_NoAnswer,   FLAG_DAILY_DAD_CALL, 0xffff },
-    { gText_Dad_Pokenav_TeamWarn,   FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, 0xffff },
+    { gText_Dad_Pokenav_AreYouHurt,     0xffff, FLAG_DAILY_DAD_CALL },
+    { gText_Dad_Pokenav_CallYouBack,    FLAG_BADGE01_GET, FLAG_DAILY_DAD_CALL },
+    { gText_Dad_Pokenav_TeamWarn,       FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY, FLAG_DAILY_DAD_CALL },
     //TODO more text for various items
+    { gText_Dad_Pokenav_LegendaryWarn,  FLAG_KYOGRE_ESCAPED_SEAFLOOR_CAVERN, FLAG_DAILY_DAD_CALL },
+    { gText_Dad_Pokenav_Singlehanded,   FLAG_DEFEATED_LEGENDARIES_SINGLEHANDEDLY, FLAG_DAILY_DAD_CALL },
+    { gText_Dad_Pokenav_EverGrande,     FLAG_VISITED_EVER_GRANDE_CITY, FLAG_DAILY_DAD_CALL },
+    { gText_Dad_Pokenav_NoAnswer,       FLAG_DAILY_DAD_CALL, 0xffff },
     
     // { gText_Mom_Pokenav_2B227B, 0xffff,              0xffff },
     // { gText_Mom_Pokenav_2B2310, FLAG_DEFEATED_PETALBURG_GYM,          0xffff },
@@ -357,7 +384,7 @@ static const match_call_text_data_t sDadTextScripts[] = {
 static const struct MatchCallStruct0 sDadMatchCallHeader =
 {
     .type = 0,
-    .v1 = 0,
+    .v1 = MAPSEC_LITTLEROOT_TOWN,
     .flag = 0xFFFF,//FLAG_ENABLE_MOM_MATCH_CALL,
     .desc = gMatchCallDesc_Dad,
     .name = gMatchCallName_Dad,
@@ -378,7 +405,7 @@ static const match_call_text_data_t sStevenTextScripts[] = {
 static const struct MatchCallStruct0 sStevenMatchCallHeader =
 {
     .type = 0,
-    .v1 = 0xD5,
+    .v1 = MAPSEC_NONE,
     .flag = FLAG_REGISTERED_STEVEN_POKENAV,
     .desc = gMatchCallDesc_Steven,
     .name = gMatchCallName_Steven,
@@ -455,10 +482,10 @@ static const match_call_text_data_t sWallyTextScripts[] = {
 };
 
 const struct MatchCallSubstruct2 sWallyAdditionalData[] = {
-    { FLAG_HIDE_MAUVILLE_CITY_WALLY, 0x05 },
-    { FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, 0xD5 },
-    { FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY, 0x46 },
-    { 0xFFFF,     0xD5 }
+    { FLAG_HIDE_MAUVILLE_CITY_WALLY, MAPSEC_VERDANTURF_TOWN },
+    { FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, MAPSEC_NONE },
+    { FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY, MAPSEC_VICTORY_ROAD },
+    { 0xFFFF,     MAPSEC_NONE }
 };
 
 static const struct MatchCallStruct2 sWallyMatchCallHeader =
@@ -487,7 +514,7 @@ static const match_call_text_data_t sScottTextScripts[] = {
 static const struct MatchCallStruct0 sScottMatchCallHeader =
 {
     .type = 0,
-    .v1 = 0xD5,
+    .v1 = MAPSEC_NONE,
     .flag = FLAG_ENABLE_SCOTT_MATCH_CALL,
     .desc = gMatchCallDesc_Scott,
     .name = gMatchCallName_Scott,
@@ -727,12 +754,13 @@ static const struct MatchCallStruct5 sWallaceMatchCallHeader =
 };
 
 static const match_call_t sMatchCallHeaders[] = {
+    {.type0 = &sAlexMatchCallHeader}, // Player char sorts this to the top of the list
     {.type0 = &sDadMatchCallHeader},
     {.type3 = &sProfBirchMatchCallHeader},
     {.type4 = &sMayMatchCallHeader},
     {.type4 = &sBrendanMatchCallHeader},
     {.type2 = &sWallyMatchCallHeader},
-    {.type0 = &sMrStoneMatchCallHeader},
+    // {.type0 = &sMrStoneMatchCallHeader},
     {.type0 = &sStevenMatchCallHeader},
     {.type0 = &sScottMatchCallHeader},
     {.type5 = &sRoxanneMatchCallHeader},
@@ -809,8 +837,8 @@ static void (*const sMatchCall_GetNameAndDescFunctions[])(match_call_t, const u8
 static const struct UnkStruct_08625388 sMatchCallCheckPageOverrides[] = {
     { 7, 0x4B, 0xffff, { gMatchCallStevenStrategyText, gMatchCall_StevenTrainersPokemonText, gMatchCall_StevenSelfIntroductionText_Line1_BeforeMeteorFallsBattle, gMatchCall_StevenSelfIntroductionText_Line2_BeforeMeteorFallsBattle } }, // STEVEN
     { 7, 0x4B, FLAG_DEFEATED_MOSSDEEP_GYM, { gMatchCallStevenStrategyText, gMatchCall_StevenTrainersPokemonText, gMatchCall_StevenSelfIntroductionText_Line1_AfterMeteorFallsBattle, gMatchCall_StevenSelfIntroductionText_Line2_AfterMeteorFallsBattle } }, // STEVEN
-    { 2, 0x3c, 0xffff, { gMatchCall_BrendanStrategyText, gMatchCall_BrendanTrainersPokemonText, gMatchCall_BrendanSelfIntroductionText_Line1, gMatchCall_BrendanSelfIntroductionText_Line2 } }, // Brendan
-    { 3, 0x3f, 0xffff, { gMatchCall_MayStrategyText, gMatchCall_MayTrainersPokemonText, gMatchCall_MaySelfIntroductionText_Line1, gMatchCall_MaySelfIntroductionText_Line2 } } // May
+    { 3, 0x3c, 0xffff, { gMatchCall_BrendanStrategyText, gMatchCall_BrendanTrainersPokemonText, gMatchCall_BrendanSelfIntroductionText_Line1, gMatchCall_BrendanSelfIntroductionText_Line2 } }, // Brendan
+    { 4, 0x3f, 0xffff, { gMatchCall_MayStrategyText, gMatchCall_MayTrainersPokemonText, gMatchCall_MaySelfIntroductionText_Line1, gMatchCall_MaySelfIntroductionText_Line2 } } // May
 };
 
 // .text
@@ -934,12 +962,12 @@ static u8 sub_81D171C(match_call_t matchCall)
 
 static u8 sub_81D1750(match_call_t matchCall)
 {
-    return 0xd5;
+    return MAPSEC_NONE;
 }
 
 static u8 sub_81D1754(match_call_t matchCall)
 {
-    return 0xd5;
+    return MAPSEC_NONE;
 }
 
 bool32 MatchCall_IsRematchable(u32 idx)

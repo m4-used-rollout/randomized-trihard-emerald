@@ -873,14 +873,11 @@
 	.2byte \deviation
 	.endm
 
-	@ Nopped in Emerald, but still consumes parameters.
-	@ .macro drawboxtext byte1:req, byte2:req, byte3:req, byte4:req
-	@ .byte 0x74
-	@ .byte \byte1
-	@ .byte \byte2
-	@ .byte \byte3
-	@ .byte \byte4
-	@ .endm
+	@ Overrides the string that appears in the map name popup. This override happens only once.
+	.macro overridemapname nameStr:req
+	.byte 0x74
+	.4byte \nameStr
+	.endm
 
 	@ Displays a box containing the front sprite for the specified (species) Pokemon species.
 	.macro drawmonpic species:req, x:req, y:req
@@ -1088,6 +1085,8 @@
 	@ Hides the secondary box spawned by showmoney.
 	.macro hidemoneybox
 	.byte 0x94
+	nop
+	nop
 	.endm
 
 	@ Updates the secondary box spawned by showmoney. Consumes but does not use arguments.
@@ -1095,6 +1094,7 @@
 	.byte 0x95
 	.byte \x
 	.byte \y
+	nop
 	.endm
 
 	@ Gets the price reduction for the index given. In FireRed, this command is a nop.
@@ -1723,12 +1723,18 @@
 	MSGBOX_DESCRIBE = 11
 	MSGBOX_DIALOG = 12
 	MSGBOX_DIALOGUE = 12
+	MSGBOX_CDESCRIBE = 13
+	MSGBOX_CDIALOG = 14
 	
     MSGTYPE_STANDARD = 1
     MSGTYPE_DIALOG = 2
     MSGTYPE_DIALOGUE = 2
+    MSGTYPE_CDIALOG = 2
+    MSGTYPE_CDIALOGUE = 2
     MSGTYPE_SIGN = 3
 	MSGTYPE_DESCRIBE = 4
+	MSGTYPE_CDESCRIBE = 4
+    MSGTYPE_DREAM = 5
 
 	YES = 1
 	NO  = 0

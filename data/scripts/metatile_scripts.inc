@@ -33,7 +33,7 @@ MetatileText_PokemonCenterSleepSign: @ 82A8232
 	.string "our facilities.\p"
 	.string "“Please remember to lock your door\n"
 	.string "before going to sleep. We ask that\l"
-	.string "you respect other's personal space.”$"
+	.string "you respect others' personal space.”$"
 
 
 MetatileScript_PokemonCenterClock::
@@ -74,8 +74,13 @@ MetatileText_EmptyTrashCan2:
 MetatileText_EmptyTrashCan3:
 	.string "There's a half-eaten burger in there.$"
 MetatileText_EmptyTrashCan4:
+.if TPP_MODE
 	.string "There's a figure of a man in there,\n"
 	.string "covered in trash. How very disgusting.$"
+.else
+	.string "There's some discarded fliers in here\n"
+	.string "that have old memes printed on them…$"
+.endif
 MetatileText_EmptyTrashCan5:
 	.string "Looks like there's a broken TM in here.$"
 MetatileText_EmptyTrashCan6:

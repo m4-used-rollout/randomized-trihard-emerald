@@ -4,7 +4,7 @@ gText_Dad_Pokenav_NoAnswer::
 	.string "… … … … … …\n"
 	.string "… … … … … …\p"
 	.string "The person you have dialed is\n"
-	.string "unavailable right now.\p"
+	.string "not available right now.\p"
 	.string "Please leave a message after\n"
 	.string "the tone…$"
 	
@@ -12,17 +12,42 @@ gText_Dad_Pokenav_AreYouHurt::
 	.string "Dad: {PLAYER}, hi! Is everything\n"
 	.string "okay? Are you hurt?\p"
 	.string "Oh, you're just calling to say hi?\p"
-	.string "Sorry, I can't talk long. In a meeting.\p"
+	.string "Sorry, I can't talk long.\n"
+	.string "I'm in a meeting.\p"
 	.string "Maybe we can catch up tonight?$"
 
 gText_Dad_Pokenav_TeamWarn::
 	.string "Dad: Hey, {PLAYER}. How are you doing?\p"
-	.string "I heard there are these “teams” going\n"
-	.string "around causing trouble out there.\p"
+	.string "I heard there are these “teams”\n"
+	.string "going around causing trouble.\p"
 	.string "Try and avoid them, alright?\n"
-	.string "I don't want you getting into trouble.\p"
+	.string "I don't want you getting into\l"
+	.string "any more trouble.$"
 	
+gText_Dad_Pokenav_CallYouBack::
+	.string "Dad: {PLAYER}, you caught me at a\n"
+	.string "bad time. Can I call you back?$"
+	
+gText_Dad_Pokenav_LegendaryWarn::
+	.string "Dad: {PLAYER}, be careful out there.\p"
+	.string "I heard on the news that there\n"
+	.string "was horrible weather warnings\l"
+	.string "in Eastern Hoenn.$"
+	
+gText_Dad_Pokenav_Singlehanded::
+	.string "Dad: {PLAYER}!\p"
+	.string "D-Did I hear the news right?!\p"
+	.string "You fought off {BOLD}two{END} ancient,\n"
+	.string "super-powerful Pokémon…\l"
+	.string "SINGLEHANDEDLY?!\p"
+	.string "I… what would your mother say…?!\n"
+	.string "Holy Miltank?!$"
 
+gText_Dad_Pokenav_EverGrande::
+	.string "Dad: {PLAYER}!\n"
+	.string "I heard you were at Ever Grande!\p"
+	.string "I'm going to be there for your\n"
+	.string "fights, vacation days or not!$"
 
 
 @ General Match Calls
@@ -2846,7 +2871,7 @@ gText_MrStone_Pokenav_2B65BB:: @ 82B65BB
 
 gText_MrStone_Pokenav_2B6664:: @ 82B6664
 	.string "…Huh? …What's that?\p"
-	.string "GROU… Yes? …DON?\p"
+	.string "Grou… Yes? …Don?\p"
 	.string "You're breaking up…\n"
 	.string "…can't hear…\p"
 	.string "BZZZZ…$"

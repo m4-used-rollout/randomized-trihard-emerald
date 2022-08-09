@@ -13,7 +13,8 @@
                 "${workspaceFolder}/include"
             ],
             "defines": [
-                "TPP_MODE=1"
+                "TPP_MODE=1",
+                "EMULATOR_ONLY=1"
             ],
             "macFrameworkPath": [
                 "/System/Library/Frameworks",

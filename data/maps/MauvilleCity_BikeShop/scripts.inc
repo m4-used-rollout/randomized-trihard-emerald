@@ -4,6 +4,7 @@ MauvilleCity_BikeShop_MapScripts:: @ 820EBBB
 MauvilleCity_BikeShop_EventScript_20EBBC:: @ 820EBBC
 	lock
 	faceplayer
+	markasdialog
 	goto_if_set FLAG_RECEIVED_BIKE, MauvilleCity_BikeShop_EventScript_20EC94
 	goto_if_set FLAG_DECLINED_BIKE, MauvilleCity_BikeShop_EventScript_20EBF7
 	msgbox MauvilleCity_BikeShop_Text_20EE22, MSGBOX_DEFAULT
@@ -86,7 +87,7 @@ MauvilleCity_BikeShop_EventScript_20ECE5:: @ 820ECE5
 	end
 
 MauvilleCity_BikeShop_EventScript_20ECEF:: @ 820ECEF
-	incrementgamestat 4
+	incrementgamestat GAME_STAT_TRADED_BIKES
 	msgbox MauvilleCity_BikeShop_Text_20F294, MSGBOX_DEFAULT
 	takeitem ITEM_ACRO_BIKE, 1
 	giveitem_std ITEM_MACH_BIKE
@@ -94,7 +95,7 @@ MauvilleCity_BikeShop_EventScript_20ECEF:: @ 820ECEF
 	end
 
 MauvilleCity_BikeShop_EventScript_20ED10:: @ 820ED10
-	incrementgamestat 4
+	incrementgamestat GAME_STAT_TRADED_BIKES
 	msgbox MauvilleCity_BikeShop_Text_20F263, MSGBOX_DEFAULT
 	takeitem ITEM_MACH_BIKE, 1
 	giveitem_std ITEM_ACRO_BIKE
@@ -324,4 +325,3 @@ MauvilleCity_BikeShop_Text_20F898: @ 820F898
 	.string "Press it backwards to make the BIKE\n"
 	.string "change directions while jumping.\p"
 	.string "Want to read a different page?$"
-

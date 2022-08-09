@@ -16,6 +16,7 @@
 #include "item.h"
 #include "link.h"
 #include "main.h"
+#include "mail.h"
 #include "overworld.h"
 #include "m4a.h"
 #include "party_menu.h"
@@ -2023,6 +2024,78 @@ static const struct SpriteTemplate gSpriteTemplateTable_TrainerBackSprites[] =
         .oam = &gOamData_831ACB0,
         .anims = NULL,
         .images = gTrainerBackPicTable_Steven,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagMale1,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagFemale1,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagMale2,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagFemale2,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagMale3,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagFemale3,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagMale4,
+        .affineAnims = gUnknown_082FF618,
+        .callback = sub_8039BB4,
+    },
+    {
+        .tileTag = 0xFFFF,
+        .paletteTag = 0,
+        .oam = &gOamData_831ACB0,
+        .anims = NULL,
+        .images = gTrainerBackPicTable_ProtagFemale4,
         .affineAnims = gUnknown_082FF618,
         .callback = sub_8039BB4,
     },
@@ -4386,22 +4459,23 @@ bool8 CanMonDie(int partySlot)
 }
 
 // Sends a pokemon to the PC and removes it from the party.
-void KillMon(int partySlot, u8 hasMourned)
+void KillMon(int partySlot, u8 hasMourned, bool8 bypassChecks)
 {
     struct Pokemon* mon = &gPlayerParty[partySlot];
+    u16 item;
     
     // sanity check, don't kill "pokemon" beyond our party count
     if (partySlot >= gPlayerPartyCount) return;
     // sanity check, can't kill null pokemon or eggs
     if (GetMonData(mon, MON_DATA_SPECIES2, NULL) == SPECIES_NONE) return;
-    if (GetMonData(mon, MON_DATA_SPECIES2, NULL) == SPECIES_EGG) return;
+    if (!bypassChecks && GetMonData(mon, MON_DATA_SPECIES2, NULL) == SPECIES_EGG) return;
     // Cannot kill a Shedinja
-    if (GetMonData(mon, MON_DATA_SPECIES2, NULL) == SPECIES_SHEDINJA) return;
+    if (!bypassChecks && GetMonData(mon, MON_DATA_SPECIES2, NULL) == SPECIES_SHEDINJA) return;
     
     // If the global death prevention flag is on, don't kill it.
-    if (FlagGet(FLAG_DEATH_PREVENT)) return;
+    if (!bypassChecks && FlagGet(FLAG_DEATH_PREVENT)) return;
     // If this pokemon has a death prevention flag on it, don't kill it.
-    if (gPlayerDeathPreventions[partySlot] != DEATH_PREVENT_NONE) return;
+    if (!bypassChecks && gPlayerDeathPreventions[partySlot] != DEATH_PREVENT_NONE) return;
 
     // Don't bother, as this last pokemon fainting will cause a whiteout anyway, which will reset everything
     if (gPlayerPartyCount <= 1) return;
@@ -4419,6 +4493,17 @@ void KillMon(int partySlot, u8 hasMourned)
     //     daycareMon->mail.message = gSaveBlock1Ptr->mail[mailId];
     //     TakeMailFromMon(mon);
     // }
+    
+    // Return items to bag
+    item = GetMonData(mon, MON_DATA_HELD_ITEM, NULL);
+    if (item != ITEM_NONE && !ItemIsMail(item))
+    {
+        if (AddBagItem(item, 1))
+        {
+            item = ITEM_NONE;
+            SetMonData(mon, MON_DATA_HELD_ITEM, &item);
+        }
+    }
     
     SetMonData(mon, MON_DATA_HAS_MOURNED, &hasMourned);
     SendMonToPC(mon);
@@ -4460,7 +4545,7 @@ void RemoveDeadMonFromParty(bool8 endOfBattle)
     {
         if (GetMonData(&gPlayerParty[i], MON_DATA_STATUS, NULL) == STATUS1_DEAD)
         {
-            KillMon(i, 0);
+            KillMon(i, 0, FALSE);
         }
     }
     CompactPartySlots();
@@ -6368,6 +6453,9 @@ u16 GetBattleBGM(void)
     else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
         u8 trainerClass;
+        
+        if (FlagGet(FLAG_SCENE_FORCE_AQUA_THEME))
+            return MUS_BATTLE31;
 
         if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
             trainerClass = GetFrontierOpponentClass(gTrainerBattleOpponent_A);
@@ -7175,7 +7263,7 @@ void RemovePartyBadEggs(void)
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) == SPECIES_NONE) continue;
         if (GetMonData(&gPlayerParty[i], MON_DATA_SANITY_IS_BAD_EGG, NULL))
         {
-            KillMon(i, 1);
+            KillMon(i, 1, TRUE);
         }
     }
     CompactPartySlots();
@@ -7191,9 +7279,53 @@ void RemovePartyShedinja(void)
         if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES2, NULL) == SPECIES_SHEDINJA)
         {
             GetMonData(&gPlayerParty[i], MON_DATA_NICKNAME, gStringVar1);
-            KillMon(i, 1);
+            KillMon(i, 1, TRUE);
         }
     }
     CompactPartySlots();
     CalculatePlayerPartyCount();
 }
+
+// THE: Used in the Weather Institute
+void Castform_CheckAfterBattle(void)
+{
+    u8 i = VarGet(VAR_TEMP_6);
+    u32 exp;
+    struct Pokemon *mon;
+    //TEMP_6 = index of the new mon
+    
+    gSpecialVar_Result = 0; //Castform dead
+    if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) != SPECIES_CASTFORM)
+        return;
+    
+    mon = &gPlayerParty[i];
+    
+    gSpecialVar_Result = 1; //Castform unused
+    exp = GetMonData(mon, MON_DATA_EXP, NULL);
+    if (exp == gExperienceTables[gBaseStats[SPECIES_CASTFORM].growthRate][25])
+        return;
+    
+    gSpecialVar_Result = 2; //Castform used
+    
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        u16 moveId = GetMonData(mon, MON_DATA_MOVE1 + i, NULL);
+        u8 pp = GetMonData(mon, MON_DATA_PP1 + i, NULL);
+        
+        switch (moveId) {
+            case MOVE_RAIN_DANCE:
+            case MOVE_SUNNY_DAY:
+            case MOVE_HAIL:
+                break;
+            default:
+                continue;
+        }
+        
+        if (pp != CalculatePPWithBonus(moveId, GetMonData(mon, MON_DATA_PP_BONUSES, NULL), i))
+        {
+            gSpecialVar_Result = 3; //Castform used move
+        }
+    }
+}
+
+

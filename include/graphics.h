@@ -7,6 +7,7 @@ extern const u16 gMessageBox_Pal[];
 extern const u16 gMessageBoxSign_Gfx[];
 extern const u16 gMessageBoxSign_Pal[];
 extern const u16 gMessageBoxDialogue_Gfx[];
+extern const u16 gMessageBox_DreamPal[];
 
 // interface pokeballs
 extern const u32 gInterfaceGfx_PokeBall[];
@@ -2941,6 +2942,7 @@ extern const u32 gTrainerFrontPic_ParasolLady[];
 extern const u32 gTrainerFrontPic_SwimmerF[];
 extern const u32 gTrainerFrontPic_Twins[];
 extern const u32 gTrainerFrontPic_Sailor[];
+extern const u32 gTrainerFrontPic_Scientist[];
 extern const u32 gTrainerFrontPic_MagmaAdmin[];
 extern const u32 gTrainerFrontPic_Wally[];
 extern const u32 gTrainerFrontPic_Brendan[];
@@ -3043,6 +3045,7 @@ extern const u32 gTrainerPalette_ParasolLady[];
 extern const u32 gTrainerPalette_SwimmerF[];
 extern const u32 gTrainerPalette_Twins[];
 extern const u32 gTrainerPalette_Sailor[];
+extern const u32 gTrainerPalette_Scientist[];
 extern const u32 gTrainerPalette_MagmaAdmin[];
 extern const u32 gTrainerPalette_Wally[];
 extern const u32 gTrainerPalette_Brendan[];
@@ -3077,9 +3080,19 @@ extern const u8 gTrainerBackPic_RubySapphireBrendan[];
 extern const u8 gTrainerBackPic_RubySapphireMay[];
 extern const u8 gTrainerBackPic_Wally[];
 extern const u8 gTrainerBackPic_Steven[];
+extern const u8 gTrainerBackPic_ProtagMale1[];
+extern const u8 gTrainerBackPic_ProtagMale2[];
+extern const u8 gTrainerBackPic_ProtagMale3[];
+extern const u8 gTrainerBackPic_ProtagMale4[];
+extern const u8 gTrainerBackPic_ProtagFemale1[];
+extern const u8 gTrainerBackPic_ProtagFemale2[];
+extern const u8 gTrainerBackPic_ProtagFemale3[];
+extern const u8 gTrainerBackPic_ProtagFemale4[];
 
 extern const u32 gTrainerBackPicPalette_Red[];
 extern const u32 gTrainerBackPicPalette_Leaf[];
+extern const u32 gTrainerBackPicPalette_ProtagMale[];
+extern const u32 gTrainerBackPicPalette_ProtagFemale[];
 
 // pokeblock
 extern const u32 gMenuPokeblock_Gfx[];
@@ -3932,6 +3945,8 @@ extern const u32 gIntro2MayNoTurnGfx[];
 extern const u16 gIntro2BrendanNoTurnPal[];
 extern const u16 gIntro2FlygonPal[];
 extern const u32 gIntro2FlygonGfx[];
+extern const u16 gCreditsProtagMalePal[];
+extern const u16 gCreditsProtagFemalePal[];
 
 // party menu graphics
 extern const u32 gPartyMenuMisc_Gfx[];

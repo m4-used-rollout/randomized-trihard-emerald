@@ -907,7 +907,7 @@ extern const u8 gText_Roy[];
 extern const u8 gText_Gabby[];
 extern const u8 gText_Anna[];
 
-extern const u8 *const gText_DadsAdviceTable[11];
+extern const u8 *const gText_DadsAdviceTable[15];
 extern const u8 gText_ChallengeAmuletUseDescription[];
 extern const u8 gText_TeamSkullUseDescription[];
 extern const u8 gText_TeamSkullNoToss[];
@@ -2740,5 +2740,28 @@ extern const u8 gText_Unknown[];
 extern const u8 gText_TrainerCloseBy[];
 
 extern const u8 gText_The[];
+
+extern const u8 gText_Whiteout_WildMon[];
+extern const u8 gText_Whiteout_RagingLegendary[];
+extern const u8 gText_Whiteout_Rayquaza[];
+extern const u8 gText_Whiteout_GoodTrainer[];
+extern const u8 gText_Whiteout_YoungTrainer[];
+extern const u8 gText_Whiteout_NinjaTrainer[];
+extern const u8 gText_Whiteout_Interview[];
+extern const u8 gText_Whiteout_Embarrasment[];
+extern const u8 gText_Whiteout_BadTrainer[];
+extern const u8 gText_Whiteout_AquaTrainer[];
+extern const u8 gText_Whiteout_AquaAdmin[];
+extern const u8 gText_Whiteout_RivalHero[];
+extern const u8 gText_Whiteout_RivalHero2[];
+extern const u8 gText_Whiteout_RivalBirch[];
+
+extern const u8 gText_Sunday[];
+extern const u8 gText_Monday[];
+extern const u8 gText_Tuesday[];
+extern const u8 gText_Wednesday[];
+extern const u8 gText_Thursday[];
+extern const u8 gText_Friday[];
+extern const u8 gText_Saturday[];
 
 #endif // GUARD_STRINGS_H

@@ -8,7 +8,7 @@
 #define TRAINER_GRUNT_3           4
 #define TRAINER_GRUNT_4           5
 #define TRAINER_LOGAN_HIDEOUT           6
-#define TRAINER_GRUNT_6           7
+#define TRAINER_LOGAN_INSTITUTE           7
 #define TRAINER_GRUNT_7           8
 #define TRAINER_GABRIELLE_1       9
 #define TRAINER_GRUNT_8          10
@@ -18,16 +18,16 @@
 #define TRAINER_GRUNT_9          14
 #define TRAINER_DECLAN           15
 #define TRAINER_GRUNT_10         16
-#define TRAINER_GRUNT_11         17
-#define TRAINER_GRUNT_12         18
-#define TRAINER_GRUNT_13         19
+#define TRAINER_RODRIGO         17
+#define TRAINER_SEAN         18
+#define TRAINER_WALKER         19
 #define TRAINER_LOGAN_STERNCUTSCENE         20
 #define TRAINER_GRUNT_15         21
 #define TRAINER_GRUNT_16         22
 #define TRAINER_GRUNT_17         23
 #define TRAINER_GRUNT_18         24
 #define TRAINER_GRUNT_19         25
-#define TRAINER_GRUNT_20         26
+#define TRAINER_IZZY         26
 #define TRAINER_GRUNT_21         27
 #define TRAINER_GRUNT_22         28
 #define TRAINER_FREDRICK         29
@@ -568,7 +568,7 @@
 #define TRAINER_CATHERINE_4     564
 #define TRAINER_CATHERINE_5     565
 #define TRAINER_JULIO           566
-#define TRAINER_GRUNT_27        567
+#define TRAINER_JOEY_E4_1        567
 #define TRAINER_GRUNT_28        568
 #define TRAINER_GRUNT_29        569
 #define TRAINER_GRUNT_30        570
@@ -597,7 +597,7 @@
 #define TRAINER_BRENDAN_11      593
 #define TRAINER_PAXTON          594
 #define TRAINER_ISABELLA        595
-#define TRAINER_GRUNT_37        596
+#define TRAINER_BECKETT        596
 #define TRAINER_TABITHA_2       597
 #define TRAINER_JONATHAN        598
 #define TRAINER_BRENDAN_12      599
@@ -856,7 +856,10 @@
 #define TRAINER_LEAF            852
 #define TRAINER_BRENDAN_16      853
 #define TRAINER_MAY_16          854
+#define TRAINER_TYLER_BADGE8    855
+#define TRAINER_TESSA_BADGE8    856
+#define TRAINER_THEO_BADGE8     857
 
-#define TRAINERS_COUNT          855
+#define TRAINERS_COUNT          858
 
 #endif  // GUARD_CONSTANTS_OPPONENTS_H

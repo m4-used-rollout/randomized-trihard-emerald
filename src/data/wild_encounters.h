@@ -24,7 +24,7 @@ const struct WildPokemon gRoute101_LandMons[] =
     {2, 2, SPECIES_ZIGZAGOON},
     {2, 2, SPECIES_ZIGZAGOON},
     {3, 3, SPECIES_ZIGZAGOON},
-    {3, 3, SPECIES_CUBONE}, //SPECIES_ZIGZAGOON),
+    {3, 3, SPECIES_CUBONE},
 };
 
 const struct WildPokemonInfo gRoute101_LandMonsInfo = {20, gRoute101_LandMons};
@@ -87,7 +87,7 @@ const struct WildPokemon gRoute103_LandMons[] =
     {3, 3, SPECIES_WINGULL},
     {3, 3, SPECIES_WINGULL},
     {4, 4, SPECIES_WINGULL},
-    {3, 4, SPECIES_SURSKIT}, //SPECIES_WINGULL},
+    {3, 4, SPECIES_SURSKIT},
 };
 
 const struct WildPokemonInfo gRoute103_LandMonsInfo = {20, gRoute103_LandMons};
@@ -132,7 +132,7 @@ const struct WildPokemon gRoute104_LandMons[] =
     {4, 4, SPECIES_WINGULL},
     {4, 5, SPECIES_WINGULL},
     {3, 3, SPECIES_WINGULL},
-    {5, 5, SPECIES_HOPPIP}, //SPECIES_WINGULL},
+    {5, 5, SPECIES_HOPPIP},
 };
 
 const struct WildPokemonInfo gRoute104_LandMonsInfo = {20, gRoute104_LandMons};
@@ -186,7 +186,7 @@ const struct WildPokemon gRoute105_FishingMons[] =
     {30, 35, SPECIES_WAILMER},
     {20, 25, SPECIES_WAILMER},
     {35, 45, SPECIES_WAILMER},
-    {10, 40, SPECIES_MANTINE},//SPECIES_WAILMER},
+    {10, 40, SPECIES_MANTINE},
 };
 
 const struct WildPokemonInfo gRoute105_FishingMonsInfo = {30, gRoute105_FishingMons};
@@ -199,11 +199,11 @@ const struct WildPokemon gRoute110_LandMons[] =
     {13, 13, SPECIES_ELECTRIKE},
     {13, 13, SPECIES_MINUN},
     {13, 13, SPECIES_ODDISH},
-    {13, 13, SPECIES_PLUSLE}, //SPECIES_MINUN},
+    {13, 13, SPECIES_PLUSLE},
     {13, 13, SPECIES_GULPIN},
     {12, 12, SPECIES_WINGULL},
     {12, 12, SPECIES_WINGULL},
-    {12, 12, SPECIES_MINUN}, //SPECIES_PLUSLE},
+    {12, 12, SPECIES_MINUN},
     {13, 13, SPECIES_PLUSLE},
 };
 
@@ -305,7 +305,7 @@ const struct WildPokemon gRoute112_LandMons[] =
     {16, 16, SPECIES_NUMEL},
     {16, 16, SPECIES_NUMEL},
     {16, 16, SPECIES_NUMEL},
-    {14, 16, SPECIES_VULPIX}, //SPECIES_NUMEL},
+    {14, 16, SPECIES_VULPIX},
 };
 
 const struct WildPokemonInfo gRoute112_LandMonsInfo = {20, gRoute112_LandMons};
@@ -322,7 +322,7 @@ const struct WildPokemon gRoute113_LandMons[] =
     {16, 16, SPECIES_SLUGMA},
     {16, 16, SPECIES_SPINDA},
     {16, 16, SPECIES_SKARMORY},
-    {14, 16, SPECIES_ZANGOOSE}, //SPECIES_SPINDA},
+    {14, 16, SPECIES_ZANGOOSE},
     {16, 16, SPECIES_SKARMORY},
 };
 
@@ -550,7 +550,7 @@ const struct WildPokemon gRusturfTunnel_LandMons[] =
     {5, 5, SPECIES_WHISMUR},
     {8, 8, SPECIES_WHISMUR},
     {5, 5, SPECIES_WHISMUR},
-    {5, 8, SPECIES_DUNSPARCE},//SPECIES_WHISMUR},
+    {5, 8, SPECIES_DUNSPARCE},
 };
 
 const struct WildPokemonInfo gRusturfTunnel_LandMonsInfo = {10, gRusturfTunnel_LandMons};
@@ -795,11 +795,11 @@ const struct WildPokemonInfo gJaggedPass_LandMonsInfo = {20, gJaggedPass_LandMon
 
 const struct WildPokemon gRoute106_WaterMons[] =
 {
-    {5, 35, SPECIES_REMORAID},//SPECIES_TENTACOOL},
+    {5, 35, SPECIES_REMORAID},
     {10, 30, SPECIES_WINGULL},
     {15, 25, SPECIES_WINGULL},
-    {25, 30, SPECIES_MANTINE},//SPECIES_PELIPPER},
-    {25, 30, SPECIES_MANTINE},//SPECIES_PELIPPER},
+    {25, 30, SPECIES_MANTINE},
+    {25, 30, SPECIES_MANTINE},
 };
 
 const struct WildPokemonInfo gRoute106_WaterMonsInfo = {4, gRoute106_WaterMons};
@@ -853,7 +853,7 @@ const struct WildPokemon gRoute108_WaterMons[] =
     {10, 30, SPECIES_WINGULL},
     {15, 25, SPECIES_WINGULL},
     {25, 30, SPECIES_PELIPPER},
-    {25, 30, SPECIES_CHINCHOU},//SPECIES_PELIPPER},
+    {25, 30, SPECIES_CHINCHOU},
 };
 
 const struct WildPokemonInfo gRoute108_WaterMonsInfo = {4, gRoute108_WaterMons};

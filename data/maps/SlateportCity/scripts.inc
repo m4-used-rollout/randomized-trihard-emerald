@@ -13,6 +13,8 @@ SlateportCity_OnTransition: @ 81DCC6C
 	call SlateportCity_EventScript_1DCC8D
 	compare VAR_SLATEPORT_STATE, 1
 	call_if_eq SlateportCity_EventScript_1DCC99
+	compare VAR_CROSS_MAP_TRIGGER, 1
+	call_if_eq SlateportCity_EventScript_SailOffPrep
 	end
 SlateportCity_EventScript_1DCC8D:: @ 81DCC8D
 	setflag FLAG_VISITED_SLATEPORT_CITY
@@ -26,15 +28,21 @@ SlateportCity_EventScript_1DCC99:: @ 81DCC99
 	setobjectxyperm 6, 27+8, 16
 	setobjectxyperm 8, 28+8, 16
 	setobjectxyperm 1, 29+8, 16
-	setobjectxyperm 2, 31+8, 14
+	setobjectxyperm 2, 30+8, 17
 	setobjectmovementtype LID_CAPT_STERN, MOVEMENT_TYPE_FACE_DOWN
 	setobjectmovementtype 7, MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT
 	setobjectmovementtype 3, MOVEMENT_TYPE_FACE_UP_AND_RIGHT
 	setobjectmovementtype 6, MOVEMENT_TYPE_FACE_UP
 	setobjectmovementtype 8, MOVEMENT_TYPE_FACE_UP
 	setobjectmovementtype 1, MOVEMENT_TYPE_FACE_UP
-	setobjectmovementtype 2, MOVEMENT_TYPE_FACE_LEFT
+	setobjectmovementtype 2, MOVEMENT_TYPE_FACE_UP
 	return
+
+SlateportCity_EventScript_SailOffPrep:
+	setobjectxyperm 38, 44, 12
+	return
+
+
 SlateportCity_EventScript_PositionScottAfterMuseum:: @ 81DCCE7
 	setflag FLAG_HIDE_MAP_NAME_POPUP
 	@ Check if the player is on the left of the door
@@ -51,7 +59,29 @@ SlateportCity_EventScript_1DCD06:: @ 81DCD06
 
 SlateportCity_MapScript2_FrameTable: @ 81DCD12
 	map_script_2 VAR_SLATEPORT_MUSEUM_HEIST_STATE, 3, SlateportCity_EventScript_LoganAfterMuseum
+	map_script_2 VAR_CROSS_MAP_TRIGGER, 1, SlateportCity_EventScript_SailOff
 	.2byte 0
+
+SlateportCity_EventScript_SailOff:
+	applymovement 38, SlateportCity_Movement_SailOff
+	setobjectxyperm 38, 47, 0
+	setvar VAR_CROSS_MAP_TRIGGER, 0
+	end
+SlateportCity_Movement_SailOff:
+	walk_right
+	walk_right
+	walk_right
+	walk_right
+	walk_fast_right
+	walk_fast_right
+	walk_fast_right
+	walk_fast_right
+	walk_fast_right
+	walk_fast_right
+	walk_fast_right
+	walk_fast_right
+	step_end
+
 
 @ -----------------------------------------------------
 @ Signs
@@ -60,8 +90,8 @@ SlateportCity_SignScript_BattleTent:: @ 81DCF36
 	msgbox SlateportCity_Text_1DE8BC, MSGBOX_SIGN
 	end
 SlateportCity_Text_1DE8BC: @ 81DE8BC
-	.string "{PLACE}Battle Tent Slateport Site{END}\n"
-	.string "“Find it! The ultimate Pokémon!”$"
+	.string "{PLACE}Pokémon Contest{END}\n"
+	.string "“Find it! The most fabulous Pokémon!”$"
 
 
 SlateportCity_SignScript_SternsShipyard:: @ 81DCF3F
@@ -169,7 +199,6 @@ SlateportCity_Text_NameRater2: @ 81DEBA0
 SlateportCity_EventScript_EnergyGuru:: @ 81DCDBD
 	lock
 	faceplayer
-	markasdialog
 	markasdialog
 	message SlateportCity_Text_1DD64A
 	waitmessage
@@ -398,7 +427,7 @@ SlateportCity_EventScript_MuseumWoman:: @ 81DCF17
 	lock
 	faceplayer
 	markasdialog
-	goto_if_set FLAG_DOCK_REJECTED_DEVON_GOODS, SlateportCity_EventScript_1DCF2C
+	goto_if_set FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA, SlateportCity_EventScript_1DCF2C
 	msgbox SlateportCity_Text_1DDBAC, MSGBOX_DEFAULT
 	release
 	end
@@ -590,10 +619,10 @@ SlateportCity_EventScript_DenyEntryResidential::
 	end
 SlateportCity_Text_DenyEntryResidential:
 	.string "I'm sorry for blocking the way. There's\n"
-	.string "so much stuff to move...\p"
-	.string "You're not missing anything anyway. Down\n"
-	.string "this street is just a residential section\l"
-	.string "of the city.$"
+	.string "so much stuff to move…\p"
+	.string "You're not missing anything anyway.\n"
+	.string "Down this street there's just a\l"
+	.string "residential section of the city.$"
 
 
 
@@ -783,7 +812,7 @@ SlateportCity_EventScript_AquaMember8:: @ 81DD065
 	faceplayer
 	goto_if_set FLAG_SCENE_1, SlateportCity_EventScript_AquaMember8a
 	selectpointer_clamp SlateportCity_TextArray_AquaGirl, VAR_AQUA_GIRL_FRIENDSHIP
-	msgbox_selected 
+	msgbox_selected
 	closemessage
 	setflag FLAG_SCENE_1
 	addvar VAR_AQUA_GIRL_FRIENDSHIP, 1
@@ -833,7 +862,7 @@ SlateportCity_EventScript_AquaMember4:: @ 81DD14A
 	faceplayer
 	goto_if_set FLAG_SCENE_0, SlateportCity_EventScript_AquaMember4a
 	selectpointer_clamp SlateportCity_TextArray_AquaBoy, VAR_AQUA_BOY_FRIENDSHIP
-	msgbox_selected 
+	msgbox_selected
 	closemessage
 	setflag FLAG_SCENE_0
 	addvar VAR_AQUA_BOY_FRIENDSHIP, 1
@@ -972,6 +1001,7 @@ SlateportCity_EventScript_AquaLineMove:
 	waitmovement 0
 	setvar VAR_SLATEPORT_MUSEUM_HEIST_STATE, 1
 	setvar VAR_SLATEPORT_MUSEUM_1F_STATE, 1
+	setflag FLAG_HIDE_SLATEPORT_MUSEUM_POPULATION
 	setflag FLAG_HIDE_SLATEPORT_CITY_TEAM_AQUA
 	warp MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_1F, 255, 10, 4
 	waitstate
@@ -982,7 +1012,7 @@ SlateportCity_Movement_AquaLineMove_GoIn:
 	set_invisible
 	step_end
 
-	
+
 #undef LID_FRONT1
 #undef LID_FRONT2
 #undef LID_FRONT3
@@ -1010,6 +1040,7 @@ SlateportCity_EventScript_LoganAfterMuseum:
 	waitmovement EVENT_OBJ_ID_PLAYER
 	waitmovement EVENT_OBJ_ID_CAMERA
 	special RemoveCameraObject
+	closemessage
 	applymovement EVENT_OBJ_ID_PLAYER, SlateportCity_Movement_LoganAfterMuseum_PlayerWatch
 	applymovement LID_LOGAN, SlateportCity_Movement_LoganAfterMuseum_LoganRunOff
 	waitmovement 0
@@ -1079,54 +1110,58 @@ SlateportCity_Text_1DE4C4: @ 81DE4C4
 	.string "Gabby: I see, I see. You've had a most\n"
 	.string "invaluable experience…$"
 
-
 SlateportCity_EventScript_CaptainStern:: @ 81DD1F8
 	lockall
-	msgbox SlateportCity_Text_1DE502, MSGBOX_DEFAULT
-	msgbox SlateportCity_Text_1DE54A, MSGBOX_DEFAULT
+	@ Stern talking
+	markasdialog 16
+	msgbox SlateportCity_Text_1DE502
+	@ Gabby
+	markasdialog -6
+	msgbox SlateportCity_Text_1DE54A
 	closemessage
-	applymovement 10, Common_Movement_WalkInPlaceRight
+	@ Reporter walks away
+	applymovement LID_REPORTER, Common_Movement_WalkInPlaceRight
 	waitmovement 0
 	delay 10
-	applymovement 9, Common_Movement_WalkInPlaceDown
+	applymovement LID_CAMERAMAN, Common_Movement_WalkInPlaceDown
 	waitmovement 0
 	delay 25
 	applymovement LID_CAPT_STERN, SlateportCity_Movement_1DD33C
 	applymovement EVENT_OBJ_ID_PLAYER, SlateportCity_Movement_1DD34A
-	applymovement 10, SlateportCity_Movement_1DD319
-	applymovement 9, SlateportCity_Movement_1DD326
+	applymovement LID_REPORTER, SlateportCity_Movement_1DD319
+	applymovement LID_CAMERAMAN, SlateportCity_Movement_1DD326
 	waitmovement 0
-	removeobject 10
-	removeobject 9
-	msgbox SlateportCity_Text_1DE5F7, MSGBOX_DEFAULT
-	applymovement LID_CAPT_STERN, Common_Movement_WalkInPlaceUp
-	waitmovement 0
+	removeobject LID_REPORTER
+	removeobject LID_CAMERAMAN
+	@
+	markasdialog 12
 	msgbox SlateportCity_Text_1DE64F, MSGBOX_DEFAULT
+	@ Archie on megaphone
 	playbgm MUS_AQA_0, 0
+	markasdialog -10
 	msgbox SlateportCity_Text_1DE724, MSGBOX_DEFAULT
+	@ Panic
 	applymovement 6, Common_Movement_WalkInPlaceLeft
 	applymovement 1, Common_Movement_WalkInPlaceLeft
 	applymovement 7, SlateportCity_Movement_1DD309
 	applymovement 3, Common_Movement_QuestionMark
 	applymovement 2, SlateportCity_Movement_1DD311
-	waitmovement 0
-	applymovement LID_CAPT_STERN, Common_Movement_WalkInPlaceDown
-	waitmovement 0
-	msgbox SlateportCity_Text_1DE7F7, MSGBOX_DEFAULT
+	delay 20
 	playse SE_PIN
-	applymovement LID_CAPT_STERN, Common_Movement_ExclamationMark
-	waitmovement 0
-	applymovement LID_CAPT_STERN, Common_Movement_Delay48
+	applymovement LID_CAPT_STERN, Common_Movement_ExclamationMarkAndWait
 	waitmovement 0
 	applymovement LID_CAPT_STERN, Common_Movement_WalkInPlaceUp
 	waitmovement 0
+	@
+	markasdialog 12
 	msgbox SlateportCity_Text_1DE860, MSGBOX_DEFAULT
-	msgbox SlateportCity_Text_1DE8A0, MSGBOX_DEFAULT
 	closemessage
+	@ Go inside
 	applymovement LID_CAPT_STERN, SlateportCity_Movement_1DD337
 	applymovement EVENT_OBJ_ID_PLAYER, SlateportCity_Movement_1DD344
 	waitmovement 0
-	removeobject 11
+	removeobject LID_CAPT_STERN
+	@ Prepare next screen in harbor
 	clearflag FLAG_HIDE_SLATEPORT_CITY_HARBOR_CAPTAIN_STERN
 	clearflag FLAG_HIDE_SLATEPORT_CITY_HARBOR_SUBMARINE_SHADOW
 	clearflag FLAG_HIDE_SLATEPORT_CITY_HARBOR_AQUA_GRUNT
@@ -1145,10 +1180,26 @@ SlateportCity_Text_1DE54A: @ 81DE54A
 	.string "your busy schedule to talk to us.\p"
 	.string "We hope we can interview you again\n"
 	.string "with news of more discoveries!$"
-SlateportCity_Text_1DE5F7: @ 81DE5F7
-	.string "Capt. Stern: Whew…\p"
-	.string "That was my first time to be filmed for\n"
-	.string "TV. That was nerve-wracking.$"
+SlateportCity_Text_1DE64F: @ 81DE64F
+	.string "Capt. Stern: Augh! {P_PLAYER}!\n"
+	.string "If you're here! That means the rest\l"
+	.string "Team Aqua isn't too far behind!!$"
+SlateportCity_Text_1DE724: @ 81DE724
+	.string "Archie: Fufufu…\n"
+	.string "That's right, Capt. Stern.\p"
+	.string "We of Team Aqua will assume\n"
+	.string "control of your submarine!\p"
+	.string "Your objections are meaningless!\n"
+	.string "We expect your total cooperation!\p"
+	.string "Fufufu…\n"
+	.string "Just watch and learn what Team\l"
+	.string "Aqua has planned!$"
+SlateportCity_Text_1DE860: @ 81DE860
+	.string "Capt. Stern: It's from the harbor!\p"
+	.string "The submarine!\n"
+	.string "They're trying to take it!$"
+
+
 SlateportCity_Movement_1DD33C: @ 81DD33C
 	delay_16
 	delay_16
@@ -1157,16 +1208,14 @@ SlateportCity_Movement_1DD33C: @ 81DD33C
 	delay_16
 	walk_down
 	walk_left
+	walk_in_place_fastest_down
+	emote_exclamation_mark
 	step_end
 SlateportCity_Movement_1DD34A: @ 81DD34A
 	delay_16
 	delay_16
-	delay_16
-	delay_16
-	delay_16
-	delay_16
-	delay_16
-	walk_in_place_fastest_down
+	walk_right
+	walk_in_place_fastest_up
 	step_end
 SlateportCity_Movement_1DD319: @ 81DD319
 	delay_16
@@ -1216,29 +1265,23 @@ SlateportCity_Movement_1DD311: @ 81DD311
 	walk_in_place_fastest_left
 	step_end
 
-
-
-
-
 SlateportCity_Movement_1DD334: @ 81DD334
 	walk_down
 	walk_in_place_fastest_up
 	step_end
 
 SlateportCity_Movement_1DD337: @ 81DD337
-	walk_right
-	walk_up
-	walk_up
+	walk_fast_right
+	walk_fast_up
+	walk_fast_up
 	set_invisible
 	step_end
-
-
-
 SlateportCity_Movement_1DD344: @ 81DD344
-	walk_in_place_fastest_right
 	delay_16
 	delay_16
 	walk_right
+	walk_up
+	walk_up
 	walk_up
 	step_end
 
@@ -1251,11 +1294,12 @@ SlateportCity_Movement_1DD344: @ 81DD344
 SlateportCity_EventScript_PowderJarLady:: @ 81DD36E
 	lock
 	faceplayer
+	markasdialog
 	goto_if_set FLAG_RECEIVED_POWDER_JAR, SlateportCity_EventScript_1DD39A
-	msgbox SlateportCity_Text_1DEBCE, MSGBOX_DEFAULT
+	msgbox SlateportCity_Text_1DEBCE
 	giveitem_std ITEM_POWDER_JAR
 	setflag FLAG_RECEIVED_POWDER_JAR
-	msgbox SlateportCity_Text_1DED27, MSGBOX_DEFAULT
+	msgbox SlateportCity_Text_1DED27
 	release
 	end
 SlateportCity_Text_1DEBCE: @ 81DEBCE
@@ -1278,7 +1322,7 @@ SlateportCity_EventScript_1DD39A:: @ 81DD39A
 	specialvar VAR_RESULT, HasEnoughBerryPowder
 	compare VAR_RESULT, 0
 	goto_if_eq SlateportCity_EventScript_1DD3C0
-	msgbox SlateportCity_Text_1DEE40, MSGBOX_DEFAULT
+	msgbox SlateportCity_Text_1DEE40
 	special DisplayBerryPowderVendorMenu
 	goto SlateportCity_EventScript_1DD3CA
 	end
@@ -1287,7 +1331,7 @@ SlateportCity_Text_1DEE40: @ 81DEE40
 	.string "Berry Powder?$"
 
 SlateportCity_EventScript_1DD3C0:: @ 81DD3C0
-	msgbox SlateportCity_Text_1DED27, MSGBOX_DEFAULT
+	msgbox SlateportCity_Text_1DED27
 	release
 	end
 SlateportCity_Text_1DED27: @ 81DED27
@@ -1460,7 +1504,7 @@ SlateportCity_EventScript_1DD5CE:: @ 81DD5CE
 SlateportCity_Text_1DEEC9: @ 81DEEC9
 	.string "Oh, dear. You don't have enough\n"
 	.string "Berry Powder.$"
-	
+
 
 
 
@@ -1476,44 +1520,6 @@ SlateportCity_EventScript_1DD643:: @ 81DD643
 
 
 
-
-
-
-SlateportCity_Text_1DE64F: @ 81DE64F
-	.string "Oh! {PLAYER}!\n"
-	.string "You're looking great!\p"
-	.string "We made a huge discovery on our last\n"
-	.string "seafloor exploration.\p"
-	.string "We found an underwater cavern on\n"
-	.string "Route 128.\p"
-	.string "We think it's the habitat of a Pokémon\n"
-	.string "that's said to have been long extinct.$"
-
-SlateportCity_Text_1DE724: @ 81DE724
-	.string "Fufufu…\n"
-	.string "Capt. Stern, I presume.\p"
-	.string "We of Team Aqua will assume\n"
-	.string "control of your submarine!\p"
-	.string "Your objections are meaningless!\n"
-	.string "We expect your total cooperation!\p"
-	.string "Fufufu…\n"
-	.string "Just watch and learn what Team\l"
-	.string "Aqua has planned!$"
-
-SlateportCity_Text_1DE7F7: @ 81DE7F7
-	.string "Capt. Stern: What was that all about?\p"
-	.string "It sounded like someone using\n"
-	.string "a megaphone…\p"
-	.string "Where did it come from?$"
-
-SlateportCity_Text_1DE860: @ 81DE860
-	.string "It's from the harbor!\p"
-	.string "The submarine!\n"
-	.string "They're trying to take it!$"
-
-SlateportCity_Text_1DE8A0: @ 81DE8A0
-	.string "{PLAYER}!\n"
-	.string "Please, come with me!$"
 
 
 

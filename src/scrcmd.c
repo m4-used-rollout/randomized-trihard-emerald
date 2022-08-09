@@ -34,8 +34,9 @@
 #include "party_menu.h"
 #include "pokemon_storage_system.h"
 #include "random.h"
-#include "overworld.h"
+#include "remembered_dreams.h"
 #include "rtc.h"
+#include "overworld.h"
 #include "script.h"
 #include "script_menu.h"
 #include "script_movement.h"
@@ -729,6 +730,7 @@ bool8 ScrCmd_gettime(struct ScriptContext *ctx)
     gSpecialVar_0x8000 = gLocalTime.hours;
     gSpecialVar_0x8001 = gLocalTime.minutes;
     gSpecialVar_0x8002 = gLocalTime.seconds;
+    gSpecialVar_0x8003 = gLocalTime.dayOfWeek;
     return FALSE;
 }
 
@@ -1338,8 +1340,8 @@ bool8 ScrCmd_message(struct ScriptContext *ctx)
     const u8 *msg = (const u8 *)ScriptReadWord(ctx);
     u8 msgType = ScriptReadByte(ctx);
 
-    if (msg == NULL)
-        msg = (const u8 *)ctx->data[0];
+    if ((u32)msg < 4)
+        msg = (const u8 *)ctx->data[(u32)msg];
     if (msgType == 0)
         msgType = gSpecialVar_TextboxType;
     SetFieldMessageBoxType(msgType);
@@ -1583,18 +1585,11 @@ bool8 ScrCmd_advancetime(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrCmd_drawboxtext(struct ScriptContext *ctx)
+extern u8* gMapNameOverride;
+bool8 ScrCmd_overridemapname(struct ScriptContext *ctx)
 {
-    u8 left = ScriptReadByte(ctx);
-    u8 top = ScriptReadByte(ctx);
-    u8 multichoiceId = ScriptReadByte(ctx);
-    u8 ignoreBPress = ScriptReadByte(ctx);
-
-    /*if (Multichoice(left, top, multichoiceId, ignoreBPress) == TRUE)
-    {
-        ScriptContext1_Stop();
-        return TRUE;
-    }*/
+    u8* str = (u8*)ScriptReadWord(ctx);
+    gMapNameOverride = str;
     return FALSE;
 }
 
@@ -2233,11 +2228,16 @@ bool8 ScrCmd_setmetatile(struct ScriptContext *ctx)
 {
     u16 x = VarGet(ScriptReadHalfword(ctx));
     u16 y = VarGet(ScriptReadHalfword(ctx));
-    u16 tileId = VarGet(ScriptReadHalfword(ctx));
+    u16 tileId = ScriptReadHalfword(ctx);
     u16 isImpassable = VarGet(ScriptReadHalfword(ctx));
-
+    
     x += 7;
     y += 7;
+    
+    if (tileId == 0xFFFF)
+        tileId = MapGridGetMetatileIdAt(x, y);
+    tileId = VarGet(tileId);
+    
     if (!isImpassable)
         MapGridSetMetatileIdAt(x, y, tileId);
     else
@@ -2338,15 +2338,17 @@ bool8 ScrCmd_domourning(struct ScriptContext *ctx)
 
 bool8 ScrCmd_dodreams(struct ScriptContext *ctx)
 {
-    if (DoDreamCutscenes())
-    {
-        ScriptContext1_Stop();
-        return TRUE;
-    }
-    else
-    {
-        return FALSE;
-    }
+    // This function will check if a dream needs to happen and do a ScriptCall
+    // if it deems it appropriate.
+    DoDreamCutscenes(ctx);
+    return FALSE;
+    
+    // if (DoDreamCutscenes(ctx)) {
+    //     ScriptContext1_Stop();
+    //     return TRUE;
+    // } else {
+    //     return FALSE;
+    // }
 }
 
 bool8 ScrCmd_checkcoins(struct ScriptContext *ctx)

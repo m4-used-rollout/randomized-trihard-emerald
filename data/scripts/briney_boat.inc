@@ -1,5 +1,27 @@
 
 @ -----------------------------------------------------
+@ Wingull Rescue
+
+@ Wingull_EventScript_Rescue::
+	
+	
+@ Wingull_Text_Rescue:
+@ 	.string "Oh, hey, it's Peeko!\n"
+@ 	.string "What are the odds?\p"
+@ 	.string "It looks like she wants to fly you\n"
+@ 	.string "back to {STR_VAR_1}.\p"
+@ 	.string "Hop a ride?$"
+
+
+@ Wingull_EventScript_NoRescue::
+@ 	msgbox Wingull_Text_NoRescue, MSGBOX_DESCRIBE
+@ 	end
+@ Wingull_Text_NoRescue:
+@ 	.string "This wild Wingull seems uninterested\n"
+@ 	.string "in you.$"
+
+
+@ -----------------------------------------------------
 @ Route 104 to Dewford
 
 Briney_EventScript_Route104_Dewford:: @ 81ED0D9
@@ -23,16 +45,16 @@ Briney_EventScript_Route104_Dewford:: @ 81ED0D9
 	end
 
 Briney_EventScript_Route104_Dewford_GiveOldRod:
-	msgbox Briney_Text_Route104_Dewford_GiveOldRod1, MSGBOX_DIALOG
+	msgbox Briney_Text_Route104_Dewford_GiveOldRod1, MSGBOX_CDIALOG
 	giveitem_std ITEM_OLD_ROD
 	setflag FLAG_RECEIVED_OLD_ROD
-	msgbox Briney_Text_Route104_Dewford_GiveOldRod2, MSGBOX_DIALOG
+	msgbox Briney_Text_Route104_Dewford_GiveOldRod2, MSGBOX_CDIALOG
 	closemessage
 	fadescreen 1
-	@ advancertc 5
+	advancetime 5, 15, 30
 	delay 120
 	fadescreen 0
-	msgbox Briney_Text_Route104_Dewford_GiveOldRod3, MSGBOX_DIALOG
+	msgbox Briney_Text_Route104_Dewford_GiveOldRod3, MSGBOX_CDIALOG
 	closemessage
 	return
 Briney_Text_Route104_Dewford_GiveOldRod1:

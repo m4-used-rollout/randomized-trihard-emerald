@@ -7,6 +7,7 @@
 #include "decoration.h"
 #include "diploma.h"
 #include "event_data.h"
+#include "event_scripts.h"
 #include "event_object_movement.h"
 #include "fieldmap.h"
 #include "field_camera.h"
@@ -439,31 +440,43 @@ bool32 ShouldDoScottCall(void)
     return TRUE;
 }
 
-bool32 ShouldDoRoxanneCall(void)
+bool32 TryDoAlexCall(void)
 {
-    if (FlagGet(FLAG_ENABLE_ROXANNE_FIRST_CALL))
-    {
-        switch (gMapHeader.mapType)
-        {
+    if (FlagGet(FLAG_ENABLE_ALEX_FIRST_CALL)) {
+        switch (gMapHeader.mapType) {
             case 1:
             case 2:
             case 3:
             case 6:
-                if (++(*GetVarPointer(VAR_ROXANNE_CALL_STEP_COUNTER)) < 250)
-                {
+                // Step counter starts from 0, increments
+                if (++(*GetVarPointer(VAR_ALEX_CALL_STEP_COUNTER)) < 200) {
                     return FALSE;
                 }
                 break;
             default:
                 return FALSE;
         }
+        ScriptContext1_SetupScript(DreamScript_Alex_FirstCall);
+        return TRUE;
     }
-    else
-    {
-        return FALSE;
+    if (FlagGet(FLAG_ENABLE_ALEX_LEAGUE_CALL)) {
+        switch (gMapHeader.mapType) {
+            case 1:
+            case 2:
+            case 3:
+            case 6:
+                // Same step counter from above, reset
+                if (++(*GetVarPointer(VAR_ALEX_CALL_STEP_COUNTER)) < 20) {
+                    return FALSE;
+                }
+                break;
+            default:
+                return FALSE;
+        }
+        ScriptContext1_SetupScript(DreamScript_Alex_LeagueCall);
+        return TRUE;
     }
-
-    return TRUE;
+    return FALSE;
 }
 
 bool32 ShouldDoRivalRayquazaCall(void)
@@ -623,33 +636,39 @@ static void LoadLinkPartnerEventObjectSpritePalette(u16 graphicsId, u8 localEven
     }
 }
 
-static const struct UCoords8 gUnknown_085B2B68[] = {
+static const struct UCoords8 sMauvilleGymButtonLocs[] = {
     { 7, 22},
     {11, 19},
     {10, 16},
     {15, 16}
 };
 
-void MauvilleGymSpecial1(void)
+void MauvilleGym_DepressButton(void)
 {
     u8 i;
-    for (i = 0; i < ARRAY_COUNT(gUnknown_085B2B68); i++)
+    for (i = 0; i < ARRAY_COUNT(sMauvilleGymButtonLocs); i++)
     {
         if (i == gSpecialVar_0x8004)
         {
-            MapGridSetMetatileIdAt(gUnknown_085B2B68[i].x, gUnknown_085B2B68[i].y, 0x206);
+            MapGridSetMetatileIdAt(sMauvilleGymButtonLocs[i].x, sMauvilleGymButtonLocs[i].y, 0x206);
         }
         else
         {
-            MapGridSetMetatileIdAt(gUnknown_085B2B68[i].x, gUnknown_085B2B68[i].y, 0x205);
+            MapGridSetMetatileIdAt(sMauvilleGymButtonLocs[i].x, sMauvilleGymButtonLocs[i].y, 0x205);
         }
     }
 }
 
-void MauvilleGymSpecial2(void)
+// This function seems to toggle metatiles in the whole gym.
+// Presumably this wasn't done in script (because it could have been)
+// because they were playing with the tiles going back and forth
+// during development?
+void MauvilleGym_ToggleLightningGates(void)
 {
     int x, y;
-    for (y = 12; y < 24; y++)
+    //These numbers makes no sense unless MapGrid[GS]etMetatileIdAt does
+    // NOT do the usual +7 to all x/y coords...
+    for (y = 12; y < 24; y++) 
     {
         for (x = 7; x < 16; x++)
         {
@@ -742,11 +761,11 @@ void MauvilleGymSpecial2(void)
     }
 }
 
-void MauvilleGymSpecial3(void)
+void MauvilleGym_ShutOffPuzzle(void)
 {
     int i, x, y;
-    const struct UCoords8 *switchCoords = gUnknown_085B2B68;
-    for (i = ARRAY_COUNT(gUnknown_085B2B68) - 1; i >= 0; i--)
+    const struct UCoords8 *switchCoords = sMauvilleGymButtonLocs;
+    for (i = ARRAY_COUNT(sMauvilleGymButtonLocs) - 1; i >= 0; i--)
     {
         MapGridSetMetatileIdAt(switchCoords->x, switchCoords->y, 0x206);
         switchCoords++;

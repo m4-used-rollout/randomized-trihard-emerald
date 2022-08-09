@@ -53,6 +53,7 @@ PokemonCenter_1F_NurseHealScript_Heal:
 	waitfanfare
 	waitmovement 0
 	special HealPlayerParty
+	advancetime 6, 45, 30
 	@ Do the mourning cutscene, if needed
 	domourning
 	@ TriHard Emerald: Force Save
@@ -415,9 +416,9 @@ PokemonCenter_1F_EventScript_FreePokeballCounter_DenyCutoff:
 	message PokemonCenter_1F_Text_FreePokeballCounter_DenyCutoff
 	waitmessage
 	waitbuttonpress
-	goto_if_set FLAG_TEMP_5, PokemonCenter_1F_EventScript_FreePokeballCounter_DenyCutoff_jump
+	goto_if_set FLAG_TEMP_6, PokemonCenter_1F_EventScript_FreePokeballCounter_DenyCutoff_jump
 	incrementgamestat GAME_STAT_NUM_NPCS_HARRASSED
-	setflag FLAG_TEMP_5 @fallthrough
+	setflag FLAG_TEMP_6 @fallthrough
 PokemonCenter_1F_EventScript_FreePokeballCounter_DenyCutoff_jump:
 	release
 	end
@@ -466,7 +467,7 @@ PokemonCenter_1F_Text_FreePokeballCounter_Explain:
 	.string "to help keep you safe and reduce the\l"
 	.string "number of wild Pokémon incidences.$"
 PokemonCenter_1F_Text_FreePokeballCounter_Explain2:
-	.string "{COLOR LIGHT_GREY}{SHADOW WHITE}"
+	.string "{COLOR DARK_GREY}{SHADOW WHITE}"
 	.string "(Just between you and me, I think it's\n"
 	.string "actually increased the number of wild\l"
 	.string "Pokémon attacks… many people don't\l"

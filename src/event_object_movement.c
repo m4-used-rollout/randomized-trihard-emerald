@@ -2,6 +2,7 @@
 #include "alloc.h"
 #include "battle_pyramid.h"
 #include "berry.h"
+#include "day_night.h"
 #include "decoration.h"
 #include "event_data.h"
 #include "event_object_movement.h"
@@ -436,7 +437,7 @@ const u8 gInitialMovementTypeFacingDirections[] = {
 #define EVENT_OBJ_PAL_TAG_34 0x1123
 #define EVENT_OBJ_PAL_TAG_PROTAG_M1 0x1124
 #define EVENT_OBJ_PAL_TAG_PROTAG_F1 0x1125
-#define EVENT_OBJ_PAL_TAG_PROTAG_F2 0x1126
+#define EVENT_OBJ_PAL_TAG_PROTAG_REFLECT 0x1126
 #define EVENT_OBJ_PAL_TAG_NONE 0x11FF
 
 #include "data/field_event_obj/event_object_graphics_info_pointers.h"
@@ -485,11 +486,18 @@ const struct SpritePalette sEventObjectSpritePalettes[] = {
     {gEventObjectPalette34, EVENT_OBJ_PAL_TAG_34},
     {gEventObjectPaletteProtagM1, EVENT_OBJ_PAL_TAG_PROTAG_M1},
     {gEventObjectPaletteProtagF1, EVENT_OBJ_PAL_TAG_PROTAG_F1},
-    {gEventObjectPaletteProtagF2, EVENT_OBJ_PAL_TAG_PROTAG_F2},
+    {gEventObjectPaletteProtagRef, EVENT_OBJ_PAL_TAG_PROTAG_REFLECT},
     {NULL,                  0x0000},
 };
 
 const u16 gPlayerReflectionPaletteTags[] = {
+    EVENT_OBJ_PAL_TAG_PROTAG_REFLECT,
+    EVENT_OBJ_PAL_TAG_PROTAG_REFLECT,
+    EVENT_OBJ_PAL_TAG_PROTAG_REFLECT,
+    EVENT_OBJ_PAL_TAG_PROTAG_REFLECT,
+};
+
+const u16 Unknown_0850BCFG[] = {
     EVENT_OBJ_PAL_TAG_9,
     EVENT_OBJ_PAL_TAG_9,
     EVENT_OBJ_PAL_TAG_9,
@@ -511,7 +519,9 @@ const u16 gPlayerUnderwaterReflectionPaletteTags[] = {
 };
 
 const struct PairedPalettes gPlayerReflectionPaletteSets[] = {
-    {EVENT_OBJ_PAL_TAG_8, gPlayerReflectionPaletteTags},
+    {EVENT_OBJ_PAL_TAG_PROTAG_M1, gPlayerReflectionPaletteTags},
+    {EVENT_OBJ_PAL_TAG_PROTAG_F1, gPlayerReflectionPaletteTags},
+    {EVENT_OBJ_PAL_TAG_8, Unknown_0850BCFG},
     {EVENT_OBJ_PAL_TAG_17, Unknown_0850BCF0},
     {EVENT_OBJ_PAL_TAG_11, gPlayerUnderwaterReflectionPaletteTags},
     {EVENT_OBJ_PAL_TAG_NONE, NULL},
@@ -595,7 +605,9 @@ const u16 gRedLeafReflectionPaletteTags[] = {
 };
 
 const struct PairedPalettes gSpecialObjectReflectionPaletteSets[] = {
-    {EVENT_OBJ_PAL_TAG_8, gPlayerReflectionPaletteTags},
+    {EVENT_OBJ_PAL_TAG_PROTAG_M1, gPlayerReflectionPaletteTags},
+    {EVENT_OBJ_PAL_TAG_PROTAG_F1, gPlayerReflectionPaletteTags},
+    {EVENT_OBJ_PAL_TAG_8, Unknown_0850BCFG},
     {EVENT_OBJ_PAL_TAG_17, Unknown_0850BCF0},
     {EVENT_OBJ_PAL_TAG_12, gQuintyPlumpReflectionPaletteTags},
     {EVENT_OBJ_PAL_TAG_14, gTruckReflectionPaletteTags},
@@ -2150,6 +2162,7 @@ void Unused_LoadEventObjectPaletteSet(u16 *paletteTags)
     }
 }
 
+// NOTE: Does not use LoadSpritePaletteDayNight because of naming screen
 static u8 sub_808E8F4(const struct SpritePalette *spritePalette)
 {
     if (IndexOfSpritePaletteTag(spritePalette->tag) != 0xFF)
@@ -2163,7 +2176,7 @@ void PatchObjectPalette(u16 paletteTag, u8 paletteSlot)
 {
     u8 paletteIndex = FindEventObjectPaletteIndexByTag(paletteTag);
 
-    LoadPalette(sEventObjectSpritePalettes[paletteIndex].data, 16 * paletteSlot + 0x100, 0x20);
+    LoadPaletteDayNight(sEventObjectSpritePalettes[paletteIndex].data, 16 * paletteSlot + 0x100, 0x20);
 }
 
 void PatchObjectPaletteRange(const u16 *paletteTags, u8 minSlot, u8 maxSlot)

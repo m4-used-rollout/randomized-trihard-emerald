@@ -21,6 +21,7 @@
 #include "constants/weather.h"
 #include "constants/trainer_hill.h"
 #include "constants/battle.h"
+#include "constants/day_night.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -75,6 +76,8 @@ gStdScripts:: @ 81DC2A0
 	.4byte Std_10
 	.4byte Std_MsgboxDescribe
 	.4byte Std_MsgboxDialogue
+	.4byte Std_MsgboxCutsceneDescribe
+	.4byte Std_MsgboxCutsceneDialogue
 gStdScripts_End:: @ 81DC2CC
 
 	.include "data/maps/PetalburgCity/scripts.inc"
@@ -797,6 +800,12 @@ Std_MsgboxDialogue:: @ 8271315
 	release
 	return
 
+Std_MsgboxCutsceneDialogue:: @ 8271315
+	message 0x0, MSGTYPE_DIALOG
+	waitmessage
+	waitbuttonpress
+	return
+
 Std_MsgboxSign:: @ 8271320
 	lockall
 	messagesign 0x0
@@ -812,6 +821,12 @@ Std_MsgboxDescribe:: @ 8271320
 	waitmessage
 	waitbuttonpress
 	releaseall
+	return
+
+Std_MsgboxCutsceneDescribe:: @ 8271320
+	message 0x0, MSGTYPE_DESCRIBE
+	waitmessage
+	waitbuttonpress
 	return
 
 Std_MsgboxDefault:: @ 827132A
@@ -979,6 +994,7 @@ EventScript_ResetAllMapFlags:: @ 82715DE
 	setflag FLAG_HIDE_PETALBURG_CENTER_LOGAN
 	setflag FLAG_HIDE_PETALBURG_CITY_GYM_LOCK
 	@ setflag FLAG_HIDE_PETALBURG_GYM_WALLY
+	setflag FLAG_HIDE_MOSSDEEP_CENTER_FORMER_TEAM_MEMBERS
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_BRENDAN
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_BRENDAN
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_BEDROOM
@@ -1035,7 +1051,7 @@ EventScript_ResetAllMapFlags:: @ 82715DE
 	setflag FLAG_HIDE_RUSTURF_TUNNEL_LOVER_WOMAN
 	setflag FLAG_HIDE_SLATEPORT_CITY_OCEANIC_MUSEUM_2F_AQUA
 	setflag FLAG_UNUSED_0x376
-	setflag FLAG_UNUSED_0x375
+	setflag FLAG_HIDE_SKY_PILLAR_LOGAN
 	setflag FLAG_HIDE_SLATEPORT_MUSEUM_POPULATION
 	setflag FLAG_HIDE_BATTLE_TOWER_OPPONENT
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MOM_OUTSIDE
@@ -1219,6 +1235,7 @@ EverGrandeCity_HallOfFame_EventScript_ResetEliteFour:: @ 82718CC
 	setvar VAR_ELITE_4_STATE, 0
 	return
 
+	.include "data/scripts/dreams.inc"
 	.include "data/scripts/pokecenter_scripts.inc"
 	.include "data/scripts/briney_boat.inc"
 	.include "data/scripts/common_scripts.inc"
@@ -1517,7 +1534,6 @@ EventScript_271F3D:: @ 8271F3D
 	setvar VAR_OBJ_GFX_ID_0, EVENT_OBJ_GFX_RIVAL_MAY_NORMAL
 	return
 
-DewfordTown_Gym_EventScript_271F43:: @ 8271F43
 FortreeCity_Gym_EventScript_271F43:: @ 8271F43
 LavaridgeTown_Gym_1F_EventScript_271F43:: @ 8271F43
 MauvilleCity_Gym_EventScript_271F43:: @ 8271F43
@@ -1543,12 +1559,12 @@ DewfordTown_Gym_EventScript_271FA1:: @ 8271FA1
 	return
 
 DewfordTown_Gym_EventScript_271FAB:: @ 8271FAB
-	settrainerflag TRAINER_TAKAO
-	settrainerflag TRAINER_JOCELYN
-	settrainerflag TRAINER_LAURA
-	settrainerflag TRAINER_BRENDEN
-	settrainerflag TRAINER_CRISTIAN
-	settrainerflag TRAINER_LILITH
+	@ settrainerflag TRAINER_TAKAO
+	@ settrainerflag TRAINER_JOCELYN
+	@ settrainerflag TRAINER_LAURA
+	@ settrainerflag TRAINER_BRENDEN
+	@ settrainerflag TRAINER_CRISTIAN
+	@ settrainerflag TRAINER_LILITH
 	return
 
 DewfordTown_Gym_EventScript_271FBE:: @ 8271FBE
@@ -1605,16 +1621,16 @@ DewfordTown_Gym_EventScript_272010:: @ 8272010
 	return
 
 DewfordTown_Gym_EventScript_272035:: @ 8272035
-	settrainerflag TRAINER_ANDREA
-	settrainerflag TRAINER_CRISSY
-	settrainerflag TRAINER_BRIANNA
-	settrainerflag TRAINER_CONNIE
-	settrainerflag TRAINER_BRIDGET
-	settrainerflag TRAINER_OLIVIA
-	settrainerflag TRAINER_TIFFANY
-	settrainerflag TRAINER_BETHANY
-	settrainerflag TRAINER_ANNIKA
-	settrainerflag TRAINER_DAPHNE
+	@ settrainerflag TRAINER_ANDREA
+	@ settrainerflag TRAINER_CRISSY
+	@ settrainerflag TRAINER_BRIANNA
+	@ settrainerflag TRAINER_CONNIE
+	@ settrainerflag TRAINER_BRIDGET
+	@ settrainerflag TRAINER_OLIVIA
+	@ settrainerflag TRAINER_TIFFANY
+	@ settrainerflag TRAINER_BETHANY
+	@ settrainerflag TRAINER_ANNIKA
+	@ settrainerflag TRAINER_DAPHNE
 	return
 
 Route114_LanettesHouse_EventScript_272067:: @ 8272067
@@ -1628,12 +1644,15 @@ Common_EventScript_NoRoomLeftForAnother:: @ 8272071
 
 Common_EventScript_OutOfCenterPartyHeal:: @ 8272083
 	call Common_EventScript_PartyHealSave_Setup
+	domourning @ Do the mourning cutscene, if needed
 	call Common_EventScript_PartyHealSave_Save
+	dodreams @ Check for dream cutscenes
 	call Common_EventScript_PartyHealSave_Complete
 	return
 
 Common_EventScript_PartyHealSave_Setup::
 	fadescreen 5 @ FADE_TO_BLACK_NO_WINDOW
+	setflag FLAG_DISABLE_FADE_INIT
 	playfanfare MUS_ME_ASA
 	waitfanfare
 	special HealPlayerParty
@@ -1647,6 +1666,7 @@ Common_EventScript_PartyHealSave_Save::
 	delay 1 @ delay 1 frame to allow the save game window to actually close
 	return
 Common_EventScript_PartyHealSave_Complete::
+	clearflag FLAG_DISABLE_FADE_INIT
 	fadescreen 4 @ FADE_FROM_BLACK_NO_WINDOW
 	return
 
@@ -1854,70 +1874,112 @@ CaveOfOrigin_UnusedRubySapphireMap3_EventScript_2722C1:: @ 82722C1
 	setvar VAR_TEMP_5, 1
 	return
 
+@ Kecleon Scripts
+
 Route120_EventScript_2722DB:: @ 82722DB
 	lock
 	faceplayer
 	setvar VAR_0x8009, 1
-	goto Route120_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
 Route120_EventScript_2722E8:: @ 82722E8
 	lock
 	faceplayer
 	setvar VAR_0x8009, 2
-	goto Route120_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
 Route120_EventScript_2722F5:: @ 82722F5
 	lock
 	faceplayer
 	setvar VAR_0x8009, 3
-	goto Route120_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
 Route120_EventScript_272302:: @ 8272302
 	lock
 	faceplayer
 	setvar VAR_0x8009, 4
-	goto Route120_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
 Route120_EventScript_27230F:: @ 827230F
 	lock
 	faceplayer
 	setvar VAR_0x8009, 5
-	goto Route120_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
 Route119_EventScript_27231C:: @ 827231C
 	lock
 	faceplayer
 	setvar VAR_0x8009, 6
-	goto Route119_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
 Route119_EventScript_272329:: @ 8272329
 	lock
 	faceplayer
 	setvar VAR_0x8009, 7
-	goto Route119_EventScript_272336
+	goto Common_EventScript_KecleonFight
 	end
 
-Route119_EventScript_272336:: @ 8272336
-Route120_EventScript_272336:: @ 8272336
-	checkitem ITEM_DEVON_SCOPE, 1
-	compare VAR_RESULT, 1
-	goto_if_eq Route119_EventScript_272350
-	msgbox Route119_Text_1F5D00, MSGBOX_DEFAULT
-	release
-	end
+@ Common_EventScript_KecleonFight:: @ 8272336
+@ 	checkitem ITEM_DEVON_SCOPE, 1
+@ 	compare VAR_RESULT, 1
+@ 	goto_if_eq Route119_EventScript_272350
+@ 	msgbox Common_Text_KecleonUnseeable, MSGBOX_DEFAULT
+@ 	release
+@ 	end
+Common_Text_KecleonUnseeable: @ 81F5D00
+	.string "Something unseeable is in the way.$"
 
-Route119_EventScript_272350:: @ 8272350
-	msgbox Route119_Text_1F5D23, MSGBOX_YESNO
-	compare VAR_RESULT, 1
+
+
+
+@ Route119_EventScript_272350:: @ 8272350
+Common_EventScript_KecleonFight:: @ 8272336
+	gettime
+	selectpointer_wrap Common_TextArray_KecleonFightQuery, VAR_0x8000
+	msgbox_selected MSGBOX_YESNO
+	compare VAR_RESULT, YES
 	goto_if_eq Route119_EventScript_272365
 	release
 	end
+.align 2
+Common_TextArray_KecleonFightQuery:
+	.4byte Common_Text_KecleonFightQuery2 // midnight
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery2 //4am
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1 //8am
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1 //noon
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1 //4pm
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery1
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery2 //8pm
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte Common_Text_KecleonFightQuery2
+	.4byte 0
+Common_Text_KecleonFightQuery1: @ 81F5D23
+	.string "Something unseeable is in the way.\p"
+	.string "Do you want to attack the thick air?$"
+Common_Text_KecleonFightQuery2:
+	.string "Something unseeable is in the way.\p"
+	.string "Do you want to attack the darkness?$"
 
 Route119_EventScript_272365:: @ 8272365
 	msgbox Route119_Text_1F5D63, MSGBOX_DEFAULT
@@ -1936,17 +1998,18 @@ Route119_EventScript_272365:: @ 8272365
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
 	compare VAR_RESULT, 1
-	goto_if_eq Route119_EventScript_2723C1
+	goto_if_eq Common_EventScript_FadeAndRemoveTalkedObject
 	compare VAR_RESULT, 4
-	goto_if_eq Route119_EventScript_2723C1
+	goto_if_eq Common_EventScript_FadeAndRemoveTalkedObject
 	compare VAR_RESULT, 5
-	goto_if_eq Route119_EventScript_2723C1
+	goto_if_eq Common_EventScript_FadeAndRemoveTalkedObject
 	release
 	end
-
-Route119_EventScript_2723C1:: @ 82723C1
-	goto Route119_EventScript_27376D
-	end
+Route119_Text_1F5D63: @ 81F5D63
+	.string "{PLAYER} attacked.\p"
+	.string "An invisible Pokémon became completely\n"
+	.string "visible!\p"
+	.string "The startled Pokémon fights back!$"
 
 FallarborTown_House1_EventScript_2723E4:: @ 82723E4
 GraniteCave_StevensRoom_EventScript_2723E4:: @ 82723E4
@@ -1962,9 +2025,8 @@ SlateportCity_OceanicMuseum_2F_EventScript_2723E4:: @ 82723E4
 EverGrandeCity_DrakesRoom_EventScript_2723F8:: @ 82723F8
 EverGrandeCity_GlaciasRoom_EventScript_2723F8:: @ 82723F8
 EverGrandeCity_PhoebesRoom_EventScript_2723F8:: @ 82723F8
-EverGrandeCity_SidneysRoom_EventScript_2723F8:: @ 82723F8
-	applymovement EVENT_OBJ_ID_PLAYER, EverGrandeCity_SidneysRoom_Movement_2725C6
-	waitmovement 0
+EverGrandeCity_E4Room_UnlockNextDoorTurnOffLights:: @ 82723F8
+	delay 32
 	playse SE_DOOR
 	setmetatile 6, 1, 836, 0
 	setmetatile 6, 2, 837, 0
@@ -1981,11 +2043,8 @@ EverGrandeCity_SidneysRoom_EventScript_2723F8:: @ 82723F8
 	special DrawWholeMapView
 	return
 
-EverGrandeCity_DrakesRoom_EventScript_272475:: @ 8272475
-EverGrandeCity_GlaciasRoom_EventScript_272475:: @ 8272475
-EverGrandeCity_PhoebesRoom_EventScript_272475:: @ 8272475
-EverGrandeCity_SidneysRoom_EventScript_272475:: @ 8272475
-	applymovement EVENT_OBJ_ID_PLAYER, EverGrandeCity_SidneysRoom_Movement_2725BA
+EverGrandeCity_E4Room_WalkUpAndCloseDoorBehind:: @ 8272475
+	applymovement EVENT_OBJ_ID_PLAYER, EverGrandeCity_E4Room_Movement_2725BA
 	waitmovement 0
 	playse SE_TRACK_DOOR
 	setmetatile 5, 12, 518, 1
@@ -1996,11 +2055,16 @@ EverGrandeCity_SidneysRoom_EventScript_272475:: @ 8272475
 	setmetatile 7, 13, 526, 1
 	special DrawWholeMapView
 	return
+EverGrandeCity_E4Room_Movement_2725BA: @ 82725BA
+	walk_up
+	walk_up
+	walk_up
+	walk_up
+	walk_up
+	walk_up
+	step_end
 
-EverGrandeCity_DrakesRoom_EventScript_2724BC:: @ 82724BC
-EverGrandeCity_GlaciasRoom_EventScript_2724BC:: @ 82724BC
-EverGrandeCity_PhoebesRoom_EventScript_2724BC:: @ 82724BC
-EverGrandeCity_SidneysRoom_EventScript_2724BC:: @ 82724BC
+EverGrandeCity_E4Room_SetRoomPostBattle:: @ 82724BC
 	setmetatile 6, 1, 836, 0
 	setmetatile 6, 2, 837, 0
 	setmetatile 5, 12, 518, 1
@@ -2021,10 +2085,7 @@ EverGrandeCity_SidneysRoom_EventScript_2724BC:: @ 82724BC
 	setmetatile 12, 2, 733, 1
 	return
 
-EverGrandeCity_DrakesRoom_EventScript_27255F:: @ 827255F
-EverGrandeCity_GlaciasRoom_EventScript_27255F:: @ 827255F
-EverGrandeCity_PhoebesRoom_EventScript_27255F:: @ 827255F
-EverGrandeCity_SidneysRoom_EventScript_27255F:: @ 827255F
+EverGrandeCity_E4Room_SetRoomClosedDoorBehind:: @ 827255F
 	setmetatile 5, 12, 518, 1
 	setmetatile 6, 12, 518, 1
 	setmetatile 7, 12, 518, 1
@@ -2046,19 +2107,6 @@ Route121_Movement_2725B8: @ 82725B8
 	walk_in_place_right
 	step_end
 
-EverGrandeCity_SidneysRoom_Movement_2725BA: @ 82725BA
-	walk_up
-	walk_up
-	walk_up
-	walk_up
-	walk_up
-	walk_up
-	step_end
-
-EverGrandeCity_SidneysRoom_Movement_2725C6: @ 82725C6
-	delay_16
-	delay_16
-	step_end
 
 Movement_2725CB:: @ 82725CB
 	walk_up
@@ -2136,9 +2184,6 @@ gUnknown_08272C1D:: @ 8272C1D
 gUnknown_08272C5F:: @ 8272C5F
 	.string "The sandstorm is vicious.\nIt's impossible to keep going.$"
 
-gText_SelectWithoutRegisteredItem:: @ 8272C98
-	.string "An item in the BAG can be\nregistered to SELECT for easy use.$"
-
 gUnknown_08272CD5:: @ 8272CD5
 	.string "There's an e-mail from Pokémon TRAINER\nSCHOOL.\p… … … … … …\pA Pokémon may learn up to four moves.\pA TRAINER's expertise is tested on the\nmove sets chosen for Pokémon.\p… … … … … …$"
 
@@ -2205,8 +2250,6 @@ gText_PkmnBoxSomeonesPCFull:: @ 8273296
 gText_PkmnBoxLanettesPCFull:: @ 82732D9
 	.string "BOX “{STR_VAR_3}” on\nLANETTE'S PC was full.\p{STR_VAR_2} was transferred to\nBOX “{STR_VAR_1}.”$"
 
-gUnknown_0827331C:: @ 827331C
-	.string "There's no more room for Pokémon!\pYour party is full!$"
 
 gText_NicknameThisPokemon:: @ 8273374
 	.string "Do you want to give a nickname to\nthis {STR_VAR_1}?$"
@@ -2241,9 +2284,7 @@ gText_UnusualWeatherEnded_Rain:: @ 8273656
 gText_UnusualWeatherEnded_Sun:: @ 8273684
 	.string "The intense sunshine appears to\nhave subsided…$"
 
-EventScript_SelectWithoutRegisteredItem:: @ 82736B3
-	msgbox gText_SelectWithoutRegisteredItem, MSGBOX_SIGN
-	end
+	.include "data/scripts/select.inc"
 
 EventScript_UnusedSetVarResult1:: @ 827374F
 	setvar VAR_RESULT, 1
@@ -2319,8 +2360,8 @@ DesertRuins_EventScript_27376D:: @ 827376D
 IslandCave_EventScript_27376D:: @ 827376D
 MarineCave_End_EventScript_27376D:: @ 827376D
 NewMauville_Inside_EventScript_27376D:: @ 827376D
-Route119_EventScript_27376D:: @ 827376D
 TerraCave_End_EventScript_27376D:: @ 827376D
+Common_EventScript_FadeAndRemoveTalkedObject:: @ 827376D
 	fadescreenswapbuffers 1
 	removeobject VAR_LAST_TALKED
 	fadescreenswapbuffers 0
@@ -2403,11 +2444,13 @@ LittlerootTown_ProfessorBirchsLab_EventScript_2737FF:: @ 82737FF
 
 LittlerootTown_ProfessorBirchsLab_EventScript_273811:: @ 8273811
 MossdeepCity_StevensHouse_EventScript_273811:: @ 8273811
-Route119_WeatherInstitute_2F_EventScript_273811:: @ 8273811
 RustboroCity_DevonCorp_2F_EventScript_273811:: @ 8273811
+Common_EventScript_NoRoomForGiftPokemon::
 	msgbox gUnknown_0827331C, MSGBOX_DEFAULT
 	release
 	end
+gUnknown_0827331C:: @ 827331C
+	.string "There's no more room for Pokémon!\pYour party is full!$"
 
 EventScript_Questionnaire:: @ 827381B
 	lockall
@@ -3202,7 +3245,7 @@ LilycoveCity_ContestLobby_EventScript_28C7E9:: @ 828C7E9
 SlateportCity_OceanicMuseum_1F_EventScript_28C7E9:: @ 828C7E9
 SlateportCity_PokemonFanClub_EventScript_28C7E9:: @ 828C7E9
 	special InterviewAfter
-	incrementgamestat 6
+	incrementgamestat GAME_STAT_GOT_INTERVIEWED
 	release
 	end
 
@@ -4345,14 +4388,9 @@ BattleFrontier_BattlePikeThreePathRoom_Movement_2C427A: @ 82C427A
 	set_invisible
 	step_end
 
-LilycoveCity_ContestLobby_Text_2C427C: @ 82C427C
-	.string "BLEND MASTER: Indeed I am!\n"
-	.string "The BLEND MASTER am I!\p"
-	.string "Blend with me, and you shall witness\n"
-	.string "the mastery I bring to blending!$"
 
 LilycoveCity_ContestLobby_Text_2C42F4: @ 82C42F4
-	.string "BLEND MASTER: Hmmm! So, you wish to\n"
+	.string "Blend Master: Hmmm! So, you wish to\n"
 	.string "see my mastery in action?$"
 
 LilycoveCity_ContestLobby_Text_2C4332: @ 82C4332
@@ -5258,9 +5296,10 @@ FortreeCity_House2_EventScript_2C817C:: @ 82C817C
 	release
 	end
 
-LilycoveCity_DepartmentStoreRooftop_EventScript_2C8186:: @ 82C8186
+LilycoveCity_DepartmentStoreRooftop_EventScript_SubstituteLady:: @ 82C8186
 	lock
 	faceplayer
+	markasdialog
 	goto_if_set FLAG_MOVE_TUTOR_TAUGHT_SUBSTITUTE, LilycoveCity_DepartmentStoreRooftop_EventScript_2C81E4
 	msgbox LilycoveCity_DepartmentStoreRooftop_Text_2C77C6, MSGBOX_YESNO
 	compare VAR_RESULT, 0
@@ -5566,7 +5605,7 @@ gText_082C877B:: @ 82C877B
 	.align 2
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
-	
+
 	.include "data/scripts/te_debug.inc"
 
 	.include "data/maps/SootopolisLegendsEdit/scripts.inc"
@@ -5584,3 +5623,23 @@ gText_082C877B:: @ 82C877B
 	.include "data/maps/EverGrandeCity_WaitingRoom4/scripts.inc"
 
 	.include "data/maps/EverGrandeCity_WaitingRoom5/scripts.inc"
+
+	.include "data/maps/VerdanturfTown_ContestLobby/scripts.inc"
+
+	.include "data/maps/VerdanturfTown_ContestHall/scripts.inc"
+
+	.include "data/maps/SlateportCity_ContestLobby/scripts.inc"
+
+	.include "data/maps/SlateportCity_ContestHall/scripts.inc"
+
+	.include "data/maps/FallarborTown_ContestLobby/scripts.inc"
+
+	.include "data/maps/FallarborTown_ContestHall/scripts.inc"
+
+	.include "data/maps/MirageTowerLayout/scripts.inc"
+
+	.include "data/maps/FortreeCity_House6/scripts.inc"
+
+	.include "data/maps/FortreeCity_House7/scripts.inc"
+
+	.include "data/maps/FortreeCity_House8/scripts.inc"

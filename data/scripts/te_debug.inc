@@ -138,17 +138,52 @@ DebugScript_GiveDebugPartyAndSetFlags::
 	releaseall
 	return
 
+@ DebugScript_TestScript1::
+@ 	lockall
+@ 	setvar VAR_0x8000, 0
+@ 	addvar_if_set FLAG_BADGE01_GET, VAR_0x8000, 1
+@ 	addvar_if_set FLAG_BADGE04_GET, VAR_0x8000, 1
+@ 	buffernumberstring 0, VAR_0x8000
+@ 	msgbox ScriptText_TS1
+@ 	releaseall
+@ 	end
+@ ScriptText_TS1:
+@ 	.string "addvar: {STR_VAR_1}$"
 DebugScript_TestScript1::
-	lockall
-	setvar VAR_0x8000, 0
-	addvar_if_set FLAG_BADGE01_GET, VAR_0x8000, 1
-	addvar_if_set FLAG_BADGE04_GET, VAR_0x8000, 1
-	buffernumberstring 0, VAR_0x8000
-	msgbox ScriptText_TS1
-	releaseall
+	lock
+	fadescreenspeed 5, 0 @ FADE_TO_BLACK_NO_WINDOW
+	setflag FLAG_DISABLE_FADE_INIT
+	delay 10
+	@ callnative ForceTextSpeedToMid
+	
+	selectpointer_clamp DebugScriptPtrTable, VAR_UNUSED_0x40FE
+	call 0
+	
+	@ callnative UnforceTextSpeedToMid
+	clearflag FLAG_DISABLE_FADE_INIT
+	fadescreenspeed 4, 0 @ FADE_FROM_BLACK_NO_WINDOW
+	release
 	end
-ScriptText_TS1:
-	.string "addvar: {STR_VAR_1}$"
+.align 2
+DebugScriptPtrTable:
+	.4byte DreamScript_CantSleep @ 0 - done
+	.4byte DreamScript_0100 @ 1 - done
+	.4byte DreamScript_0150 @ 2 - done
+	.4byte DreamScript_0200 @ 3 - done
+	.4byte DreamScript_0300 @ 4 - done
+	.4byte DreamScript_0400 @ 5 - done
+	.4byte DreamScript_0500 @ 6 - done
+	.4byte DreamScript_0600 @ 7 - done
+	.4byte DreamScript_0700 @ 8 - 
+	.4byte DreamScript_0800 @ 9 - done
+	.4byte DreamScript_0802 @ 10 - 
+	.4byte DreamScript_0900 @ 11 - done
+	.4byte DreamScript_1000 @ 12 - 
+	.4byte DreamScript_1001 @ 13 - 
+	.4byte DreamScript_Alex_FirstCall @ 14
+	.4byte DreamScript_Alex_LeagueCall @ 15
+	.4byte 0
+
 
 ScriptText_DebugBoxText:
 	.string "Oh! There's some Pokemon and badges in\n"

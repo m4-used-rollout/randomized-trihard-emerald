@@ -104,7 +104,10 @@
         "FortreeCity_House3",
         "FortreeCity_House4",
         "FortreeCity_House5",
-        "FortreeCity_DecorationShop"
+        "FortreeCity_DecorationShop",
+        "FortreeCity_House6",
+        "FortreeCity_House7",
+        "FortreeCity_House8"
     ],
     "gMapGroup13": [
         "LilycoveCity_CoveLilyMotel_1F",
@@ -525,7 +528,8 @@
     "gMapGroup33": [
         "Route124_DivingTreasureHuntersHouse",
         "SootopolisLegendsEdit",
-        "ScriptTestMap"
+        "ScriptTestMap",
+        "MirageTowerLayout"
     ],
     "gMapGroup4": [
         "LavaridgeTown_HerbShop",
@@ -544,7 +548,9 @@
         "FallarborTown_PokemonCenter_1F",
         "FallarborTown_PokemonCenter_2F",
         "FallarborTown_House1",
-        "FallarborTown_House2"
+        "FallarborTown_House2",
+        "FallarborTown_ContestLobby",
+        "FallarborTown_ContestHall"
     ],
     "gMapGroup6": [
         "VerdanturfTown_BattleTentLobby",
@@ -555,7 +561,9 @@
         "VerdanturfTown_PokemonCenter_2F",
         "VerdanturfTown_WandasHouse",
         "VerdanturfTown_FriendshipRatersHouse",
-        "VerdanturfTown_House"
+        "VerdanturfTown_House",
+        "VerdanturfTown_ContestLobby",
+        "VerdanturfTown_ContestHall"
     ],
     "gMapGroup7": [
         "PacifidlogTown_PokemonCenter_1F",
@@ -589,7 +597,9 @@
         "SlateportCity_House2",
         "SlateportCity_PokemonCenter_1F",
         "SlateportCity_PokemonCenter_2F",
-        "SlateportCity_Mart"
+        "SlateportCity_Mart",
+        "SlateportCity_ContestLobby",
+        "SlateportCity_ContestHall"
     ],
     "group_order": [
         "gMapGroup0",

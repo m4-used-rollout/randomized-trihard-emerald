@@ -16,7 +16,8 @@
 	[
 		"#Additional Programming",
 		"PikalaxAlt",
-		"Ax6"
+		"Ax6",
+		"Ericchi"
 	],
 	[
 		"#Custom Art",
@@ -27,36 +28,46 @@
 	],
 	[
 		"#Custom Music",
-		"",
-		"Pokémon Center (Born to Lose Remix)",
-		"mathfreak231",
-		""
+		"Pokémon Center (Born to Heal Remix)",
+		"mathfreak231"
 	],
 	[
 		"#Story Modifications",
-		"Tustin2121"
+		"Tustin2121",
+		"#Copyeditor",
+		"Ericchi"
+	],
+	[
+		"#Testers",
+		["FrostedGeulleisia", "diana"],
+		["Ericchi", "Blackrose"],
+		"The TPP Chat"
 	],
 	[
 		"#Original Concept",
 		"M4 Used Rollout"
 	],
 	[
-		"#Concept Work",
+		"#Concept and Balancing",
 		"M4 Used Rollout",
 		"Tustin2121",
 		"Chaos lord2",
-		"Charmy"
+		"FrostedGeulleisia"
 	],
 	[
 		"#Special Thanks To",
 		"The Pokémon Reverse Engineering Project",
+		"Sierraffinity's CrystalDust Project",
 		"The TwitchPlaysPokémon Community"
 	],
 	
 	
-	[],
-	[],
-	[],
+	[
+		"Hi, Mom!",
+		"#I'm on Twitch.TV!",
+		"Kappa"
+	],
+	
 	
 	
 	[
@@ -69,7 +80,9 @@
 	],
 	[
 		"#Art Director",
-		"Ken Sugimori",
+		"Ken Sugimori"
+	],
+	[
 		"#World Director",
 		"Junichi Masuda"
 	],

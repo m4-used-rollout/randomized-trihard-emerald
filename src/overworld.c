@@ -6,6 +6,8 @@
 #include "bg.h"
 #include "cable_club.h"
 #include "clock.h"
+#include "credits.h"
+#include "day_night.h"
 #include "event_data.h"
 #include "field_camera.h"
 #include "field_control_avatar.h"
@@ -54,6 +56,7 @@
 #include "trainer_hill.h"
 #include "trainer_pokemon_sprites.h"
 #include "tv.h"
+#include "remembered_dreams.h"
 #include "scanline_effect.h"
 #include "wild_encounter.h"
 #include "frontier_util.h"
@@ -113,7 +116,6 @@ static void c2_80567AC(void);
 static void CB2_LoadMap2(void);
 static void VBlankCB_Field(void);
 static void SpriteCB_LinkPlayer(struct Sprite *sprite);
-static void ChooseAmbientCrySpecies(void);
 static void do_load_map_stuff_loop(u8 *state);
 static bool32 map_loading_iteration_3(u8 *state);
 static bool32 sub_8086638(u8 *state);
@@ -461,7 +463,10 @@ void ResetGameStats(void)
     s32 i;
 
     for (i = 0; i < NUM_GAME_STATS; i++)
+    {
         SetGameStat(i, 0);
+        RememberStat(i, 0);
+    }
 }
 
 void IncrementGameStat(u8 index)
@@ -475,6 +480,7 @@ void IncrementGameStat(u8 index)
             statVal = 0xFFFFFF;
 
         SetGameStat(index, statVal);
+        RememberStat(index, statVal);
     }
 }
 
@@ -489,6 +495,7 @@ void IncrementGameStatBy(u8 index, u8 value)
             statVal = 0xFFFFFF;
 
         SetGameStat(index, statVal);
+        RememberStat(index, statVal);
     }
 }
 
@@ -1045,7 +1052,7 @@ u8 sub_808554C(void)
     return sUnknown_020322D8;
 }
 
-static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
+bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
 {
     if (!FlagGet(FLAG_SYS_WEATHER_CTRL))
         return FALSE;
@@ -1062,6 +1069,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
         case MAP_NUM(ROUTE126):
         case MAP_NUM(ROUTE127):
         case MAP_NUM(ROUTE128):
+            FlagClear(FLAG_SHOULD_PLAY_LOSER_MUSIC);
             return TRUE;
         default:
             if (VarGet(VAR_RAYQUAZA_STATE) < 4)
@@ -1094,7 +1102,7 @@ static bool16 NoMusicInSotopolisWithLegendaries(struct WarpData *warp)
 
 static bool16 IsInfiltratedWeatherInstitute(struct WarpData *warp)
 {
-    if (VarGet(VAR_WEATHER_INSTITUTE_STATE))
+    if (VarGet(VAR_WEATHER_INSTITUTE_STATE) > 1)
         return FALSE;
     else if (warp->mapGroup != MAP_GROUP(ROUTE119_WEATHER_INSTITUTE_1F))
         return FALSE;
@@ -1117,6 +1125,52 @@ static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
     return FALSE;
 }
 
+static bool16 IsWakingUpInCenterAfterWhiteout(struct WarpData *warp)
+{
+    if (!FlagGet(FLAG_SHOULD_PLAY_LOSER_MUSIC)) return FALSE;
+    #define CHECK_MAP(map) (warp->mapGroup == (map >> 8) && warp->mapNum == (map & 0xFF))
+    
+    if (CHECK_MAP(MAP_OLDALE_TOWN_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_OLDALE_TOWN_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_DEWFORD_TOWN_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_DEWFORD_TOWN_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_LAVARIDGE_TOWN_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_LAVARIDGE_TOWN_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_FALLARBOR_TOWN_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_FALLARBOR_TOWN_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_VERDANTURF_TOWN_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_VERDANTURF_TOWN_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_PACIFIDLOG_TOWN_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_PACIFIDLOG_TOWN_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_PETALBURG_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_PETALBURG_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_SLATEPORT_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_SLATEPORT_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_MAUVILLE_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_MAUVILLE_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_RUSTBORO_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_RUSTBORO_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_FORTREE_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_FORTREE_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_LILYCOVE_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_LILYCOVE_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_MOSSDEEP_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_MOSSDEEP_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_SOOTOPOLIS_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_SOOTOPOLIS_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_EVER_GRANDE_CITY_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_EVER_GRANDE_CITY_POKEMON_CENTER_2F)) return TRUE;
+    if (CHECK_MAP(MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE_1F)) return TRUE;
+    if (CHECK_MAP(MAP_EVER_GRANDE_CITY_POKEMON_LEAGUE_2F)) return TRUE;
+    if (CHECK_MAP(MAP_BATTLE_FRONTIER_POKEMON_CENTER_1F)) return TRUE;
+    if (CHECK_MAP(MAP_BATTLE_FRONTIER_POKEMON_CENTER_2F)) return TRUE;
+    
+    FlagClear(FLAG_SHOULD_PLAY_LOSER_MUSIC);
+    return FALSE;
+    
+    #undef CHECK_MAP
+}
+
 u16 GetLocationMusic(struct WarpData *warp)
 {
     if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
@@ -1127,6 +1181,8 @@ u16 GetLocationMusic(struct WarpData *warp)
         return MUS_MGM0;
     else if (IsInfiltratedWeatherInstitute(warp) == TRUE)
         return MUS_TOZAN;
+    else if (IsWakingUpInCenterAfterWhiteout(warp) == TRUE)
+        return MUS_BORNLOSE;
     else
         return Overworld_GetMapHeaderByGroupAndId(warp->mapGroup, warp->mapNum)->music;
 }
@@ -1339,7 +1395,7 @@ void UpdateAmbientCry(s16 *state, u16 *delayCounter)
     }
 }
 
-static void ChooseAmbientCrySpecies(void)
+void ChooseAmbientCrySpecies(void)
 {
     if ((gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE130)
      && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE130))
@@ -1499,6 +1555,7 @@ static void OverworldBasic(void)
     CameraUpdate();
     UpdateCameraPanning();
     BuildOamBuffer();
+    ProcessImmediateTimeEvents();
     UpdatePaletteFade();
     UpdateTilesetAnimations();
     do_scheduled_bg_tilemap_copies_to_vram();
@@ -1564,6 +1621,7 @@ void CB2_NewGame(void)
     StopMapMusic();
     ResetSafariZoneFlag_();
     NewGameInitData();
+    InitRememberedDreams();
     ResetInitialPlayerAvatarState();
     PlayTimeCounter_Start();
     ScriptContext1_Init();
@@ -1579,8 +1637,16 @@ void CB2_NewGame(void)
 void CB2_WhiteOut(void)
 {
     u8 val;
+    gMain.state++;
+    
+    if (gMain.state == 2)
+    {
+        RememberWhiteout();
+        SaveRememberedDreams();
+    }
+    
 
-    if (++gMain.state >= 120)
+    if (gMain.state >= 120)
     {
         FieldClearVBlankHBlankCallbacks();
         StopMapMusic();
@@ -1741,6 +1807,7 @@ void CB2_ContinueSavedGame(void)
     if (gSaveFileStatus == 0xFF)
         sub_81A3908();
 
+    LoadAndProcessRememberedDreams();
     LoadSaveblockMapHeader();
     ClearDiveAndHoleWarps();
     trainerHillMapId = GetCurrentTrainerHillMapId();
@@ -1766,6 +1833,11 @@ void CB2_ContinueSavedGame(void)
     ScriptContext2_Disable();
     InitMatchCallCounters();
     DebugResetInterrupts();
+#if TPP_MODE
+    if (FlagGet(FLAG_SYS_GAME_CLEAR)) {
+        SetMainCallback2(CB2_StartCreditsSequence);
+    } else
+#endif
     if (UseContinueGameWarp() == TRUE)
     {
         ClearContinueGameWarpStatus();
@@ -1819,6 +1891,7 @@ static void VBlankCB_Field(void)
     FieldUpdateBgTilemapScroll();
     TransferPlttBuffer();
     TransferTilesetAnimsBuffer();
+    CheckClockForImmediateTimeEvents();
 }
 
 static void InitCurrentFlashLevelScanlineEffect(void)
@@ -2100,6 +2173,7 @@ static void do_load_map_stuff_loop(u8 *state)
 
 static void sub_80867C8(void)
 {
+    SaveRememberedDreams();
     ClearMirageTowerPulseBlend();
     MoveSaveBlocks_ResetHeap();
 }
