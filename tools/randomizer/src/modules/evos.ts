@@ -1,3 +1,4 @@
+import { buildEvoLookup, buildPokeConstants, calulateBST, sharesType } from "../utils/montasks";
 import { PickCascade, Shuffle } from "../utils/pick";
 
 export default class EvolutionRandomizer implements RandoModule {
@@ -6,24 +7,17 @@ export default class EvolutionRandomizer implements RandoModule {
     operation(data: PokemonJson, bstRange = "100") {
         const bstAbsRange = Math.abs(parseInt(bstRange) || 100) / 2;
 
-        const pokeConstants = Object.keys(data.pokemon).filter(p => p != "none" && !p.startsWith('old_unown'));
+        calulateBST(data);
+
+        const pokeConstants = buildPokeConstants(data);
         const monStatsLookup = data.pokemon;
 
-        const evoLookup: { [key: string]: string[] } = {};
+        const { distanceFromFinalLookup } = buildEvoLookup(data, pokeConstants);
 
-        Object.values(data.pokemon).forEach((e, i) => evoLookup[pokeConstants[i]] = (e.evolutions || []).map(e => e.species));
-
-        const distanceFromFinal = (mon: string): number => 1 + evoLookup[mon].reduce((max, cur) => Math.max(max, distanceFromFinal(cur)), 0);
-
-        const availableEvos = Object.values(data.pokemon).map((_, i) => ({ mon: pokeConstants[i], distance: distanceFromFinal(pokeConstants[i]) }));
-
-        const sharesType = (mon1: Pokemon["baseStats"], mon2: Pokemon["baseStats"]) => [mon1.type1, mon1.type2].some(t => [mon2.type1, mon2.type2].includes(t));
-
-        const calcBST = (mon: Pokemon["baseStats"]) => mon ? mon.baseHP + mon.baseAttack + mon.baseDefense + mon.baseSpeed + mon.baseSpAttack + mon.baseSpDefense : 0;
-        Object.values(data.pokemon).filter(p => p.baseStats).forEach(p => p.baseStats.bst = calcBST(p.baseStats));
+        const availableEvos = Object.values(data.pokemon).map((_, i) => ({ mon: pokeConstants[i], distance: distanceFromFinalLookup[pokeConstants[i]] }));
 
         const replaceEvo = (mon: string): string => {
-            const origDistance = distanceFromFinal(mon);
+            const origDistance = distanceFromFinalLookup[mon];
             const origStats = monStatsLookup[mon].baseStats;
             return (PickCascade(availableEvos,
                 e => !!(e.mon && monStatsLookup[e.mon]),

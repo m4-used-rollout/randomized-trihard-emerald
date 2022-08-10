@@ -14,12 +14,14 @@ export default class TMCompatRandomizer implements RandoModule {
         console.log("Randomizing TM compatibility...");
 
         Object.values(data.pokemon).forEach(p => {
-            const replacements = [...availableTMs];
+            const tmReplacements = [...availableTMs];
+            const tutorReplacements = [...data.tutorList];
             p.tms = p.tms ? p.tms.map((tm: number) => {
                 if (!tm || immutableTMs.includes(data.tmMoves[tm]))
                     return tm;
-                return data.tmlist.indexOf(PickCascade(replacements, t => t != data.tmlist[tm]) || data.tmlist[tm]);
+                return data.tmlist.indexOf(PickCascade(tmReplacements, t => t != data.tmlist[tm]) || data.tmlist[tm]);
             }) : p.tms;
+            p.tutor = p.tutor ? p.tutor.map(tutor => PickCascade(tutorReplacements, t => t != tutor) || tutor) : p.tutor;
         });
 
         console.log("Finished.")

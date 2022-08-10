@@ -1,19 +1,18 @@
+import { buildMoveLookup, hmMoves } from "../utils/montasks";
 import { PickCascade } from "../utils/pick";
 
-const immutableTMs = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "ROCK_SMASH", "WATERFALL", "DIVE"];
 
 export default class TMMovesRandomizer implements RandoModule {
     command = "tm-moves"
     helpText = "Randomizes TM and Move Tutor moves, leaving HMs and Rock Smash alone. Replaces non-attacks with non-attacks.";
     operation(data: PokemonJson) {
-        const availableMoves = data.moves.filter(m => m.id != "struggle" && m.id && !immutableTMs.includes(m.id.toUpperCase()));
-        const moveLookup: Record<string, Move> = {};
-        availableMoves.forEach(m => moveLookup[m.id] = m);
+
+        const { availableMoves, moveLookup } = buildMoveLookup(data, true);
 
         console.log("Randomizing TMs and Move Tutors");
 
         const replaceMoves = (moveList: string[]) => moveList.map(oldMove => {
-            if (!oldMove || immutableTMs.includes(oldMove.toUpperCase())) {
+            if (!oldMove || hmMoves.includes(oldMove.toUpperCase())) {
                 console.log(`Not replacing ${oldMove}`)
                 return oldMove;
             }
@@ -31,7 +30,11 @@ export default class TMMovesRandomizer implements RandoModule {
             return newMove.id;
         })
         data.tmMoves = replaceMoves(data.tmMoves);
+        const oldTutorList = [...data.tutorList];
         data.tutorList = replaceMoves(data.tutorList.map(m => m.replace('MOVE_', '').toLowerCase())).map(m => `MOVE_${m.toUpperCase()}`);
+
+        // update tutor constants
+        Object.values(data.pokemon).forEach(p => p.tutor = p.tutor && p.tutor.map(t => data.tutorList[oldTutorList.indexOf(t)]));
 
         console.log("Finished.");
 

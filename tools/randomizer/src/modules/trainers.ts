@@ -1,4 +1,6 @@
 import { PickCascade, Shuffle } from "../utils/pick";
+import * as FS from "fs";
+import { buildAvailablePokemon, buildEvoLookup, buildPokeConstants, calulateBST, sharesType } from "../utils/montasks";
 
 export default class TrainerRandomizer implements RandoModule {
     command = "trainers"
@@ -6,20 +8,12 @@ export default class TrainerRandomizer implements RandoModule {
     operation(data: PokemonJson, bstRange = "100") {
         const bstAbsRange = Math.abs(parseInt(bstRange) || 100) / 2;
 
-        const pokeConstants = Object.keys(data.pokemon).filter(p => p != "none" && !p.startsWith('old_unown'));
+        calulateBST(data);
+
+        const pokeConstants = buildPokeConstants(data);
         const monStatsLookup = data.pokemon;
 
-        const evoLookup: { [key: string]: string[] } = {};
-        Object.values(data.pokemon).forEach((e, i) => evoLookup[pokeConstants[i]] = (e.evolutions || []).map(e => e.species));
-
-        const distanceFromFinal = (mon: string): number => 1 + evoLookup[mon].reduce((max, cur) => Math.max(max, distanceFromFinal(cur)), 0);
-        const distanceLookup: { [key: string]: number } = {};
-        pokeConstants.forEach(p=>distanceLookup[p] = distanceFromFinal(p));
-
-        const sharesType = (mon1: Pokemon["baseStats"], mon2: Pokemon["baseStats"]) => [mon1.type1, mon1.type2].some(t => [mon2.type1, mon2.type2].includes(t));
-
-        const calcBST = (mon: Pokemon["baseStats"]) => mon.baseHP + mon.baseAttack + mon.baseDefense + mon.baseSpeed + mon.baseSpAttack + mon.baseSpDefense;
-        Object.values(data.pokemon).filter(p => p.baseStats).forEach(p => p.baseStats.bst = calcBST(p.baseStats));
+        const { distanceFromFinalLookup } = buildEvoLookup(data, pokeConstants);
 
         const trainers = data.trainerParties;
 
@@ -34,20 +28,16 @@ export default class TrainerRandomizer implements RandoModule {
 
         const totalMons = trainers.reduce((sum, t) => sum + t.party.length, 0);
 
-        let availableMons = [...pokeConstants];
-        while (availableMons.length < totalMons)
-            availableMons.push(...pokeConstants);
-        availableMons = Shuffle(availableMons);
-        availableMons.length = totalMons;
+        const availableMons = buildAvailablePokemon(data, pokeConstants, totalMons, { minIsMax: true });
 
         const replaceMon = (mon: string): string => {
-            const origDistance = distanceLookup[mon];
+            const origDistance = distanceFromFinalLookup[mon];
             const origStats = monStatsLookup[mon].baseStats;
             return PickCascade(availableMons,
                 m => Math.abs(origStats.bst - monStatsLookup[m].baseStats.bst) <= bstAbsRange, // Within provided BST range
                 m => m != mon, // Not same mon
                 m => sharesType(origStats, monStatsLookup[m].baseStats), // At least one type matches
-                m => distanceLookup[m] == origDistance, // Same distance from final (Caterpie always evolves twice)
+                m => distanceFromFinalLookup[m] == origDistance, // Same distance from final (Caterpie always evolves twice)
             ) || mon;
         };
 

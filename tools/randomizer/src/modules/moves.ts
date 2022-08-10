@@ -1,5 +1,5 @@
-import { randomInt } from "crypto";
-import { PickCascade, Shuffle } from "../utils/pick";
+import { buildMoveLookup } from "../utils/montasks";
+import { PickCascade } from "../utils/pick";
 
 export default class LearnsetRandomizer implements RandoModule {
     command = "learnsets"
@@ -7,9 +7,7 @@ export default class LearnsetRandomizer implements RandoModule {
     operation(data: PokemonJson) {
         console.log("Randomizing learnsets");
 
-        const availableMoves = data.moves.filter(m => m.id != "struggle" && m.id);
-        const moveLookup: Record<string, Move> = {};
-        availableMoves.forEach(m => moveLookup[m.id] = m);
+        const { availableMoves, moveLookup } = buildMoveLookup(data);
 
         Object.keys(data.pokemon).forEach(k => {
             const mon = data.pokemon[k];
