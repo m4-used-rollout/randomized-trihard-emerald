@@ -41,8 +41,7 @@ static const u16 sStarterMon[STARTER_MON_COUNT] =
 };
 
 const u8 gText_Options[] = 
-_("\n"
-  "{CLEAR_TO 6}{L_BUTTON}{CLEAR_TO 72}{B_BUTTON}{CLEAR_TO 128}{R_BUTTON}");
+_("{CLEAR_TO 28}{L_BUTTON}{CLEAR_TO 92}{B_BUTTON}{CLEAR_TO 148}{R_BUTTON}");
 
 const u32 gBirchGrassTilemap[] = INCBIN_U32("graphics/misc/birch_grass_map.bin.lz");
 const u16 gBirchBagGrassPal[][16] =
