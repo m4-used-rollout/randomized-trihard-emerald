@@ -1,9 +1,9 @@
-import { buildEvoLookup, buildPokeConstants, calulateBST as calculateBST, sharesType } from "../utils/montasks";
+import { buildEvoLookup, buildPokeConstants, calculateBST, sharesType } from "../utils/montasks";
 import { PickCascade, Shuffle } from "../utils/pick";
 
 export default class StarterRandomizer implements RandoModule {
     command = "starters"
-    helpText = "Randomizes starter pokemon. Keeps same distance from final. Tries to match one type with original. Tries to stay within provided BST (100 is default) of original.";
+    helpText = "Randomizes starter pokemon. Keeps same evo stage. Tries to match one type with original. Tries to stay within provided BST (100 is default) of original.";
     operation(data: PokemonJson, bstRange = "100") {
         const bstAbsRange = Math.abs(parseInt(bstRange) || 100) / 2;
 

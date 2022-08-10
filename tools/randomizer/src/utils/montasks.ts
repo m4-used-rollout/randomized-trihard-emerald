@@ -23,7 +23,7 @@ export function sharesType(mon1: Pokemon["baseStats"], mon2: Pokemon["baseStats"
     return [mon1.type1, mon1.type2].some(t => [mon2.type1, mon2.type2].includes(t));
 }
 
-export function calulateBST(data: PokemonJson) {
+export function calculateBST(data: PokemonJson) {
     const calcBST = (mon: Pokemon["baseStats"]) => mon ? mon.baseHP + mon.baseAttack + mon.baseDefense + mon.baseSpeed + mon.baseSpAttack + mon.baseSpDefense : 0;
     Object.values(data.pokemon).filter(p => p.baseStats).forEach(p => p.baseStats.bst = calcBST(p.baseStats));
 }
@@ -47,4 +47,8 @@ export function buildAvailablePokemon(data: PokemonJson, pokeConstants = buildPo
     if (options.minIsMax)
         availableMons.length = minSize;
     return availableMons;
+}
+
+export function buildAvailableAbilities(data: PokemonJson) {
+    return Object.values(data.pokemon).map(p => [p?.baseStats?.ability1, p?.baseStats?.ability2].filter(a => !!a)).flat().filter((a, i, arr) => arr.indexOf(a) == i);
 }

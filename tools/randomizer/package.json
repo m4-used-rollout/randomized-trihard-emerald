@@ -27,6 +27,7 @@
     "build": "tsc",
     "read": "node ../jsondata/scrape.js",
     "randomize": "tsc && node ./bin/randomize.js",
-    "write": "node ../jsondata/dump.js"
+    "write": "node ../jsondata/dump.js",
+    "test": "tsc && node ./bin/test.js"
   }
 }

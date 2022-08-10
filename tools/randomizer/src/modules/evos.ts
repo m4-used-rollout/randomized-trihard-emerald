@@ -1,4 +1,4 @@
-import { buildEvoLookup, buildPokeConstants, calulateBST, sharesType } from "../utils/montasks";
+import { buildEvoLookup, buildPokeConstants, calculateBST, sharesType } from "../utils/montasks";
 import { PickCascade, Shuffle } from "../utils/pick";
 
 export default class EvolutionRandomizer implements RandoModule {
@@ -7,7 +7,7 @@ export default class EvolutionRandomizer implements RandoModule {
     operation(data: PokemonJson, bstRange = "100") {
         const bstAbsRange = Math.abs(parseInt(bstRange) || 100) / 2;
 
-        calulateBST(data);
+        calculateBST(data);
 
         const pokeConstants = buildPokeConstants(data);
         const monStatsLookup = data.pokemon;

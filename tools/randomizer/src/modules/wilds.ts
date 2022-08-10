@@ -1,4 +1,4 @@
-import { buildAvailablePokemon, buildEvoLookup, buildPokeConstants, calulateBST as calculateBST } from "../utils/montasks";
+import { buildAvailablePokemon, buildEvoLookup, buildPokeConstants, calculateBST } from "../utils/montasks";
 import { PickCascade, Shuffle } from "../utils/pick";
 
 export default class WildRandomizer implements RandoModule {

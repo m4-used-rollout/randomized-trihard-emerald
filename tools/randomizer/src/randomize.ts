@@ -1,3 +1,4 @@
+import * as FS from 'fs';
 import EvolutionRandomizer from "./modules/evos";
 import LearnsetRandomizer from "./modules/moves";
 import TMCompatRandomizer from "./modules/tm_compat";
@@ -5,11 +6,12 @@ import TMMovesRandomizer from "./modules/tm_moves";
 import TrainerRandomizer from "./modules/trainers";
 import WildRandomizer from "./modules/wilds";
 import StarterRandomizer from "./modules/starters";
-import * as FS from 'fs';
+import AbilitiesRandomizer from "./modules/abilities";
 
 const modules: RandoModule[] = [
     new TMMovesRandomizer(),
     new TMCompatRandomizer(),
+    new AbilitiesRandomizer(),
     new LearnsetRandomizer(),
     new EvolutionRandomizer(),
     new WildRandomizer(),
