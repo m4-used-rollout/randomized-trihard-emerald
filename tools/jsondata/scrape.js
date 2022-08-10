@@ -26,7 +26,7 @@ const CONVERT_TMS_TO_NUMS = true;
  * values for the json. */
 const MINIMIZE_VALUES = true;
 
-const OUTPUT_FILE = './output.json';
+const OUTPUT_FILE = PATH.join(__dirname, 'output.json');
 
 //-----------------------------------------------------------------------------
 

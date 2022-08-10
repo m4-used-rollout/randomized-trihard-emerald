@@ -1,58 +1,52 @@
-import BaseStats from "../models/base_stats";
-import EvosAttacks from "../models/evos_attacks";
-import PokemonConstantsParser from "../parsers/constants/pokemon_constants";
-import BaseStatsParser from "../parsers/data/base_stats";
-import EvosAttacksParser from "../parsers/data/evos_attacks";
-import IncludeListParser from "../parsers/include_list";
-import SplitCollectionParser from "../parsers/splitcollection";
 import { PickCascade, Shuffle } from "../utils/pick";
 
 export default class EvolutionRandomizer implements RandoModule {
     command = "evos"
     helpText = "Randomizes pokemon evolutions. Keeps same distance from final (Caterpie will always evolve twice). Tries to match one type with original evo. Tries to stay within provided BST (100 is default) of original evo. Ignores TRADE evos.";
-    operation(bstRange = "100") {
+    operation(data: PokemonJson, bstRange = "100") {
         const bstAbsRange = Math.abs(parseInt(bstRange) || 100) / 2;
 
-        const pokeConstants = new PokemonConstantsParser("constants/pokemon_constants.asm").data;
-        const monStatsLookup: { [key: string]: BaseStats } = {};
-        [...new IncludeListParser("data/pokemon/base_stats_old.asm", BaseStatsParser).data, ...new IncludeListParser("data/pokemon/base_stats_new.asm", BaseStatsParser).data].forEach((s, i) => monStatsLookup[pokeConstants[i]] = s.data);
-        const evosAttacksParser = new SplitCollectionParser<EvosAttacks, EvosAttacksParser>(["data/pokemon/evos_attacks_kanto.asm", "data/pokemon/evos_attacks_johto.asm", "data/pokemon/evos_attacks_new.asm"], EvosAttacksParser);
-
-        const evosAttacks = evosAttacksParser.data;
+        const pokeConstants = Object.keys(data.pokemon).filter(p => p != "none" && !p.startsWith('old_unown'));
+        const monStatsLookup = data.pokemon;
 
         const evoLookup: { [key: string]: string[] } = {};
 
-        evosAttacks.forEach((e, i) => evoLookup[pokeConstants[i]] = e.evos.map(e => e.species));
+        Object.values(data.pokemon).forEach((e, i) => evoLookup[pokeConstants[i]] = (e.evolutions || []).map(e => e.species));
 
         const distanceFromFinal = (mon: string): number => 1 + evoLookup[mon].reduce((max, cur) => Math.max(max, distanceFromFinal(cur)), 0);
 
-        const availableEvos = evosAttacks.map((_, i) => ({ mon: pokeConstants[i], distance: distanceFromFinal(pokeConstants[i]) }));
+        const availableEvos = Object.values(data.pokemon).map((_, i) => ({ mon: pokeConstants[i], distance: distanceFromFinal(pokeConstants[i]) }));
 
-        const sharesType = (mon1: BaseStats, mon2: BaseStats) => [mon1.type1, mon1.type2].some(t => [mon2.type1, mon2.type2].includes(t));
+        const sharesType = (mon1: Pokemon["baseStats"], mon2: Pokemon["baseStats"]) => [mon1.type1, mon1.type2].some(t => [mon2.type1, mon2.type2].includes(t));
+
+        const calcBST = (mon: Pokemon["baseStats"]) => mon ? mon.baseHP + mon.baseAttack + mon.baseDefense + mon.baseSpeed + mon.baseSpAttack + mon.baseSpDefense : 0;
+        Object.values(data.pokemon).filter(p => p.baseStats).forEach(p => p.baseStats.bst = calcBST(p.baseStats));
 
         const replaceEvo = (mon: string): string => {
             const origDistance = distanceFromFinal(mon);
-            const origStats = monStatsLookup[mon];
+            const origStats = monStatsLookup[mon].baseStats;
             return (PickCascade(availableEvos,
+                e => !!(e.mon && monStatsLookup[e.mon]),
                 e => e.mon != mon, // Not same mon
                 e => e.distance == origDistance, // Same distance from final (Caterpie always evolves twice)
-                e => sharesType(origStats, monStatsLookup[e.mon]), // At least one type matches
-                e => Math.abs(origStats.bst - monStatsLookup[e.mon].bst) <= bstAbsRange // Within provided BST range
+                e => sharesType(origStats, monStatsLookup[e.mon].baseStats), // At least one type matches
+                e => Math.abs(origStats.bst - monStatsLookup[e.mon].baseStats.bst) <= bstAbsRange // Within provided BST range
             ) || { mon }).mon;
         };
 
-        const shuffledEA = Shuffle(evosAttacks.map((ea, i) => ({ ea, i }))); // Randomize order so early mons don't necessarily get better picks
+        const shuffledEA = Shuffle(Object.values(data.pokemon).filter(p => p.baseStats).map((pokemon, i) => ({ evos: pokemon.evolutions || [], i }))); // Randomize order so early mons don't necessarily get better picks
 
         console.log("Randomizing evolutions");
-        shuffledEA.filter(ea => ea.ea.evos.length > 0).forEach(ea => {
-            const [evo, i] = [ea.ea, ea.i];
+        shuffledEA.filter(ea => ea.evos.length > 0).forEach(ea => {
+            const [evo, i] = [ea, ea.i];
             const monName = pokeConstants[i];
 
-            evo.evos = evo.evos.map(e => e.type.indexOf("TRADE") >= 0 ? e : ({ ...e, species: replaceEvo(e.species) }));
+            evo.evos.forEach(e => {
+                if (e.type.indexOf("TRADE") >= 0) return;
+                e.species = replaceEvo(e.species);
+            });
 
             console.log(`${monName} => ${evo.evos.map(e => e.species).join(", ")}`);
-
-            evosAttacksParser.update(i, evo);
         })
         console.log("Finished.");
     }

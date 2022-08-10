@@ -9,5 +9,8 @@
         "src/**/*.ts",
         "src/lib/**/*.ts",
         "../jsondata/index.d.ts"
+    ],
+    "exclude": [
+        "../jsondata/*.js"
     ]
 }

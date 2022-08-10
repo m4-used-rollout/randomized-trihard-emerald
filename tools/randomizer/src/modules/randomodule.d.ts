@@ -1,5 +1,5 @@
 declare interface RandoModule {
     command: string;
     helpText: string;
-    operation: ( ...params: string[]) => void;
+    operation: (data:PokemonJson, ...params: string[]) => void;
 }

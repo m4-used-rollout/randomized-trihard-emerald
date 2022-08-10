@@ -11,7 +11,7 @@ const PATH = require('path');
 
 //------------------------------- Options -------------------------------------
 
-const INPUT_FILE = './output.json';
+const INPUT_FILE = PATH.join(__dirname, 'output.json');
 
 const BASE_OUTPUT_PATH = '../../src/data/pokemon/';
 

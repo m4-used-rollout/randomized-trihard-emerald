@@ -25,8 +25,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "randomize": "tsc; node ./bin/randomize.js",
-    "test": "tsc; node ./bin/test.js",
-    "dump": "tsc; node ./bin/dump.js > dump.json; cat dump.json"
+    "read": "node ../jsondata/scrape.js",
+    "randomize": "tsc && node ./bin/randomize.js",
+    "save": "node ../jsondata/dump.js"
   }
 }

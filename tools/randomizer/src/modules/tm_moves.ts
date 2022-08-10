@@ -1,50 +1,40 @@
-import { randomInt } from "crypto";
-import Move from "../models/move";
-import MoveConstantsParser from "../parsers/constants/move_constants";
-import MovesParser from "../parsers/data/moves";
-import TMHMParser from "../parsers/data/tmhm";
 import { PickCascade } from "../utils/pick";
 
-const immutableTMs = ["ROCK_SMASH", "CUT", "FLY", "SURF", "STRENGTH", "FLASH", "WHIRLPOOL", "WATERFALL"];
+const immutableTMs = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "ROCK_SMASH", "WATERFALL", "DIVE"];
 
 export default class TMMovesRandomizer implements RandoModule {
     command = "tm-moves"
     helpText = "Randomizes TM and Move Tutor moves, leaving HMs and Rock Smash alone. Replaces non-attacks with non-attacks.";
-    operation() {
-        const moveConstants = new MoveConstantsParser("constants/move_constants.asm").data;
-        const moveLookup: { [key: string]: Move } = {};
-        new MovesParser("data/moves/moves.asm").data.forEach((m, i) => moveLookup[moveConstants[i + 1]] = m);
-        const tmParser = new TMHMParser("data/moves/tmhm_moves.asm");
-        const tms = tmParser.data;
+    operation(data: PokemonJson) {
+        const availableMoves = data.moves.filter(m => m.id != "struggle" && m.id && !immutableTMs.includes(m.id.toUpperCase()));
+        const moveLookup: Record<string, Move> = {};
+        availableMoves.forEach(m => moveLookup[m.id] = m);
 
         console.log("Randomizing TMs and Move Tutors");
 
-        let availableMoves = moveConstants.slice(1).filter(m => m != "STRUGGLE" && m != "CHATTY_HP" && m != "CHATTER" && !immutableTMs.includes(m));
-
         const replaceMoves = (moveList: string[]) => moveList.map(oldMove => {
-            if (immutableTMs.includes(oldMove)) {
+            if (!oldMove || immutableTMs.includes(oldMove.toUpperCase())) {
                 console.log(`Not replacing ${oldMove}`)
                 return oldMove;
             }
 
             const oldMoveInfo = moveLookup[oldMove];
             const newMove = PickCascade(availableMoves,
-                m => moveLookup[m].doesDamage == oldMoveInfo.doesDamage, // replace non-attacks with non-attacks
-                m => m != oldMove // don't pick same move
-            ) || oldMove;
+                m => m.power > 0 == oldMoveInfo.power > 0, // replace non-attacks with non-attacks
+                m => m.id != oldMove // don't pick same move
+            ) || oldMoveInfo;
 
-            if (oldMove == newMove)
+            if (oldMove == newMove.id)
                 console.log(`Randomly kept ${oldMove}`);
             else
-                console.log(`Replacing ${oldMove} with ${newMove}`);
-            return newMove;
+                console.log(`Replacing ${oldMove} with ${newMove.id}`);
+            return newMove.id;
         })
-        tms.tms = replaceMoves(tms.tms);
-        tms.moveTutors = replaceMoves(tms.moveTutors);
+        data.tmMoves = replaceMoves(data.tmMoves);
+        data.tutorList = replaceMoves(data.tutorList.map(m => m.replace('MOVE_', '').toLowerCase())).map(m => `MOVE_${m.toUpperCase()}`);
 
         console.log("Finished.");
 
-        tmParser.data = tms;
     }
 
 }

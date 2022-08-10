@@ -2,20 +2,7 @@
 declare type RepoType = 'base' | 'the' | 'exp';
 
 declare interface PokemonJson {
-	pokemon: Record<string, {
-		baseStats: Record<string, any>;
-		eggMoves: string[];
-		evolutions?: Array<{
-			type: string;
-			req: string | number;
-			species: string;
-		}>;
-		lvlLearnset: string | LvlLearnset;
-		tms: Array<string | number>;
-		tutor: string[];
-
-		_ref?: string;
-	}>;
+	pokemon: Record<string, Pokemon>;
 	lvlTables?: Record<string, LvlLearnset>;
 	moves: Move[];
 	items: Item[];
@@ -30,6 +17,52 @@ declare interface PokemonJson {
 	_lvlTableType?: string;
 	_includeOldUnownData?: boolean;
 }
+
+type Pokemon = {
+	baseStats: {
+		baseHP: number;
+		baseAttack: number;
+		baseDefense: number;
+		baseSpeed: number;
+		baseSpAttack: number;
+		baseSpDefense: number;
+		bst?: number;
+		type1: string;
+		type2: string;
+		catchRate: number;
+		expYield: number;
+		evYield_HP: number;
+		evYield_Attack: number;
+		evYield_Defense: number;
+		evYield_Speed: number;
+		evYield_SpAttack: number;
+		evYield_SpDefense: number;
+		item1: string;
+		item2: string;
+		genderRatio: string | number;
+		eggCycles: number;
+		friendship: number;
+		growthRate: string;
+		eggGroup1: string;
+		eggGroup2: string;
+		ability1: string;
+		ability2: string;
+		safariZoneFleeRate: number;
+		bodyColor: string;
+		noFlip: boolean;
+	};
+	eggMoves: string[];
+	evolutions?: Array<{
+		type: string;
+		req: string | number;
+		species: string;
+	}>;
+	lvlLearnset: string;
+	tms: Array<string | number>;
+	tutor: string[];
+
+	_ref?: string;
+};
 
 type LvlLearnset = Array<{ move: string, level: number }>;
 type WildPokemon = Array<{ levelMin: number, levelMax: number, species: string }>;
