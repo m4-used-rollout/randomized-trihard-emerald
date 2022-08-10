@@ -50,6 +50,7 @@ const FILES = [
 		forRepoTypes: ['the'],
 	}, {
 		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'trainer_parties.h'),
+		trainerData: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'trainers.h'),
 		fn: dumpTrainerParties,
 		forRepoTypes: ['the'],
 	}, {
@@ -114,7 +115,10 @@ function forRepos(data, obj, def = 0) {
 	return def;
 }
 
-
+const baseStatFields = ["baseHP", "baseAttack", "baseDefense", "baseSpeed", "baseSpAttack", "baseSpDefense",
+	"type1", "type2", "catchRate", "expYield", "evYield_HP", "evYield_Attack", "evYield_Defense", "evYield_Speed",
+	"evYield_SpAttack", "evYield_SpDefense", "item1", "item2", "genderRatio", "eggCycles", "friendship", "growthRate",
+	"eggGroup1", "eggGroup2", "ability1", "ability2", "safariZoneFleeRate", "bodyColor", "noFlip"];
 
 /**
  * @param {PokemonJson} data 
@@ -175,6 +179,8 @@ const struct BaseStats gBaseStats[] =
 		const lines = [];
 		if (pkmn._ref) pkmn = data.pokemon[pkmn._ref];
 		for (let [key, val] of Object.entries(pkmn.baseStats)) {
+			if (!baseStatFields.includes(key))
+				continue; // Ignore unknown field
 			let pad = '';
 			if (VALUE_TRANSFORM[key]) {
 				val = VALUE_TRANSFORM[key](val);
@@ -489,6 +495,16 @@ async function dumpTrainerParties(data, config) {
 	for (let line = config.endLine + 1; line < original.length - 1; out.write(original[line++] + "\n"));
 	out.close();
 	console.log(`File written to ${config.path}.`);
+
+	FS.writeFileSync(config.trainerData, FS.readFileSync(config.trainerData, { encoding: "utf8" }).replace(/\.party = \{\.([^\s]+?) = sParty_([^\s]+?) }/g, (line, type, tId) => {
+		/** @type {TrainerInfo[]} */
+		const trainerParties = data.trainerParties;
+		const trainer = trainerParties.find(t => t.id == tId);
+		return `.party = {.${trainer.type.replace('TrainerMon', '')} = sParty_${trainer.id} }`;
+	}));
+
+	console.log(`File written to ${config.trainerData}.`);
+
 }
 
 /**
