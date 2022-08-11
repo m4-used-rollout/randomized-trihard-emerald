@@ -9,10 +9,10 @@ export default class WildRandomizer implements RandoModule {
 
         calculateBST(data);
 
-        const pokeConstants = buildPokeConstants(data);
+        const pokeConstants = buildPokeConstants(data, true);
         const monStatsLookup = data.pokemon;
 
-        const { distanceFromFinalLookup } = buildEvoLookup(data, pokeConstants);
+        const { distanceFromFinalLookup } = buildEvoLookup(data);
 
         // these are all being copied by reference
         // modify each encounter object and the arrays above will also be modified

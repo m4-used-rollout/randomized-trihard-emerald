@@ -11,11 +11,11 @@ import AbilitiesRandomizer from "./modules/abilities";
 const modules: RandoModule[] = [
     new TMMovesRandomizer(),
     new TMCompatRandomizer(),
-    new AbilitiesRandomizer(),
     new LearnsetRandomizer(),
     new EvolutionRandomizer(),
     new WildRandomizer(),
     new TrainerRandomizer(),
+    new AbilitiesRandomizer(),
     new StarterRandomizer(),
 ];
 

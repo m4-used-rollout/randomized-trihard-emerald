@@ -12,9 +12,9 @@ export default class EvolutionRandomizer implements RandoModule {
         const pokeConstants = buildPokeConstants(data);
         const monStatsLookup = data.pokemon;
 
-        const { distanceFromFinalLookup } = buildEvoLookup(data, pokeConstants);
+        const { distanceFromFinalLookup } = buildEvoLookup(data);
 
-        const availableEvos = Object.values(data.pokemon).map((_, i) => ({ mon: pokeConstants[i], distance: distanceFromFinalLookup[pokeConstants[i]] }));
+        const availableEvos = Object.values(data.pokemon).filter(p => p.baseStats).map((_, i) => ({ mon: pokeConstants[i], distance: distanceFromFinalLookup[pokeConstants[i]] }));
 
         const replaceEvo = (mon: string): string => {
             const origDistance = distanceFromFinalLookup[mon];
@@ -36,7 +36,7 @@ export default class EvolutionRandomizer implements RandoModule {
             const monName = pokeConstants[i];
 
             evo.evos.forEach(e => {
-                if (e.type.indexOf("TRADE") >= 0) return;
+                //if (e.type.indexOf("TRADE") >= 0) return;
                 e.species = replaceEvo(e.species);
             });
 

@@ -9,10 +9,10 @@ export default class TrainerRandomizer implements RandoModule {
 
         calculateBST(data);
 
-        const pokeConstants = buildPokeConstants(data);
+        const pokeConstants = buildPokeConstants(data, true);
         const monStatsLookup = data.pokemon;
 
-        const { distanceFromFinalLookup } = buildEvoLookup(data, pokeConstants);
+        const { distanceFromFinalLookup } = buildEvoLookup(data);
 
         const trainers = data.trainerParties;
 

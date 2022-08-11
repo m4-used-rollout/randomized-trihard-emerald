@@ -1,22 +1,24 @@
 import { Shuffle } from "./pick";
 
-export function buildPokeConstants(data: PokemonJson) {
-    return Object.keys(data.pokemon).filter(p => p != "none" && !p.startsWith('old_unown'));;
+export function buildPokeConstants(data: PokemonJson, filterInvalid = false) {
+    return Object.keys(data.pokemon).filter(p =>!filterInvalid ||  (p != "none" && !p.startsWith('old_unown')));
 }
 
-export function buildEvoLookup(data: PokemonJson, pokeConstants = buildPokeConstants(data)) {
+export function buildEvoLookup(data: PokemonJson) {
     const evoLookupForward: { [key: string]: string[] } = {};
-    const evoLookupBackward: { [key: string]: string[] } = {};
-    Object.values(data.pokemon).forEach((e, i) => evoLookupForward[pokeConstants[i]] = (e.evolutions || []).map(e => e.species));
-    pokeConstants.forEach(p => evoLookupBackward[p] = []);
-    pokeConstants.forEach(p => evoLookupForward[p].forEach(e => evoLookupBackward[e].push(p)));
+    const evoLookupBackward: { [key: string]: string | null } = {};
+    const pokeConstants = Object.keys(data.pokemon);
+    Object.values(data.pokemon).forEach((p, i) => {
+        evoLookupForward[pokeConstants[i]] = (p.evolutions || []).map(e => e.species);
+        (p.evolutions || []).forEach(e => evoLookupBackward[e.species] = pokeConstants[i]);
+    });
     const distanceFromFinal = (mon: string): number => 1 + evoLookupForward[mon].reduce((max, cur) => Math.max(max, distanceFromFinal(cur)), 0);
-    const calcEvoStage = (mon: string): number => evoLookupBackward[mon].length;
+    const calcEvoStage = (mon: string): number => !evoLookupBackward[mon] ? 0 : (1 + calcEvoStage(evoLookupBackward[mon]));
     const distanceFromFinalLookup: { [key: string]: number } = {};
     pokeConstants.forEach(p => distanceFromFinalLookup[p] = distanceFromFinal(p));
     const evoStageLookup: { [key: string]: number } = {};
     pokeConstants.forEach(p => evoStageLookup[p] = calcEvoStage(p));
-    return { evoLookup: evoLookupForward, distanceFromFinalLookup, evoStageLookup };
+    return { evoLookupForward, evoLookupBackward, distanceFromFinalLookup, evoStageLookup };
 }
 
 export function sharesType(mon1: Pokemon["baseStats"], mon2: Pokemon["baseStats"]) {
@@ -37,7 +39,7 @@ export function buildMoveLookup(data: PokemonJson, excludeHMMoves = false) {
     return { availableMoves, moveLookup }
 }
 
-export function buildAvailablePokemon(data: PokemonJson, pokeConstants = buildPokeConstants(data), minSize = pokeConstants.length, options: { minIsMax?: boolean, extraEntropy?: boolean } = {}) {
+export function buildAvailablePokemon(data: PokemonJson, pokeConstants = buildPokeConstants(data, true), minSize = pokeConstants.length, options: { minIsMax?: boolean, extraEntropy?: boolean } = {}) {
     let availableMons = [...pokeConstants];
     while (availableMons.length < minSize)
         availableMons.push(...pokeConstants);

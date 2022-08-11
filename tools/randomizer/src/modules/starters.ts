@@ -9,10 +9,10 @@ export default class StarterRandomizer implements RandoModule {
 
         calculateBST(data);
 
-        const pokeConstants = buildPokeConstants(data);
+        const pokeConstants = buildPokeConstants(data, true);
         const monStatsLookup = data.pokemon;
 
-        const { evoStageLookup } = buildEvoLookup(data, pokeConstants);
+        const { evoStageLookup } = buildEvoLookup(data);
 
         let availableMons = Shuffle([...pokeConstants]);
 
