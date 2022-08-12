@@ -496,12 +496,25 @@ async function dumpTrainerParties(data, config) {
 	out.close();
 	console.log(`File written to ${config.path}.`);
 
-	FS.writeFileSync(config.trainerData, FS.readFileSync(config.trainerData, { encoding: "utf8" }).replace(/\.party = \{\.([^\s]+?) = sParty_([^\s]+?) }/g, (line, type, tId) => {
-		/** @type {TrainerInfo[]} */
-		const trainerParties = data.trainerParties;
-		const trainer = trainerParties.find(t => t.id == tId);
-		return `.party = {.${trainer.type.replace('TrainerMon', '')} = sParty_${trainer.id} }`;
-	}));
+	FS.writeFileSync(config.trainerData, FS.readFileSync(config.trainerData, { encoding: "utf8" })
+		.replace(/\.party = \{\.([^\s]+?) = sParty_([^\s]+?) }/g, (line, type, tId) => {
+			/** @type {TrainerInfo[]} */
+			const trainerParties = data.trainerParties;
+			const trainer = trainerParties.find(t => t.id == tId);
+			return `.party = {.${trainer.type.replace('TrainerMon', '')} = sParty_${trainer.id} }`;
+		})
+		.replace(/\[(.+?)\] =\s*\{\s*\.partyFlags = (.+?),/g, (line, constant) => {
+			/** @type {TrainerInfo[]} */
+			const trainerParties = data.trainerParties;
+			/** @type {TrainerInfo} */
+			const trainer = trainerParties.find(t => t.constant == constant);
+			if (trainer)
+				return `[${constant}] =
+    {
+        .partyFlags = ${[trainer.type.indexOf("NoItem") < 0 && "F_TRAINER_PARTY_HELD_ITEM", trainer.type.indexOf("DefaultMoves") < 0 && "F_TRAINER_PARTY_CUSTOM_MOVESET"].filter(f => !!f).join(' | ') || '0'},`;
+			return line;
+		})
+	);
 
 	console.log(`File written to ${config.trainerData}.`);
 
