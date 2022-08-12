@@ -1,7 +1,7 @@
 import { Shuffle } from "./pick";
 
 export function buildPokeConstants(data: PokemonJson, filterInvalid = false) {
-    return Object.keys(data.pokemon).filter(p =>!filterInvalid ||  (p != "none" && !p.startsWith('old_unown')));
+    return Object.keys(data.pokemon).filter(p => !filterInvalid || (p != "none" && !p.startsWith('old_unown')));
 }
 
 export function buildEvoLookup(data: PokemonJson) {
@@ -21,8 +21,12 @@ export function buildEvoLookup(data: PokemonJson) {
     return { evoLookupForward, evoLookupBackward, distanceFromFinalLookup, evoStageLookup };
 }
 
+export function hasType(mon: Pokemon["baseStats"], type: string) {
+    return [mon.type1, mon.type2].includes(type);
+}
+
 export function sharesType(mon1: Pokemon["baseStats"], mon2: Pokemon["baseStats"]) {
-    return [mon1.type1, mon1.type2].some(t => [mon2.type1, mon2.type2].includes(t));
+    return [mon1.type1, mon1.type2].some(t => hasType(mon2, t));
 }
 
 export function calculateBST(data: PokemonJson) {
@@ -53,4 +57,8 @@ export function buildAvailablePokemon(data: PokemonJson, pokeConstants = buildPo
 
 export function buildAvailableAbilities(data: PokemonJson) {
     return Object.values(data.pokemon).map(p => [p?.baseStats?.ability1, p?.baseStats?.ability2].filter(a => !!a)).flat().filter((a, i, arr) => arr.indexOf(a) == i);
+}
+
+export function buildAvailableTypes(data: PokemonJson) {
+    return Object.values(data.pokemon).map(p => [p?.baseStats?.type1, p?.baseStats?.type2].filter(t => !!t)).flat().filter((t, i, arr) => arr.indexOf(t) == i);
 }

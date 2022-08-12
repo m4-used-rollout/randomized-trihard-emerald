@@ -71,6 +71,17 @@ type TrainerInfo = {
 	id: string;
 	type: "TrainerMonNoItemDefaultMoves" | "TrainerMonItemDefaultMoves" | "TrainerMonNoItemCustomMoves" | "TrainerMonItemCustomMoves";
 	party: TrainerPartyMember[];
+
+	constant: string;
+	partyFlags: string[];
+	trainerClass: string;
+	encounterMusic_gender:string;
+	trainerPic:string;
+	trainerName:string;
+	items: string[];
+	doubleBattle: boolean;
+	aiFlags: string[];
+	partySize: number;
 }
 type TrainerPartyMember = {
 	compiler?: string;

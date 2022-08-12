@@ -79,6 +79,7 @@ const FILES = [
 		forRepoTypes: ['the'],
 	}, {
 		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'trainer_parties.h'),
+		trainers: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'trainers.h'),
 		fn: scrapeTrainerParties,
 		startLine: 0,
 		endLine: Infinity,
@@ -838,6 +839,55 @@ async function scrapeTrainerParties(config) {
 		// 	console.log(currTrainer.id)
 		// }
 	}
+
+	const tStream = FS.createReadStream(config.trainers, { encoding: 'utf8' });
+	const tReadin = RL.createInterface({ input: tStream, crlfDelay: Infinity });
+	for await (let line of tReadin) {
+		let res;
+		if (res = /^\s*\[(.+?)\] =/.exec(line)) {
+			currTrainer = { constant: minimize(res[1]) };
+		}
+		else if (res = /\.(.+?) = (.+)/.exec(line)) {
+			switch (res[1]) {
+				case 'partySize':
+					currTrainer[res[1]] = parseInt(res[2]);
+					break;
+				case 'trainerClass':
+				case 'encounterMusic_gender':
+				case 'trainerPic':
+					currTrainer[res[1]] = minimize(res[2].replace(',', ''));
+					break;
+				case "doubleBattle":
+					currTrainer[res[1]] = res[2].includes("TRUE");
+					break;
+				case 'items':
+					currTrainer[res[1]] = res[2].split(',').map(i => minimize(i.replace(/[{}]/g, '').trim())).filter(i => i?.length);
+					break;
+				case 'partyFlags':
+				case 'aiFlags':
+					if (res[2].trim() == '0,')
+						currTrainer[res[1]] = [];
+					else
+						currTrainer[res[1]] = res[2].split('|').map(m => minimize(m.trim()));
+					break;
+				case 'trainerName':
+					currTrainer[res[1]] = (/_\("(.+?)"\)/.exec(res[2]) || [])[1];
+					break;
+				case 'party':
+					currTrainer.id = (/\{\.(.+?) = sParty_(.+?) \}/.exec(res[2]) || [])[2];
+					break;
+			}
+		}
+		else if (/^\s*\},/.test(line)) {
+			if (currTrainer?.id) {
+				const destTrainer = trainerParties.find(t => t.id == currTrainer.id) || {};
+				Object.keys(currTrainer).forEach(k => destTrainer[k] = currTrainer[k]);
+			}
+			delete currTrainer;
+			//console.log(currTrainer.id)
+		}
+	}
+
 	return { out, trainerParties };
 }
 
