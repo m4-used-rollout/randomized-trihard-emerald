@@ -21,26 +21,27 @@ export default class WildRandomizer implements RandoModule {
         const totalEncounters = allEncounterGroups.reduce((sum, g) => sum + g.set.length, 0);
         const mostEncountersInGroup = allEncounterGroups.reduce((max, g) => Math.max(max, g.set.length), 0);
 
-        const availableMons = buildAvailablePokemon(data, pokeConstants, totalEncounters, { extraEntropy: true });
-
-        const replaceMon = (mon: string): string => {
-            const origDistance = distanceFromFinalLookup[mon];
-            const origStats = monStatsLookup[mon].baseStats;
-            return PickCascade(availableMons,
-                m => Math.abs(origStats.bst - monStatsLookup[m].baseStats.bst) <= bstAbsRange, // Within provided BST range
-                m => m != mon, // Not same mon
-                // m => sharesType(origStats, monStatsLookup[m].baseStats), // At least one type matches
-                m => distanceFromFinalLookup[m] == origDistance, // Same distance from final (Caterpie always evolves twice)
-            ) || mon;
-        };
+        //const availableMons = buildAvailablePokemon(data, pokeConstants, totalEncounters, { extraEntropy: true });
 
         console.log("Randomizing wilds...");
 
-        for (let i = 0; i < mostEncountersInGroup; i++)
-            allEncounterGroups.forEach(g => {
-                if (g.set[i])
-                    g.set[i].species = replaceMon(g.set[i].species);
-            });
+        // for (let i = 0; i < mostEncountersInGroup; i++)
+        allEncounterGroups.forEach(g => {
+            const availableMons = [...pokeConstants];
+            const replaceMon = (mon: string): string => {
+                const origDistance = distanceFromFinalLookup[mon];
+                const origStats = monStatsLookup[mon].baseStats;
+                return PickCascade(availableMons,
+                    m => Math.abs(origStats.bst - monStatsLookup[m].baseStats.bst) <= bstAbsRange, // Within provided BST range
+                    m => m != mon, // Not same mon
+                    // m => sharesType(origStats, monStatsLookup[m].baseStats), // At least one type matches
+                    m => distanceFromFinalLookup[m] == origDistance, // Same distance from final (Caterpie always evolves twice)
+                ) || mon;
+            };
+            // if (g.set[i])
+            //     g.set[i].species = replaceMon(g.set[i].species);                
+            g.set.forEach(s => s.species = replaceMon(s.species));
+        });
 
         console.log(`Randomized ${totalEncounters} encounters in ${allEncounterGroups.length} groups.`);
 
