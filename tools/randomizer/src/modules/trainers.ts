@@ -2,7 +2,7 @@ import { Pick, PickCascade } from "../utils/pick";
 import { buildAvailablePokemon, buildAvailableTypes, buildEvoLookup, buildPokeConstants, calculateBST, hasType, sharesType } from "../utils/montasks";
 
 const trainerGroups: Record<string, { type: string, trainers: string[] }> = {
-    "Rustboro Gym": { type: "rock", trainers: ["Josh", "Tommy", "Mark", "Roxanne"] },
+    "Rustboro Gym": { type: "rock", trainers: ["Josh", "Tommy", "Marc", "Roxanne"] },
     "Dewford Gym": { type: "fighting", trainers: ["Laura", "Lilith", "Brenden", "Takao", "Cristian", "Jocelyn", "Brawly"] },
     "Mauville Gym": { type: "electric", trainers: ["Vivian", "Kirk", "Ben", "Angelo", "Shawn", "Wattson"] },
     "Lavaridge Gym": { type: "fire", trainers: ["Jeff", "Jace", "Eli", "Cole", "Gerald", "Axle", "Keegan", "Danielle", "Flannery"] },
