@@ -42,3 +42,4 @@ node_modules
 tools/randomizer/bin
 output.json
 test.json
+HUD
