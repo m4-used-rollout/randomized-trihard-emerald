@@ -252,7 +252,7 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(OBJS)
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 	$(FIX) $@ -p -t"$(TITLE)" -c$(GAME_CODE) -m$(MAKER_CODE) -r$(REVISION) --silent
-	$(NM) -SBgn $< > $(SYM)
+	$(NM) -SBn $< > $(SYM)
 
 $(PGEINI): %.pge.ini: $(ELF)
 	$(PGEGEN) $< $@ --code $(GAME_CODE) --name "$(GAME_NAME)"
