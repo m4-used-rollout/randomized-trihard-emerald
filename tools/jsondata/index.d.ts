@@ -12,6 +12,17 @@ declare interface PokemonJson {
 	tutorList?: string[];
 	wilds: WildPokemonInfo[];
 	trainerParties: TrainerInfo[];
+	npcTrades: {
+		monIn: string;
+		monInLine: number;
+		monOut: string;
+		monOutLine: number;
+	}[];
+	staticMons: {
+		mon: string;
+		monLine: number;
+		file: string;
+	}[]
 
 	_type: RepoType;
 	_lvlTableType?: string;
@@ -75,9 +86,9 @@ type TrainerInfo = {
 	constant: string;
 	partyFlags: string[];
 	trainerClass: string;
-	encounterMusic_gender:string;
-	trainerPic:string;
-	trainerName:string;
+	encounterMusic_gender: string;
+	trainerPic: string;
+	trainerName: string;
 	items: string[];
 	doubleBattle: boolean;
 	aiFlags: string[];

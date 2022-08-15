@@ -13,64 +13,73 @@ const PATH = require('path');
 
 const INPUT_FILE = PATH.join(__dirname, 'output.json');
 
-const BASE_OUTPUT_PATH = '../../src/data/pokemon/';
+const BASE_PATH = '../../src/data/pokemon/';
 
 //-----------------------------------------------------------------------------
 
 const FILES = [
 	{
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'base_stats.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'base_stats.h'),
 		fn: dumpBaseStats,
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'egg_moves.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'egg_moves.h'),
 		fn: dumpEggMoves,
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'evolution.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'evolution.h'),
 		fn: dumpEvolutions,
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'level_up_learnsets.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'level_up_learnsets.h'),
 		fn: dumpLevelUpLearnset,
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '../..', 'party_menu.c'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'party_menu.c'),
 		fn: dumpTMMoves,
 		startLine: 1533,// forRepos({ the: 1533 }),
 		endLine: 1591,//forRepos({ the: 1591 }),
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'tmhm_learnsets.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'tmhm_learnsets.h'),
 		fn: dumpTMLearnset,
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'tutor_learnsets.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'tutor_learnsets.h'),
 		fn: dumpTutorLearnset,
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'wild_encounters.h'),
+		path: PATH.join(__dirname, BASE_PATH, '..', 'wild_encounters.h'),
 		fn: dumpWildPokemon,
 		startLine: 14, // forRepos({ 'the': 14 }),
 		endLine: 3260, //forRepos({ 'the': 3260 }),
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'trainer_parties.h'),
-		trainerData: PATH.join(__dirname, BASE_OUTPUT_PATH, '..', 'trainers.h'),
+		path: PATH.join(__dirname, BASE_PATH, '..', 'trainer_parties.h'),
+		trainerData: PATH.join(__dirname, BASE_PATH, '..', 'trainers.h'),
 		fn: dumpTrainerParties,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '../..', 'starter_choose.c'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'starter_choose.c'),
 		fn: dumpStarters,
 		startLine: 131,
 		endLine: 133,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, '../..', 'starter_choose_tpp.c'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'starter_choose_tpp.c'),
 		fn: dumpStarters,
 		startLine: 38,
 		endLine: 40,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'form_species_tables.h'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'trade.c'),
+		fn: dumpTrades,
+		startLine: 1175,
+		endLine: 1212,
+		forRepoTypes: ['the'],
+	}, {
+		fn: dumpStatics,
+		forRepoTypes: ['the'],
+	}, {
+		path: PATH.join(__dirname, BASE_PATH, 'form_species_tables.h'),
 		fn: dumpFormSpecies,
 		forRepoTypes: ['exp'],
 	}, {
-		path: PATH.join(__dirname, BASE_OUTPUT_PATH, 'form_change_tables.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'form_change_tables.h'),
 		fn: dumpFormChanges,
 		forRepoTypes: ['exp'],
 	},
@@ -556,6 +565,41 @@ async function dumpStarters(data, config) {
 	console.log(`File written to ${config.path}.`);
 }
 
+/**
+ * @param {PokemonJson} data 
+ * @param {typeof FILES} config 
+ */
+async function dumpTrades(data, config) {
+	const original = (FS.existsSync(config.path) ? FS.readFileSync(config.path, { encoding: 'utf8' }) : "").split('\n');
+
+	data.npcTrades.forEach(t => {
+		original[t.monInLine] = original[t.monInLine].replace(/SPECIES_([^\s,]+)/, `SPECIES_${t.monIn.toUpperCase()}`);
+		original[t.monOutLine] = original[t.monOutLine].replace(/SPECIES_([^\s,]+)/, `SPECIES_${t.monOut.toUpperCase()}`);
+	})
+
+	FS.writeFileSync(config.path, original.join('\n'), { encoding: 'utf8' });
+
+	console.log(`File written to ${config.path}.`);
+}
+
+/**
+ * @param {PokemonJson} data 
+ * @param {typeof FILES} config 
+ */
+async function dumpStatics(data, config) {
+	data.staticMons.forEach(static => {
+		const path = PATH.join(__dirname, static.file);
+		if (!FS.existsSync(path))
+			throw new Error(`${path} does not exist!`);
+		const original = FS.readFileSync(path, { encoding: 'utf8' }).split('\n');
+
+		original[static.monLine] = original[static.monLine].replace(/SPECIES_([^\s,]+)/, `SPECIES_${static.mon.toUpperCase()}`);
+
+		FS.writeFileSync(path, original.join('\n'), { encoding: 'utf8' });
+		console.log(`File written to ${path}.`);
+	});
+}
+
 new Promise(async (res, rej) => res(require(INPUT_FILE)))
 
 	.then(/** @param {PokemonJson} data */(data) => {
@@ -563,7 +607,7 @@ new Promise(async (res, rej) => res(require(INPUT_FILE)))
 		const REPO_TYPE = data._type;
 		if (!REPO_TYPE) throw new ReferenceError('No repo type present on input data, unable to proceed.');
 
-		FS.mkdirSync(PATH.join(__dirname, BASE_OUTPUT_PATH), { recursive: true });
+		FS.mkdirSync(PATH.join(__dirname, BASE_PATH), { recursive: true });
 
 		const fns = FILES.map(x => {
 			if (typeof x.fn !== 'function') return Promise.resolve(); //skip

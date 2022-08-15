@@ -30,88 +30,123 @@ const OUTPUT_FILE = PATH.join(__dirname, 'output.json');
 
 //-----------------------------------------------------------------------------
 
-const BASE_INPUT_PATH = '../../src/data/pokemon/';
+const BASE_PATH = '../../src/data/pokemon/';
 
 // The names of the files to process
 const FILES = [
 	{
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'base_stats.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'base_stats.h'),
 		fn: scrapeBaseStats,
 		startLine: forRepos({ base: 39, exp: 6, the: 39 }), // skip macro definition at top of file, present in some repos
 		endLine: Infinity,
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'egg_moves.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'egg_moves.h'),
 		fn: scrapeEggMoves,
 		startLine: 6,
 		endLine: Infinity,
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'evolution.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'evolution.h'),
 		fn: scrapeEvolutions,
 		startLine: 2,
 		endLine: Infinity,
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'level_up_learnset_pointers.h'),
-		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'level_up_learnsets.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'level_up_learnset_pointers.h'),
+		lists: PATH.join(__dirname, BASE_PATH, 'level_up_learnsets.h'),
 		fn: scrapeLevelUpLearnset,
 		startLine: 2,
 		endLine: Infinity,
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, '../..', 'party_menu.c'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'party_menu.c'),
 		fn: scrapeTMMoves,
 		startLine: forRepos({ the: 1533 }),
 		endLine: forRepos({ the: 1591 }),
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'tmhm_learnsets.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'tmhm_learnsets.h'),
 		fn: scrapeTMLearnset,
 		startLine: 8,
 		endLine: Infinity,
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'tutor_learnsets.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'tutor_learnsets.h'),
 		fn: scrapeTutorLearnset,
 		startLine: forRepos({ base: 38, exp: 39, the: 70 }), // skipping defines and tutor move array
 		endLine: Infinity,
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'wild_encounters.h'),
+		path: PATH.join(__dirname, BASE_PATH, '..', 'wild_encounters.h'),
 		fn: scrapeWildPokemon,
 		startLine: forRepos({ the: 14 }),
 		endLine: forRepos({ the: 3260 }),
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'trainer_parties.h'),
-		trainers: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'trainers.h'),
+		path: PATH.join(__dirname, BASE_PATH, '..', 'trainer_parties.h'),
+		trainers: PATH.join(__dirname, BASE_PATH, '..', 'trainers.h'),
 		fn: scrapeTrainerParties,
 		startLine: 0,
 		endLine: Infinity,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'battle_moves.h'),
+		path: PATH.join(__dirname, BASE_PATH, '..', 'battle_moves.h'),
 		fn: scrapeMoves,
 		startLine: 0,
 		endLine: Infinity,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, '..', 'items.h'),
+		path: PATH.join(__dirname, BASE_PATH, '..', 'items.h'),
 		fn: scrapeItems,
 		startLine: 0,
 		endLine: Infinity,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, '../..', 'starter_choose.c'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'starter_choose.c'),
 		fn: scrapeStarters,
 		startLine: 131,
 		endLine: 133,
 		forRepoTypes: ['the'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_table_pointers.h'),
-		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_species_tables.h'),
+		path: PATH.join(__dirname, BASE_PATH, '../..', 'trade.c'),
+		fn: scrapeTrades,
+		startLine: 1175,
+		endLine: 1212,
+		forRepoTypes: ['the'],
+	}, {
+		createMon: [
+			PATH.join(__dirname, BASE_PATH, '../..', 'battle_controllers.c'),
+		],
+		setWildBattle: [
+			PATH.join(__dirname, BASE_PATH, '../../../data', 'event_scripts.s'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/AncientTomb', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/AquaHideout_B1F', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/BattleFrontier_OutsideEast', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/DesertRuins', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/IslandCave', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/MarineCave_End', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/NewMauville_Inside', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/Route117', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/Route120', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/SkyPillar_Top', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/TerraCave_End', 'scripts.inc'),
+		],
+		giveMon: [
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/LittleRootTown_ProfessorBirchsLab', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/MossdeepCity_StevensHouse', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/RustboroCity_DevonCorp_2F', 'scripts.inc'),
+		],
+		setVar: [
+			// PATH.join(__dirname, BASE_INPUT_PATH, '../../../data/maps/AquaHideout_1F', 'scripts.inc'),
+			PATH.join(__dirname, BASE_PATH, '../../../data/maps/Route119_WeatherInstitute_2F', 'scripts.inc'),
+		],
+		fn: scrapeStatics,
+		forRepoTypes: ['the'],
+	}, {
+		path: PATH.join(__dirname, BASE_PATH, 'form_species_table_pointers.h'),
+		lists: PATH.join(__dirname, BASE_PATH, 'form_species_tables.h'),
 		fn: scrapeFormSpecies,
 		startLine: 0,
 		endLine: Infinity,
 		forRepoTypes: ['exp'],
 	}, {
-		path: PATH.join(__dirname, BASE_INPUT_PATH, 'form_change_table_pointers.h'),
-		lists: PATH.join(__dirname, BASE_INPUT_PATH, 'form_change_tables.h'),
+		path: PATH.join(__dirname, BASE_PATH, 'form_change_table_pointers.h'),
+		lists: PATH.join(__dirname, BASE_PATH, 'form_change_tables.h'),
 		fn: scrapeFormChanges,
 		startLine: 41,
 		endLine: Infinity,
@@ -1017,6 +1052,80 @@ async function scrapeStarters(config) {
 		starters.push(minimize(line.trim().replace(',', '')));
 	}
 	return { out, starters };
+}
+
+async function scrapeTrades(config) {
+	let lineNo = 0;
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<{mon:string, line:number}>} */
+	const tradeMons = [];
+
+	const stream = FS.createReadStream(config.path, { encoding: 'utf8' });
+	const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+	for await (let line of readin) {
+		lineNo++;
+		if (lineNo < config.startLine) continue;
+		if (lineNo > config.endLine) break;
+
+		let res;
+		if (res = /(SPECIES_[^\s,]+)/.exec(line))
+			tradeMons.push({ mon: minimize(res[1]), line: lineNo });
+	}
+
+	/** @type {Array<{monIn:string; monInLine:number; monOut:string; monOutLine:number}>} */
+	const npcTrades = [];
+	for (let i = 0; i < tradeMons.length; i += 2) {
+		npcTrades.push({ monIn: tradeMons[i + 1].mon, monInLine: tradeMons[i + 1].line, monOut: tradeMons[i].mon, monOutLine: tradeMons[i].line });
+	}
+
+	return { out, npcTrades };
+}
+
+async function scrapeStatics(config) {
+	/** @type {Map<string, object>} */
+	const out = new Map();
+	/** @type {Array<{mon:string, monLine:number, file:string}>} */
+	const staticMons = [];
+
+	const { createMon, setWildBattle, giveMon, setVar } = config;
+	const files = { createMon, setWildBattle, giveMon, setVar };
+
+	Object.keys(files).forEach(staticType => files[staticType].forEach(async function (path) {
+		const file = PATH.relative(__dirname, path);
+		const stream = FS.createReadStream(path, { encoding: 'utf8' });
+		const readin = RL.createInterface({ input: stream, crlfDelay: Infinity });
+		let lineNo = 0;
+
+		for await (let line of readin) {
+			lineNo++;
+			if (lineNo < config.startLine) continue;
+			if (lineNo > config.endLine) break;
+
+			let res;
+			switch (staticType) {
+				case "createMon":
+					if (res = /CreateMon\(.+?, (SPECIES_.+?),/.exec(line))
+						staticMons.push({ mon: minimize(res[1]), monLine: lineNo, file });
+					break;
+				case "setWildBattle":
+					if (res = /setwildbattle (SPECIES_.+?),/.exec(line))
+						staticMons.push({ mon: minimize(res[1]), monLine: lineNo, file });
+					break;
+				case "giveMon":
+					if (res = /givemon (SPECIES_.+?),/.exec(line))
+						staticMons.push({ mon: minimize(res[1]), monLine: lineNo, file });
+					break;
+				case "setVar":
+					if (res = /setvar .+?, (SPECIES_.+?),/.exec(line))
+						staticMons.push({ mon: minimize(res[1]), monLine: lineNo, file });
+					break;
+			}
+		}
+		stream.close();
+	}));
+
+	return { out, staticMons };
 }
 
 function minimize(val) {
