@@ -32,7 +32,7 @@ build/
 .vscode/ipch/
 porymap.*
 porymap.project.cfg
-.vscode/
+.vscode/*
 tools/binutils
 *.pyc
 tools/pgegen/pgegen
@@ -44,3 +44,5 @@ output.json
 test.json
 HUD
 BizHawk
+!.vscode/*.dict.txt
+!.vscode/*.json

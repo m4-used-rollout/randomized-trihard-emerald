@@ -1377,7 +1377,7 @@ bool8 WaitForSignPopup(void)
     return !IsSignPoppedUp();
 }
 
-bool8 SrcCmd_messagesign(struct ScriptContext *ctx)
+bool8 ScrCmd_messagesign(struct ScriptContext *ctx)
 {
     struct WindowTemplate win;
     s32 i;
@@ -2556,6 +2556,15 @@ bool8 ScrCmd_selectpointer(struct ScriptContext *ctx)
             break;
         case 2: //clamp if past max
             index = min(index, max-1);
+            break;
+        //select from compare function
+        case 3+0: // <
+        case 3+1: // =
+        case 3+2: // >
+        case 3+3: // <=
+        case 3+4: // >=
+        case 3+5: // !=
+            index = (sScriptConditionTable[overmethod-3][ctx->comparisonResult] == 1);
             break;
     }
     // Only load this pointer if it's within the array and pointing to someplace in ROM

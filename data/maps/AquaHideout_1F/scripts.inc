@@ -161,7 +161,7 @@ AquaHideout_1F_Text_Bailey_PostEscape1:
 	.string "I just saw that visor kid run out of\n"
 	.string "here really fast. Did you do that?\p"
 	.string "Good job. You held him off long enough\n"
-	.string "for the boss to get the preperations\l"
+	.string "for the boss to get the preparations\l"
 	.string "done and head out to sea.\p"
 	.string "You… didn't get the chance to tell him\n"
 	.string "about Groudon, did you?\p"
@@ -264,6 +264,13 @@ AquaHideout_1F_EventScript_2334EE:: @ 82334EE
 AquaHideout_1F_Text_233884: @ 8233884
 	.string "There's a bunch of other guys downstairs\n"
 	.string "who will want to scrap fight with you.\p"
+	.string "You don't know what a scrap is?\n"
+	.string "It's just a friendly battle.\p"
+	.string "No one's aiming to kill in a scrap.\p"
+	.string "If your {POKEMON} get knocked out, they'll\n"
+	.string "wake up fine after, though pretty hurt.\p"
+	.string "If you wanna rest up, there's a corner\n"
+	.string "with couches down on the lowest level.\p"
 	.string "Why don't you head down and say hi?$"
 
 

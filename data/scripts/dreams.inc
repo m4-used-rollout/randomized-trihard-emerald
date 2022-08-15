@@ -884,7 +884,7 @@ DreamScript_1100_Text2:
 @------------------------------------------------------
 @ Triggered by first entering Mt. Pyre
 DreamScript_1200::
-	fadenewbgm MUS_RG_TAMAMUSI @ TODO
+	fadenewbgm MUS_RG_NAMINORI
 	delay 60
 	setvar VAR_TEXTBOX_TYPE, MSGTYPE_DREAM
 	message DreamScript_1200_Text1
@@ -1000,7 +1000,7 @@ DreamScript_1500_Text1:
 @ This is the end game. This dream is expected to play upon saving at the E4
 @ The additional dreams are for any other times the player explicitly saves at the E4
 DreamScript_1600::
-	fadenewbgm MUS_B_DOME @ TODO
+	fadenewbgm MUS_RG_POKEYASHI
 	delay 60
 	setvar VAR_TEXTBOX_TYPE, MSGTYPE_DREAM
 	message DreamScript_1600_Text1
@@ -1035,7 +1035,7 @@ DreamScript_1600_Text1:
 	.string "floor is collapsing under you.\p"
 	.string "{WOMAN_SPEAKING}"
 	.string "After the Aether incident, the boss\n"
-	.string "had some soul serching to do.\p"
+	.string "had some soul searching to do.\p"
 	.string "He doesn't want to put y'all in danger\n"
 	.string "like that again over his screw ups.\p"
 	.string "{MAN_SPEAKING}"
@@ -1045,10 +1045,10 @@ DreamScript_1600_Text1:
 	.string "all around you, thrown to the floor.\p"
 	.string "Gang signs are ripped off and tossed aside.\n"
 	.string "You clutch your bandanna tightly.\p"
-	.string "Everyone's clamboring, asking what's next\n"
+	.string "Everyone's clambering, asking what's next\n"
 	.string "asking where they should go, asking why.\p"
-	.string "You stay rooted to the spot, bandanna\n"
-	.string "tightly in hand…\p"
+	.string "You stay rooted to the spot,\n"
+	.string "Skull Bandanna tightly in hand…\p"
 	.string "$"
 DreamScript_1600_Text2:
 	.string "{PLAYER} looks at the Aqua Bandana\n"
@@ -1057,7 +1057,7 @@ DreamScript_1600_Text2:
 
 
 DreamScript_1601::
-	fadenewbgm MUS_B_DOME @TODO
+	fadenewbgm MUS_HIDERI
 	delay 60
 	setvar VAR_TEXTBOX_TYPE, MSGTYPE_DREAM
 	@ mom speaking
@@ -1151,13 +1151,26 @@ DreamScript_1601_Text6:
 	.string "Thoughts of {RIVAL_ALOLA}…\p$"
 DreamScript_1601_Text7:
 	.string "{PAUSE 30}{SET_NORM_PAL}{PAUSE 30}"
-	.string "You're in a much better headspace now.\n"
+	.string "You're in a much better head space now.\n"
 	.string "You can do this.\p"
 	.string "$"
 
 
 DreamScript_1602::
-	@ 
+	fadenewbgm MUS_HIDERI
+	delay 60
+	setvar VAR_TEXTBOX_TYPE, MSGTYPE_DREAM
+	@ mom speaking
+	message DreamScript_1602_Text1
+	setyesnotext DreamScript_1602_Why, DreamScript_1602_Help
+	waitmessage
+	yesnobox 20, 8
+	message DreamScript_1602_Text2
+	waitmessage
+	closemessage
+	fadenewbgm MUS_DUMMY
+	delay 90
+	fadedefaultbgm
 	return
 DreamScript_1602_Text1:
 	.string "You must have circled the island\n"
@@ -1343,6 +1356,7 @@ gText_Alex_Pokenav_LegendaryCall_ClearedHero:
 
 DreamScript_Alex_LeagueCall::
 	lockall
+	goto_if_set FLAG_ALEX_KNOWS_LEGENDARY_OUTCOME, DreamScript_Alex_LeagueCall_CaughtUp
 	@ Buffer part one of the call: did Alex know?
 	setvar VAR_0x800A, 0
 	addvar_if_set FLAG_ALEX_KNOWS_LEGENDARIES, VAR_0x800A, 1
@@ -1357,15 +1371,18 @@ DreamScript_Alex_LeagueCall::
 	@ display message
 	pokenavcall gText_Alex_Pokenav_LeagueCall
 	waitmessage
+	goto DreamScript_Alex_LeagueCall_END
+DreamScript_Alex_LeagueCall_END:
 	closemessage
 	clearflag FLAG_ENABLE_ALEX_LEAGUE_CALL
+	setflag FLAG_ALEX_KNOWS_E4
 	releaseall
 	end
 gText_Alex_Pokenav_LeagueCall:
 	@ .string "… … … … … …\n"
 	@ .string "… … … … … Beep!\p"
 	@ .string "{ALEX_SPEAKING}"
-	.string "{RIVAL_ALOLA}: {STR_VAR_1}\p"
+	.string "{STR_VAR_1}\p"
 	.string "{STR_VAR_2}\p"
 	.string "… … … … … …\n"
 	.string "… … … … … Click!$"
@@ -1380,13 +1397,13 @@ gText_Alex_Pokenav_LeagueCallTableB:
 	.4byte gText_Alex_Pokenav_LeagueCallB_Hero
 	.4byte 0
 gText_Alex_Pokenav_LeagueCallA_Base:
-	.string "{PLAYER}! You're alright!\n"
+	.string "{RIVAL_ALOLA}: {PLAYER}! You're alright!\n"
 	.string "I just heard the news about the\l"
 	.string "rampaging beasts over there!\p"
 	.string "Are you okay?! Are they still\n"
 	.string "causing terrible weather?!\p"
 	.string "Oh, they're gone now? Oh, thank\n"
-	.string "the dieties. What happened?$"
+	.string "the deities. What happened?$"
 gText_Alex_Pokenav_LeagueCallA_Called:
 	.string "{RIVAL_ALOLA}: {PLAYER}! Hey!\n"
 	.string "The signal got better since\l"
@@ -1424,6 +1441,24 @@ gText_Alex_Pokenav_LeagueCallB_Hero:
 	.string "KILLED!! What were you THINKING?!\p"
 	.string "I gotta lie down. I'll… I'll…\n"
 	.string "Tapu Bulu give me strength…$"
+DreamScript_Alex_LeagueCall_CaughtUp:
+	@ display message
+	pokenavcall gText_Alex_LeagueCall_CaughtUp
+	waitmessage
+	goto DreamScript_Alex_LeagueCall_END
+	end
+gText_Alex_LeagueCall_CaughtUp:
+	.string "{RIVAL_ALOLA}: {PLAYER}! Finally!\n"
+	.string "I've been trying to call you, but\l"
+	.string "the call wouldn't go through!\p"
+	.string "You're where? Victory Road?\p"
+	.string "Oh? You're going to the\n"
+	.string "{POKEMON} League Championship?!\p"
+	.string "Oh, right, that's starting so soon!\p"
+	.string "Do you mind if I tell your mom?\n"
+	.string "I think we'd BOTH want to watch!\p"
+	.string "Good luck at the league,\n{PLAYER}!$"
+	
 
 @------------------------------------------------------
 
@@ -1510,7 +1545,7 @@ gText_Alex_Pokenav_Magma::
 	.string "Woah, you alright?\p"
 	.string "Wh-What about a volcano and…?\n"
 	.string "A rampaging beast…?!\p"
-	.string "… … … … … …\p"
+	.string "… … … … … …\n"
 	.string "… … … … … …\p"
 	.string "So a massive red beast got awoken\n"
 	.string "by a rival team and… Are you hurt?!\p"
@@ -1542,7 +1577,50 @@ gText_Alex_Pokenav_SternAfter::
 	.string "And you're okay with that?\n"
 	.string "If you say so…$"
 
+gText_Alex_Pokenav_Logan_Base::
+	.string "{RIVAL_ALOLA}: Hey, {PLAYER}.\n"
+	.string "How's it going over there?\p"
+	.string "Oh, time for venting?\n"
+	.string "Okay, hit me with it.\p"
+	.string "… … … … …\n"
+	.string "Wait wait, who's {RIVAL_HERO}? You've never\l"
+	.string "mentioned this guy before.\p"
+	.string "{STR_VAR_1}" @ insert below string if relevant
+	.string "… … … … …\n"
+	.string "Okay, let me get this straight:\p"
+	.string "He's an annoying fashion disaster.\n"
+	.string "He thinks he owns the place.\l"
+	.string "He regularly beats down team grunts…\p"
+	.string "Honestly, he sounds like that guy from\n"
+	.string "the Aether Incident. Remember?\p"
+	.string "The one Gladion teamed up with?\n"
+	.string "Weirdly never stopped smiling?\l"
+	.string "He had a massive hero complex, that guy.\p"
+	.string "Anyway, I gotta go. You can tell me\n"
+	.string "more about this {RIVAL_HERO} guy later.$"
+gText_Alex_Pokenav_Logan_Deaths::
+	.string "… … … … …\n"
+	.string "He took out HOW MANY of your {POKEMON}?!\l"
+	.string "{STR_VAR_2} of them?!\p$"
 
+gText_Alex_Pokenav_SpaceCenter::
+	.string "{RIVAL_ALOLA}: {PLAYER}! H--!\n"
+	.string "Oh no, what's wrong now?\p"
+	.string "… … … … … …\n"
+	.string "… … … … … …\p"
+	.string "Okay, so… I hate to tell you that\n"
+	.string "“I told you so”, but…\p"
+	.string "What?! I'm not gonna sugarcoat it!\n"
+	.string "I knew Team Aqua were bad news from\l"
+	.string "the moment you tried to justify them!\p"
+	.string "Look, maybe it's not too late.\n"
+	.string "Maybe things can be salvaged.\p"
+	.string "You made friends, right? I'm sure they\n"
+	.string "will still like you, just like I do!\p"
+	.string "You can set things right, {PLAYER}.\n"
+	.string "I believe in you.$"
+
+@ During legendaries event
 gText_Alex_Pokenav_RainsBegan::
 	.string "{RIVAL_ALOLA}: {PLAYER}? What's going on?\n"
 	.string "I can barely hear you!\p"
@@ -1579,10 +1657,133 @@ gText_Alex_Pokenav_PostResearch::
 	.string "Good luck! And stay safe!$"
 
 @ TODO: Post legendaries pokenav calls
+gText_Alex_Pokenav_PostReport_BaseUnknown::
+	.string "{RIVAL_ALOLA}: {PLAYER}! You're alright!\n"
+	.string "I just heard the news about the\l"
+	.string "rampaging beasts over there!\p"
+	.string "Are you okay?! Are they still\n"
+	.string "causing terrible weather?!\p"
+	.string "Oh, they're gone now? Oh, thank\n"
+	.string "the deities. What happened?\p"
+	.string "… … … … … …\n"
+	.string "… … … … … …\p"
+	.string "{STR_VAR_1}$"
+gText_Alex_Pokenav_PostReport_BaseKnown::
+	.string "{RIVAL_ALOLA}: {PLAYER}? Are you alright?\n"
+	.string "I'm still researching for you.\p"
+	.string "What? It's over?! You did it?!\n"
+	.string "Tell me what happened!\p"
+	.string "… … … … … …\n"
+	.string "… … … … … …\p"
+	.string "{STR_VAR_1}$"
+gText_Alex_Pokenav_PostReport_BaseHelped::
+	.string "{RIVAL_ALOLA}: {PLAYER}? Hey!\n"
+	.string "Have you found anything yet?\p"
+	.string "Oh, you found the Sky Pillar!?\n"
+	.string "Tell me what happened!\p"
+	.string "… … … … … …\n"
+	.string "… … … … … …\p"
+	.string "{STR_VAR_1}$"
+gText_Alex_Pokenav_PostReport_OutcomeNormal::
+	.string "Oh, thank the deities, you're alright!\n"
+	.string "I'm so glad the great dragon didn't\l"
+	.string "just eat you or something!\p"
+	.string "I wonder if the news has any footage\n"
+	.string "of the dragon flying down like that!\p"
+	.string "I'm gonna go see!\n"
+	.string "Talk to you later, {PLAYER}!$"
+gText_Alex_Pokenav_PostReport_OutcomeHero::
+	.string "You FOUGHT OFF THE BEASTS?!?!\p"
+	.string "… … … … … …\n"
+	.string "WHAT?!?!\p"
+	.string "{PLAYER}, you could have been\n"
+	.string "KILLED!! What were you THINKING?!\p"
+	.string "I gotta lie down. I'll… I'll…\n"
+	.string "Tapu Bulu give me strength…$"
+	
 @ One reacting to it finishing
 @ One reacting to the player being a hero
 @ 1-2 just talking afterwards.
 
+
+gText_Alex_Pokenav_E4Day1::
+	.string "{RIVAL_ALOLA}: {PLAYER}! Hey!\n"
+	.string "It's starting!\p"
+	.string "The {POKEMON} League Conference!\n"
+	.string "It's starting today!\p"
+	.string "Are you participating?!\n"
+	.string "I haven't seen you yet!\p"
+	.string "You are parti--You're NEXT?!\p"
+	.string "Don't let me hold you up! You can\n"
+	.string "do this! Good luck!!$"
+gText_Alex_Pokenav_E4Day2::
+	.string "{RIVAL_ALOLA}: {PLAYER}!\n"
+	.string "You did so well yesterday!\p"
+	.string "I can't beleive how good you've\n"
+	.string "gotten at handling {POKEMON}!\p"
+	.string "Like, you've always been the best\n"
+	.string "of us at it, but going against the\l"
+	.string "Elites of the region is no joke!\p"
+	.string "Oh, they just said on the TV that\n"
+	.string "you're going next! Good luck!!$"
+gText_Alex_Pokenav_E4Day3::
+	.string "{RIVAL_ALOLA}: {PLAYER}! They're talking about\n"
+	.string "you being in Team Aqua.\p"
+	.string "Did you hear the news casters?\n"
+	.string "Is there a TV nearby you can watch?\p"
+	.string "Oh, I hope this doesn't disqualify\n"
+	.string "you or something! I'd be so mad!\p"
+	.string "Don't let it get you down!\n"
+	.string "You can do this! Good luck!$"
+gText_Alex_Pokenav_E4Day3_Hero::
+	.string "{RIVAL_ALOLA}: {PLAYER}! They're talking about\n"
+	.string "you beating those rampaging beasts!\p"
+	.string "Did you hear the news casters?\n"
+	.string "Is there a TV nearby you can watch?\p"
+	.string "The images they dug up of you fighting\n"
+	.string "them! It makes me scared all over again!\p"
+	.string "You've set some big expectations\n"
+	.string "for yourself…\p"
+	.string "Oh! Uh, but don't let it get to you!\n"
+	.string "Y-You can do this! Good luck!$"
+gText_Alex_Pokenav_E4Day4::
+	.string "{RIVAL_ALOLA}: {PLAYER}…\n"
+	.string "Can you believe it…?\p"
+	.string "It's down to the final five,\n"
+	.string "and YOU'RE ONE OF THEM!\p"
+	.string "I'm sure you're so nervous, so let\n"
+	.string "me tell you what's happening here.\p"
+	.string "Your mom has thrown a big lū'au\n"
+	.string "with a big TV high on the house wall.\p"
+	.string "All of her friends have come, as well\n"
+	.string "as all of your dad's friends.\p"
+	.string "Team Skull is basically having\n"
+	.string "a reunion here, just to watch you!\p"
+	.string "No one knows where Guzma is,\n"
+	.string "but Plumeria showed up!\p"
+	.string "She's pretending she doesn't care,\n"
+	.string "but I think she likes seeing one of\l"
+	.string "“her kids” accomplish so much.\p"
+	.string "Oh, they just announced you're\n"
+	.string "up next! I better go!\p"
+	.string "We're all rooting for you,\n"
+	.string "{PLAYER}! Good luck!$"
+gText_Alex_Pokenav_E4Day5::
+	.string "{RIVAL_ALOLA}: {PLAYER}…!\n"
+	.string "You're calling me now…?\p"
+	.string "You're the star challenger, {PLAYER_dude}!\n"
+	.string "You're due on stage!\p"
+	.string "Don't be nervous.\n"
+	.string "You can do this.\l"
+	.string "You've done so much already.\p"
+	.string "This champion guy? He's gonna be\n"
+	.string "a push over. You just watch and see.\p"
+	.string "Yeah, the lū'au is still going.\n"
+	.string "The whole the island is here, I swear!\p"
+	.string "I think I did actually see Guzma\n"
+	.string "hiding moodily somewhere in the back.\p"
+	.string "You can do this. I know you can.\n"
+	.string "Good luck, {PLAYER}… We love you…$"
 
 @------------------------------------------------------
 DreamScript_Dummy:

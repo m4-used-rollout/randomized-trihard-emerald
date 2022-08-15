@@ -1139,7 +1139,7 @@
 #define FLAG_ALEX_CALL_LEGENDARIES                                  0x4A3 // Unused Flag
 #define FLAG_VISITED_MT_PYRE                                        0x4A4 // Unused Flag
 #define FLAG_HIDE_MAGMA_HIDEOUT_OTHERS                              0x4A5 // Unused Flag
-#define FLAG_UNUSED_0x4A6                                           0x4A6 // Unused Flag
+#define FLAG_MET_TRAINING_TRIO                                      0x4A6 // Unused Flag
 #define FLAG_UNUSED_0x4A7                                           0x4A7 // Unused Flag
 #define FLAG_UNUSED_0x4A8                                           0x4A8 // Unused Flag
 #define FLAG_UNUSED_0x4A9                                           0x4A9 // Unused Flag
@@ -1190,10 +1190,10 @@
 #define FLAG_ALEX_DISCUSSED_GRANDMA                                 0x4D5 // Unused Flag
 #define FLAG_ALEX_DISCUSSED_STERN                                   0x4D6 // Unused Flag
 #define FLAG_ALEX_DISCUSSED_MAGMA                                   0x4D7 // Unused Flag
-#define FLAG_UNUSED_0x4D8                                           0x4D8 // Unused Flag
-#define FLAG_UNUSED_0x4D9                                           0x4D9 // Unused Flag
-#define FLAG_UNUSED_0x4DA                                           0x4DA // Unused Flag
-#define FLAG_UNUSED_0x4DB                                           0x4DB // Unused Flag
+#define FLAG_ALEX_DISCUSSED_LOGAN                                   0x4D8 // Unused Flag
+#define FLAG_ALEX_DISCUSSED_SPACE_CENTER                            0x4D9 // Unused Flag
+#define FLAG_ALEX_KNOWS_LEGENDARY_OUTCOME                           0x4DA // Unused Flag
+#define FLAG_ALEX_KNOWS_E4                                          0x4DB // Unused Flag
 #define FLAG_UNUSED_0x4DC                                           0x4DC // Unused Flag
 #define FLAG_UNUSED_0x4DD                                           0x4DD // Unused Flag
 #define FLAG_UNUSED_0x4DE                                           0x4DE // Unused Flag
