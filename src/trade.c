@@ -1172,41 +1172,41 @@ static const union AffineAnimCmd *const gSpriteAffineAnimTable_8338ECC[] =
 static const struct InGameTrade gIngameTrades[] =
 {
     {
-        _("DOTS"), SPECIES_SEEDOT,
+        _("JORDAN"), SPECIES_SEEDOT,
         5, 4, 5, 4, 4, 4,
         TRUE, 38726,
         30, 5, 5, 5, 5,
         0x84,
-        ITEM_CHESTO_BERRY, -1,
+        ITEM_LIECHI_BERRY, -1,
         _("KOBE"), MALE, 10,
         SPECIES_RALTS
     }, {
-        _("PLUSES"), SPECIES_PLUSLE,
+        _("CAESAR"), SPECIES_PLUSLE,
         4, 4, 4, 5, 5, 4,
         FALSE, 73996,
         5, 5, 30, 5, 5,
         0x6F,
-        ITEM_WOOD_MAIL, 0,
+        ITEM_LIECHI_BERRY, 0,
         _("ROMAN"), MALE, 10,
         SPECIES_VOLBEAT
     }, {
-        _("SEASOR"),
+        _("YEAGER"),
         SPECIES_HORSEA,
         5, 4, 4, 4, 5, 4,
         FALSE, 46285,
         5, 5, 5, 5, 30,
         0x7F,
-        ITEM_WAVE_MAIL, 1,
+        ITEM_LIECHI_BERRY, 1,
         _("SKYLAR"), MALE, 10,
         SPECIES_BAGON
     }, {
-        _("MEOWOW"),
+        _("HORUS"),
         SPECIES_MEOWTH,
         4, 5, 4, 5, 4, 4,
         FALSE, 91481,
         5, 5, 5, 30, 5,
         0x8B,
-        ITEM_RETRO_MAIL, 2,
+        ITEM_LIECHI_BERRY, 2,
         _("ISIS"), FEMALE, 10,
         SPECIES_SKITTY
     }
