@@ -1,3 +1,4 @@
+import { dedupe } from "./arrays";
 import { Shuffle } from "./pick";
 
 export function buildPokeConstants(data: PokemonJson, filterInvalid = false) {
@@ -61,4 +62,23 @@ export function buildAvailableAbilities(data: PokemonJson) {
 
 export function buildAvailableTypes(data: PokemonJson) {
     return Object.values(data.pokemon).map(p => [p?.baseStats?.type1, p?.baseStats?.type2].filter(t => !!t)).flat().filter((t, i, arr) => arr.indexOf(t) == i);
+}
+
+export function getAllWildPokemon(data: PokemonJson) {
+    return dedupe(data.wilds.map(w => w.set.map(s => s.species)).flat());
+}
+
+
+const rates12 = [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1];
+const rates5 = [60, 30, 5, 4, 1];
+const rates10 = [70, 30, 60, 20, 20, 40, 30, 15, 10, 5];
+
+export function getAllWildsWithSummedRarity(data: PokemonJson) {
+    return data.wilds.flatMap(w => w.set.map((s, i, set) => ({
+        mon: s.species,
+        rate: set.length == 10 ? rates10[i] : set.length == 5 ? rates5[i] : rates12[i % 12]
+    }))).map((mon, _, arr) => ({
+        mon: mon.mon,
+        rate: arr.filter(m => m.mon == mon.mon).reduce((sum, cur) => sum + cur.rate, 0)
+    })).filter((mon, i, arr) => arr.findIndex(m => m.mon == mon.mon) == i);
 }

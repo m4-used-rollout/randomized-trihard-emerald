@@ -573,8 +573,8 @@ async function dumpTrades(data, config) {
 	const original = (FS.existsSync(config.path) ? FS.readFileSync(config.path, { encoding: 'utf8' }) : "").split('\n');
 
 	data.npcTrades.forEach(t => {
-		original[t.monInLine] = original[t.monInLine].replace(/SPECIES_([^\s,]+)/, `SPECIES_${t.monIn.toUpperCase()}`);
-		original[t.monOutLine] = original[t.monOutLine].replace(/SPECIES_([^\s,]+)/, `SPECIES_${t.monOut.toUpperCase()}`);
+		original[t.monInLine - 1] = original[t.monInLine - 1].replace(/SPECIES_([^\s,]+)/g, `SPECIES_${t.monIn.toUpperCase()}`);
+		original[t.monOutLine - 1] = original[t.monOutLine - 1].replace(/SPECIES_([^\s,]+)/g, `SPECIES_${t.monOut.toUpperCase()}`);
 	})
 
 	FS.writeFileSync(config.path, original.join('\n'), { encoding: 'utf8' });
@@ -593,7 +593,7 @@ async function dumpStatics(data, config) {
 			throw new Error(`${path} does not exist!`);
 		const original = FS.readFileSync(path, { encoding: 'utf8' }).split('\n');
 
-		original[static.monLine] = original[static.monLine].replace(/SPECIES_([^\s,]+)/, `SPECIES_${static.mon.toUpperCase()}`);
+		original[static.monLine - 1] = original[static.monLine - 1].replace(/SPECIES_([^\s,]+)/g, `SPECIES_${static.mon.toUpperCase()}`);
 
 		FS.writeFileSync(path, original.join('\n'), { encoding: 'utf8' });
 		console.log(`File written to ${path}.`);

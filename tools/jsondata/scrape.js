@@ -1117,8 +1117,8 @@ async function scrapeStatics(config) {
 						staticMons.push({ mon: minimize(res[1]), monLine: lineNo, file });
 					break;
 				case "setVar":
-					if (res = /setvar .+?, (SPECIES_.+?),/.exec(line))
-						staticMons.push({ mon: minimize(res[1]), monLine: lineNo, file });
+					if (res = /setvar (.+?), (SPECIES_.+)/.exec(line))
+						staticMons.push({ mon: minimize(res[2]), monLine: lineNo, file });
 					break;
 			}
 		}

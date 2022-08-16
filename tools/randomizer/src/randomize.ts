@@ -7,6 +7,8 @@ import TrainerRandomizer from "./modules/trainers";
 import WildRandomizer from "./modules/wilds";
 import StarterRandomizer from "./modules/starters";
 import AbilitiesRandomizer from "./modules/abilities";
+import TradeRandomizer from './modules/trades';
+import StaticMonRandomizer from './modules/statics';
 
 const modules: RandoModule[] = [
     new TMMovesRandomizer(),
@@ -16,6 +18,8 @@ const modules: RandoModule[] = [
     new WildRandomizer(),
     new TrainerRandomizer(),
     new AbilitiesRandomizer(),
+    new TradeRandomizer(),
+    new StaticMonRandomizer(),
     new StarterRandomizer(),
 ];
 
