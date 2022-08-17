@@ -35,7 +35,7 @@ export function calculateBST(data: PokemonJson) {
     Object.values(data.pokemon).filter(p => p.baseStats).forEach(p => p.baseStats.bst = calcBST(p.baseStats));
 }
 
-export const hmMoves = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "ROCK_SMASH", "WATERFALL", "DIVE"];
+export const hmMoves = [];//"CUT", "FLY", "SURF", "STRENGTH", "FLASH", "ROCK_SMASH", "WATERFALL", "DIVE"];
 
 export function buildMoveLookup(data: PokemonJson, excludeHMMoves = false) {
     const availableMoves = data.moves.filter(m => m.id != "struggle" && m.id && !(excludeHMMoves && hmMoves.includes(m.id.toUpperCase())));

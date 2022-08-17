@@ -1,15 +1,12 @@
-import { randomInt } from "crypto";
+import { hmMoves } from "../utils/montasks";
 import { PickCascade } from "../utils/pick";
-
-
-const immutableTMs = ["CUT", "FLY", "SURF", "STRENGTH", "FLASH", "ROCK_SMASH", "WATERFALL", "DIVE"];
 
 export default class TMCompatRandomizer implements RandoModule {
     command = "tm-compat"
     helpText = "Randomizes TM and Move Tutor compatibility, leaving HMs and Rock Smash alone.";
     operation(data: PokemonJson) {
         let availableTMs = new Array<string>();
-        availableTMs = data.tmlist.filter((tm, i) => tm && !immutableTMs.includes(data.tmMoves[i].toUpperCase()));
+        availableTMs = data.tmlist.filter((tm, i) => tm && !hmMoves.includes(data.tmMoves[i].toUpperCase()));
 
         console.log("Randomizing TM compatibility...");
 
@@ -17,7 +14,7 @@ export default class TMCompatRandomizer implements RandoModule {
             const tmReplacements = [...availableTMs];
             const tutorReplacements = [...data.tutorList];
             p.tms = p.tms ? p.tms.map((tm: number) => {
-                if (!tm || immutableTMs.includes(data.tmMoves[tm]))
+                if (!tm || hmMoves.includes(data.tmMoves[tm]))
                     return tm;
                 return data.tmlist.indexOf(PickCascade(tmReplacements, t => t != data.tmlist[tm]) || data.tmlist[tm]);
             }) : p.tms;
