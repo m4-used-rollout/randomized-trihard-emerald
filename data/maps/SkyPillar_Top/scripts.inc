@@ -55,7 +55,7 @@ SkyPillar_Top_EventScript_239722:: @ 8239722
 	playmoncry SPECIES_RAYQUAZA, 2
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_RAYQUAZA, 120, ITEM_NONE
+	setwildbattle SPECIES_KYOGRE, 120, ITEM_NONE
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate

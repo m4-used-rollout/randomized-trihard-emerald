@@ -128,7 +128,7 @@ BattleFrontier_OutsideEast_EventScript_242CFC:: @ 8242CFC
 	delay 40
 	waitmoncry
 	setvar VAR_LAST_TALKED, 14
-	setwildbattle SPECIES_SUDOWOODO, 40, ITEM_NONE
+	setwildbattle SPECIES_ARBOK, 40, ITEM_NONE
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	dowildbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

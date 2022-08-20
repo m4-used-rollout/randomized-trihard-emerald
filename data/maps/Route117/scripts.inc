@@ -124,7 +124,7 @@ Route117_EventScript_Kecleon_ScopeUsed:: @ 81E2645
 	playmoncry SPECIES_KECLEON, 2
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_KECLEON, 30, ITEM_NONE
+	setwildbattle SPECIES_GOREBYSS, 30, ITEM_NONE
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	dowildbattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE

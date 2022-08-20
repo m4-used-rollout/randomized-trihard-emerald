@@ -72,7 +72,7 @@ AquaHideout_B1F_EventScript_ItemMaxElixir:: @ 8291372
 AquaHideout_B1F_EventScript_WildElectrode1:: @ 82339EB
 	lock
 	faceplayer
-	setwildbattle SPECIES_ELECTRODE, 30, ITEM_NONE
+	setwildbattle SPECIES_POLITOED, 30, ITEM_NONE
 	waitse
 	playmoncry SPECIES_ELECTRODE, 2
 	delay 40
@@ -98,7 +98,7 @@ AquaHideout_B1F_EventScript_233A2F:: @ 8233A2F
 AquaHideout_B1F_EventScript_WildElectrode2:: @ 8233A38
 	lock
 	faceplayer
-	setwildbattle SPECIES_ELECTRODE, 30, ITEM_NONE
+	setwildbattle SPECIES_AMPHAROS, 30, ITEM_NONE
 	waitse
 	playmoncry SPECIES_ELECTRODE, 2
 	delay 40

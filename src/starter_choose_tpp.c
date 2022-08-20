@@ -35,9 +35,9 @@
 
 static const u16 sStarterMon[STARTER_MON_COUNT] =
 {
-    SPECIES_TREECKO,
-    SPECIES_TORCHIC,
-    SPECIES_MUDKIP,
+    SPECIES_BELLSPROUT,
+    SPECIES_GROWLITHE,
+    SPECIES_SURSKIT,
 };
 
 const u8 gText_Options[] = 

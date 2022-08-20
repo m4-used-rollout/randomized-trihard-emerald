@@ -347,7 +347,7 @@ Route119_WeatherInstitute_2F_Movement_27017Q: @ 827017C
 
 Route119_WeatherInstitute_2F_EventScript_GiveAndNameCastform:: @ 82700DB
 	@ Give mon
-	setvar VAR_TEMP_1, SPECIES_CASTFORM
+	setvar VAR_TEMP_1, SPECIES_LUNATONE
 	bufferspeciesname 0, VAR_TEMP_1
 	givemon VAR_TEMP_1, 25, ITEM_MYSTIC_WATER
 	@ Play fanfare
@@ -444,7 +444,7 @@ Route119_WeatherInstitute_2F_Text_2706E8: @ 82706E8
 @ 	.string "Ahahahaha!\n"
 @ 	.string "Team Magma, just you wait!$"
 @ Route119_WeatherInstitute_2F_EventScript_27004D:: @ 827004D
-@ 	setvar VAR_TEMP_1, SPECIES_CASTFORM
+@ 	setvar VAR_TEMP_1, SPECIES_HITMONLEE
 @ 	bufferspeciesname 0, VAR_TEMP_1
 @ 	msgbox Route119_WeatherInstitute_2F_Text_270650, MSGBOX_DEFAULT
 @ 	givemon VAR_TEMP_1, 25, ITEM_MYSTIC_WATER
