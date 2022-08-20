@@ -105,10 +105,111 @@ MossdeepCity_PokemonCenter_1F_Text_2222D9: @ 82222D9
 
 MossdeepCity_PokemonCenter_1F_PC::
 	lockall
-	msgbox MossdeepCity_PokemonCenter_1F_PC_Text, MSGBOX_DEFAULT
+	goto_if_unset FLAG_TEMP_4, MossdeepCity_PokemonCenter_1F_PC_Bucket
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Repeat, MSGBOX_DEFAULT
 	releaseall
 	end
-MossdeepCity_PokemonCenter_1F_PC_Text:
+MossdeepCity_PokemonCenter_1F_PC_Bucket:
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_1, MSGBOX_DEFAULT
+	applymovement EVENT_OBJ_ID_PLAYER, MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Incredulous
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_2, MSGBOX_DEFAULT
+	applymovement EVENT_OBJ_ID_PLAYER, MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Curious
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_3, MSGBOX_DEFAULT
+	applymovement EVENT_OBJ_ID_PLAYER, MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Curious
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_4, MSGBOX_DEFAULT
+	applymovement EVENT_OBJ_ID_PLAYER, MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Incredulous
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_5, MSGBOX_DEFAULT
+	goto_if_unset FLAG_RECEIVED_WAILMER_PAIL, MossdeepCity_PokemonCenter_1F_PC_No_Pail
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Have_Pail, MSGBOX_DEFAULT
+MossdeepCity_PokemonCenter_1F_PC_Ending:
+	applymovement EVENT_OBJ_ID_PLAYER, MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Curious
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_6, MSGBOX_DEFAULT
+	setflag FLAG_TEMP_4
+	releaseall
+	end
+MossdeepCity_PokemonCenter_1F_PC_No_Pail:
+	msgbox MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_No_Pail, MSGBOX_DEFAULT
+	goto MossdeepCity_PokemonCenter_1F_PC_Ending
+MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Incredulous:
+	face_down
+	step_end
+MossdeepCity_PokemonCenter_1F_PC_Bucket_Movement_Curious:
+	face_up
+	step_end
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_1:
+	.string "I don't quite know how to tell you this,\n"
+	.string "{PLAYER}, but that PC\l"
+	.string "is actually a bucket.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_2:
+	.string "Oh, don't give me that look.\n"
+	.string "I have no explanation for you.\l"
+	.string "I've no idea how a PC can be a bucket.\p"
+	.string "Look, all it says right here is:\n"
+	.string "“There's a PC in the corner, but\l"
+	.string "it's actually a bucket.”\l"
+	.string "End of quote. It's all I have.\p"
+	.string "It doesn't say {REF}why{END} it's a bucket.\n"
+	.string "It doesn't say {ACTOR}how{END} it could be\l"
+	.string "a bucket. It just says that it {GYM}is{END}.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_3:
+	.string "I'm sorry, {PLAYER}. I really am.\n"
+	.string "I know you've been looking all over\l"
+	.string "for a usable PC for this entire game.\p"
+	.string "And here we are, finally a PC with no\n"
+	.string "excuse, and it turns out to be a bucket.\p"
+	.string "It's a very convincing PC, what with the\n"
+	.string "glowing screen and whirring noises,\l"
+	.string "but it unfortunately is just a bucket.\p"
+	.string "It could carry your {POKEMON} for you,\n"
+	.string "but only insomuch as you can fit them\l"
+	.string "inside the physical confines of the\l"
+	.string "machine. It cannot access the {POKEMON}\l"
+	.string "Storage System for you.\p"
+	.string "Frankly, there is no such thing.\n"
+	.string "It's been deleted.\l"
+	.string "Released, as you might say.\l"
+	.string "Sorry to rub it in like that.\p"
+	.string "I hoped that the man in {PLACE}Petalburg{END}\n"
+	.string "would have convinced you, but there is\l"
+	.string "absolutely no way to get your {POKEMON}\l"
+	.string "back. That's how it is. That's life.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_4:
+	.string "Besides, this PC isn't even a very\n"
+	.string "good bucket to begin with.\p"
+	.string "If you filled it with water, it'd leak\n"
+	.string "out all the vent holes! Not to mention\l"
+	.string "the electrocution risk. An absolute\l"
+	.string "travesty of a bucket this thing is.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_5:
+	.string "Take it with- {BOLD}Take it with you!?{END}\p"
+	.string "No of course you can't take it with you.\n"
+	.string "It's bolted to the wall. Besides,\l"
+	.string "I doubt the {ACTOR}Nurse{END} would let you walk off\l"
+	.string "with her PC. Sure, you and I know it's\l"
+	.string "a bucket, but how would you convince\l"
+	.string "anyone else? No no, it'd never work.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Have_Pail:
+	.string "Besides, what use have you for a leaky\n"
+	.string "bucket? You already have a perfectly\l"
+	.string "good {ITEM}Wailmer Pail{END}.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_No_Pail:
+	.string "Listen, if you really want a bucket,\n"
+	.string "just head back to {PLACE}Route 104{END} and\l"
+	.string "visit the {PLACE}Pretty Petal Flower Shop{END}.\l"
+	.string "You can get the {ITEM}Wailmer Pail{END} there.\l"
+	.string "It's a much better bucket than this one.$"
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Part_6:
+	.string "Let's leave the bucket alone,\n"
+	.string "{PLAYER}. After all,\l"
+	.string "you've got a game to get back to.\p"
+	.string "I'll be pulling for you every\n"
+	.string "step of the way.\p"
+	.string "Hurry along now! Good luck!$"
+
+MossdeepCity_PokemonCenter_1F_PC_Text_Bucket_Repeat:
+	.string "Yes, somehow it's still a bucket.$"
+
+MossdeepCity_PokemonCenter_1F_PC_Text_Rick_Astley:
 	.string "There's a music video playing on loop.\p"
 	.string "A man is dancing and singing about how\n"
 	.string "he intends to never give up someone,\l"

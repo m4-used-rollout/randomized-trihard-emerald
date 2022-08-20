@@ -79,8 +79,7 @@ SlateportCity_ContestLobby_Movement_21A6FD::
 
 SlateportCity_ContestLobby_IdolGirlPC::
 	lock
-	msgbox SlateportCity_ContestLobby_IdolGirlPC_Text, MSGBOX_CDIALOG
-	msgbox SlateportCity_ContestLobby_IdolGirlPC_Text_DESC, MSGBOX_CDESCRIBE
+	msgbox SlateportCity_ContestLobby_IdolGirlPC_Text, MSGBOX_CDESCRIBE
 	compare VAR_LETTER_INTERNETMUSIC_LOVERS, 0
 	call_if_eq SlateportCity_ContestLobby_IdolGirlPC_LetterGive1
 	compare VAR_LETTER_INTERNETMUSIC_LOVERS, 2
@@ -88,13 +87,13 @@ SlateportCity_ContestLobby_IdolGirlPC::
 	release
 	end
 SlateportCity_ContestLobby_IdolGirlPC_Text:
-	.string "Booy mo giirl mo nai sekai,\n"
-	.string "Lovelove to ka kankei ne!\p"
-	.string "Saitan kiroku de, omae wa kuzureochi\n"
-	.string "Watashi ni sugaritsuku!$"
-SlateportCity_ContestLobby_IdolGirlPC_Text_DESC:
-	.string "She's singing along to some Japanese\n"
-	.string "video with a lady dressed for battle.$"
+	.string "She's watching a livestream.\p"
+	.string "A blue-haired anime girl who's dressed\n"
+	.string "as an Azumarill is blowing up a village\l"
+	.string "in some open-world sandbox game.\p"
+	.string "… That laugh is insane!\p"
+	.string "… … … … … …\p"
+	.string "… This is weird.$"
 
 SlateportCity_ContestLobby_IdolGirlPC_LetterGive1:
 	closemessage

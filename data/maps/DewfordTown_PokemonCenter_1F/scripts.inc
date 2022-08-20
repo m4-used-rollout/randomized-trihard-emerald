@@ -35,21 +35,20 @@ DewfordTown_PokemonCenter_1F_Text_1FC557: @ 81FC557
 
 DewfordTown_PokemonCenter_1F_EventScript_GuyWithHeadphones::
 	lock
-	markasdialog
-	msgbox DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Text
-	msgbox DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Text_DESC, MSGBOX_CDESCRIBE
+	msgbox DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Text, MSGBOX_CDESCRIBE
 	compare VAR_LETTER_INTERNETMUSIC_LOVERS, 1
 	call_if_eq DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Delivery
 	release
 	end
 DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Text:
-	.string "So we back in the gym,\n"
-	.string "got our Pokémon dodging from\l"
-	.string "side to side.\p"
-	.string "Side, side to side…$"
-DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Text_DESC:
-	.string "He seems to be totally absorbed\n"
-	.string "in a strange music video.$"
+	.string "He's watching a livestream.\p"
+	.string "A blonde-haired anime girl is\n"
+	.string "cooking something.\p"
+	.string "… is she cooking a Joltik?\p"
+	.string "She is! Ew\p"
+	.string "… … … … … …\p"
+	.string "… This is weird.$"
+
 DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Delivery:
 	faceplayer
 	msgbox DewfordTown_PokemonCenter_1F_GuyWithHeadphones_Text_Delivery1, MSGBOX_CDIALOG
