@@ -51,7 +51,8 @@ DewfordTown_PokemonCenter_2F_EventScript_MarillDoll::
 DewfordTown_PokemonCenter_2F_Text_MarillDoll:
 	.string "Someone left behind a Marill Doll?\p"
 	.string "…\p"
-	.string "Yoink.$"
+	.string "I'LL STEAL IT!\n"
+	.string "NO ONE WILL EVER KNOW!$"
 
 
 
