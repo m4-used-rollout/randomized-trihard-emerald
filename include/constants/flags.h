@@ -1093,7 +1093,7 @@
 #define FLAG_ITEM_ROUTE_111_ELIXIR                                  0x476
 #define FLAG_ITEM_ROUTE_113_HYPER_POTION                            0x477
 #define FLAG_ITEM_ROUTE_115_HEAL_POWDER                             0x478
-#define FLAG_ITEM_STOLEN_FALLARBOR_MART                             0x479 // Trihard
+#define FLAG_UNUSED_0x479                                           0x479 // Trihard
 #define FLAG_ITEM_ROUTE_116_POTION                                  0x47A
 #define FLAG_ITEM_ROUTE_119_ELIXIR_2                                0x47B
 #define FLAG_ITEM_ROUTE_120_REVIVE                                  0x47C
@@ -1142,17 +1142,17 @@
 #define FLAG_MET_TRAINING_TRIO                                      0x4A6 // Unused Flag
 #define FLAG_ITEM_STOLEN_FORETREE_CENTER                            0x4A7 // Unused Flag
 #define FLAG_ITEM_STOLEN_DEWFORD_HOUSE                              0x4A8 // Unused Flag
-#define FLAG_UNUSED_0x4A9                                           0x4A9 // Unused Flag
-#define FLAG_UNUSED_0x4AA                                           0x4AA // Unused Flag
-#define FLAG_UNUSED_0x4AB                                           0x4AB // Unused Flag
-#define FLAG_UNUSED_0x4AC                                           0x4AC // Unused Flag
-#define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
-#define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag
-#define FLAG_UNUSED_0x4AF                                           0x4AF // Unused Flag
-#define FLAG_UNUSED_0x4B0                                           0x4B0 // Unused Flag
-#define FLAG_UNUSED_0x4B1                                           0x4B1 // Unused Flag
-#define FLAG_UNUSED_0x4B2                                           0x4B2 // Unused Flag
-#define FLAG_UNUSED_0x4B3                                           0x4B3 // Unused Flag
+#define FLAG_ITEM_STOLEN_FORTREE_HOUSE                              0x4A9 // Unused Flag
+#define FLAG_ITEM_STOLEN_WALLY_1                                    0x4AA // Unused Flag
+#define FLAG_ITEM_STOLEN_WALLY_2                                    0x4AB // Unused Flag
+#define FLAG_ITEM_STOLEN_RUSTBORO_FLAT                              0x4AC // Unused Flag
+#define FLAG_ITEM_STOLEN_POKESCHOOL                                 0x4AD // Unused Flag
+#define FLAG_ITEM_STOLEN_LILYCOVE_HOUSE2                            0x4AE // Unused Flag
+#define FLAG_ITEM_STOLEN_LILYCOVE_STORE2                            0x4AF // Unused Flag
+#define FLAG_ITEM_STOLEN_LILYCOVE_MOTEL2                            0x4B0 // Unused Flag
+#define FLAG_ITEM_STOLEN_MOSSDEEP_FISHERMAN                         0x4B1 // Unused Flag
+#define FLAG_ITEM_STOLEN_SOOTOPOLIS_BLACKBELT                       0x4B2 // Unused Flag
+#define FLAG_ITEM_STOLEN_MAUVILLE_HOUSE1                            0x4B3 // Unused Flag
 #define FLAG_UNUSED_0x4B4                                           0x4B4 // Unused Flag
 #define FLAG_UNUSED_0x4B5                                           0x4B5 // Unused Flag
 #define FLAG_UNUSED_0x4B6                                           0x4B6 // Unused Flag
@@ -1444,11 +1444,11 @@
 #define FLAG_DAILY_CONTEST_LOBBY_RECEIVED_BERRY     (SYSTEM_FLAGS + 0xC1)
 #define FLAG_DAILY_SECRET_BASE                      (SYSTEM_FLAGS + 0xC2)
 #define FLAG_DAILY_DADS_LETTER_REMOVED              (SYSTEM_FLAGS + 0xC3)
-#define FLAG_DAILY_0x924                            (SYSTEM_FLAGS + 0xC4)
-#define FLAG_DAILY_0x925                            (SYSTEM_FLAGS + 0xC5)
-#define FLAG_DAILY_0x926                            (SYSTEM_FLAGS + 0xC6)
-#define FLAG_DAILY_0x927                            (SYSTEM_FLAGS + 0xC7)
-#define FLAG_DAILY_0x928                            (SYSTEM_FLAGS + 0xC8)
+#define FLAG_DAILY_ITEM_STOLEN_SOOTOPOLIS_BERRY     (SYSTEM_FLAGS + 0xC4)
+#define FLAG_DAILY_ITEM_STOLEN_LILYCOVE_MOTEL       (SYSTEM_FLAGS + 0xC5)
+#define FLAG_DAILY_ITEM_STOLEN_MOSSDEEP_MART        (SYSTEM_FLAGS + 0xC6)
+#define FLAG_DAILY_ITEM_STOLEN_WALLY_3              (SYSTEM_FLAGS + 0xC7)
+#define FLAG_DAILY_ITEM_STOLEN_FALLARBOR_MART       (SYSTEM_FLAGS + 0xC8)
 #define FLAG_DAILY_ITEM_STOLEN_RUSTBORO_MART        (SYSTEM_FLAGS + 0xC9)
 #define FLAG_DAILY_PICKED_LOTO_TICKET               (SYSTEM_FLAGS + 0xCA)
 #define FLAG_DAILY_ROUTE_114_RECEIVED_BERRY         (SYSTEM_FLAGS + 0xCB)
