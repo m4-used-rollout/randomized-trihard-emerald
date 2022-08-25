@@ -18,7 +18,7 @@ const trainersKeepType = ["Brendan", "May"];
 export default class TrainerRandomizer implements RandoModule {
     command = "trainers"
     helpText = "Randomizes trainer pokemon. Keeps same distance from final. Assigns each trainer a type. Tries to stay within provided BST (100 is default) of original.";
-    operation(data: PokemonJson, bstRange = "100") {
+    operation(data: PokemonJson, bstRange = "100", boostPercent = "0", ...trainerArgs: string[]) {
         const bstAbsRange = Math.abs(parseInt(bstRange) || 100) / 2;
 
         calculateBST(data);
@@ -30,7 +30,11 @@ export default class TrainerRandomizer implements RandoModule {
 
         const types = buildAvailableTypes(data);
 
-        const trainers = data.trainerParties;
+        const boost = parseFloat(boostPercent);
+
+        const onlyTheseTrainers = trainerArgs.map(t => t.toLowerCase());
+
+        const trainers = data.trainerParties.filter(t => trainerArgs.length < 1 || (t.trainerName && onlyTheseTrainers.includes(t.trainerName.toLowerCase())));
 
         const trainerTypes: Record<string, Record<string, string>> = {};
 
@@ -73,6 +77,10 @@ export default class TrainerRandomizer implements RandoModule {
 
         trainers.forEach(t => {
             trainerTypes[t.trainerName] = trainerTypes[t.trainerName] || {};
+            const onlyTrainerIndex = onlyTheseTrainers.indexOf(t.trainerName);
+            if (onlyTrainerIndex >= 0 && types.includes(onlyTheseTrainers[onlyTrainerIndex + 1]))
+                trainerTypes[t.trainerName][t.trainerClass] = onlyTheseTrainers[onlyTrainerIndex + 1];
+
             const typesToAvoid = [getOriginalTrainerGroupType(t.trainerName), ...getOtherAssignedTrainerGroupTypes(t.trainerName)];
             const trainerType = trainerTypes[t.trainerName][t.trainerClass] = trainerTypes[t.trainerName][t.trainerClass] || getAssignedTrainerGroupType(t.trainerName) || Pick([...types].filter(t => !typesToAvoid.includes(t)));
             t["randomizerAssignedType"] = trainerType;
@@ -91,6 +99,8 @@ export default class TrainerRandomizer implements RandoModule {
             };
             t.party.forEach(p => {
                 p.species = replaceMon(p.species, trainersKeepType.includes(t.trainerName) ? undefined : trainerType);
+                if (boost != 0)
+                    p.lvl = (parseInt(p.lvl) + (parseInt(p.lvl) * boost / 100)).toFixed(0);
                 p["randomizerAssignedType"] = trainerType;
             });
         });
