@@ -3200,31 +3200,31 @@ static const struct TrainerMonItemDefaultMoves sParty_Phoebe[] = {
     {
     .iv = 250,
     .lvl = 58,
-    .species = SPECIES_CRAWDAUNT,
+    .species = SPECIES_STEELIX,
     .heldItem = ITEM_NONE
     },
     {
     .iv = 250,
     .lvl = 59,
-    .species = SPECIES_KINGLER,
+    .species = SPECIES_AGGRON,
     .heldItem = ITEM_NONE
     },
     {
     .iv = 250,
     .lvl = 60,
-    .species = SPECIES_MANTINE,
+    .species = SPECIES_MAGNETON,
     .heldItem = ITEM_NONE
     },
     {
     .iv = 250,
     .lvl = 59,
-    .species = SPECIES_GOREBYSS,
+    .species = SPECIES_SCIZOR,
     .heldItem = ITEM_NONE
     },
     {
     .iv = 255,
     .lvl = 61,
-    .species = SPECIES_LAPRAS,
+    .species = SPECIES_REGISTEEL,
     .heldItem = ITEM_SITRUS_BERRY
     }
 };

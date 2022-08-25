@@ -5835,6 +5835,8 @@ const u32 gTMHMLearnsets[][2] =
                                         | TMHM(TM30_SHADOW_BALL)
                                         | TMHM(TM05_ROAR)
                                         | TMHM(TM52_FLY)
+                                        | TMHM(TM04_CALM_MIND)
+                                        | TMHM(TM58_DIVE)
                                         | TMHM(TM41_TORMENT)
                                         | TMHM(TM36_SLUDGE_BOMB)
                                         | TMHM(TM12_TAUNT)
